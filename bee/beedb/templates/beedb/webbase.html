@@ -1,0 +1,85 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="{% static "beedb/style.css" %}">    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    {% block pagerefresh %}<meta http-equiv="refresh" content="600">{% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132422735-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-132422735-2');
+    </script>
+
+    <title>
+	    {% block title %}
+        Bee hive database
+      {% endblock %}
+    </title>
+  </head>
+  <body class="bee_background">
+    {% block background %}
+      <div class="container-fluid">
+    {% endblock %}
+    
+      <div id="logged_in">
+        {% if user.is_authenticated %}
+          Hi {{ user.username|capfirst }} <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+          Not logged in 
+        {% endif %}
+      </div>
+      <div id="pg_header">
+        <span class="heading_text">Bee hive database</span>
+      </div>
+
+      {% block navbar %}
+      <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+       
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+          <ul class="navbar-nav">
+            {% if apiaryactive %}
+              <li class="nav-item active">
+            {% else %}
+              <li class="nav-item"></li>
+            {% endif %}
+              <a class="nav-link" href="{% url 'beedb:index' %}">Apiaries</a>
+            </li>
+
+          </ul>
+        </div>
+      </nav>
+      {% endblock %}
+
+      {% block web-body %}
+        Bee database
+      {% endblock %}
+      <!-- START FOOTER -->
+      <div class="footer">
+        <table class="footer">
+          <tr>
+            <td class="content-block">
+              <span class="author">&#169 Jim West</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- END FOOTER -->
+    </div>
+  </body>
+</html>

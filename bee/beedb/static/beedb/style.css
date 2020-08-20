@@ -1,0 +1,138 @@
+/** {
+  box-sizing: border-box;
+}
+*/
+body {
+    font-family:Verdana, Geneva, Arial, sans-serif;
+  }
+   
+.bee_background {
+    background-color: lightyellow;
+}
+
+  .lastseen {
+    font-style: italic;
+  }
+  
+  .descr {
+    font-style: italic;
+  }
+  
+  .topic {
+    font-family: Monospace;
+    color: blue;   
+  }
+  
+  .payload {
+    color: #0b772f; /*medium green */
+  /*     font-weight: bold;  */
+  }
+  
+  .nodename {
+    font-weight: bold;
+  }
+  
+  .mqtt_info {
+    color: lightskyblue;
+  }
+  
+  .content_block {
+    border-style: groove;
+    border: 5px;
+    border-radius: 15px;
+    padding: 10px;
+    color: white;
+    background-color: blue;
+    margin: 10px 0px 10px 0px; 
+  }
+  
+  .action_button{
+    float: right;
+  }
+  
+  .action_button{
+    ;
+  }
+  
+  .nodeDownLink{
+    color: red;
+  }
+  
+  .battWarning{
+    color: orange;
+  }
+  
+  .battCritical{
+    color: orangered;
+  }
+  
+  .yellow{
+    color: yellow
+  }
+  
+  .logo {
+    max-width: 30%;
+    padding: 10px 10px 10px 10px;
+  }
+  
+  .background1 {
+    background-size: cover;
+  }
+  
+  .wrap_cell {
+    width: 50%;
+  }
+  
+  .heading_text {
+    font-size: 2vw;
+    font-weight: bold;
+  }
+  
+  #logged_in {
+    float: right;
+  }
+  
+  .card-header {
+      font-weight: bold;
+      color: black;
+      font-size: 1.2em;
+  }
+  
+  .bg-secondary {
+    background-color: orange;
+  }
+  
+  /* -------------------------------------
+      HEADER, FOOTER, MAIN
+  ------------------------------------- */
+  
+  .content-block {
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+  
+  .footer {
+    clear: both;
+    Margin-top: 10px;
+    text-align: center;
+    width: 100%; 
+  }
+  
+  .footer td,
+    .footer p,
+    .footer span,
+    .footer a {
+      /*color: #999999;*/
+      font-size: 12px;
+      text-align: center; 
+  }
+  
+  .author a {
+      color: inherit !important;
+      font-family: inherit !important;
+      font-size: inherit !important;
+      font-weight: inherit !important;
+      line-height: inherit !important;
+      text-decoration: none !important; 
+    }
+  

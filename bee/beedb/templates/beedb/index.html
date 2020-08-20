@@ -1,0 +1,23 @@
+{% extends "beedb/webbase.html" %}
+
+{% block pagerefresh %}<meta http-equiv="refresh" content="300">{% endblock %}
+
+{% block title %}
+Apiary list
+{% endblock %}
+
+{% block web-body %}
+
+  <div id="nodes">
+    {% if apList %}
+      <div class="list-group">
+      {% for ap in apList%}
+        {{ ap.apiaryID }}
+      {% endfor %}
+    {% else %}
+      <p>No apiaries</p>
+    {% endif %}
+  </div>
+
+  
+{% endblock %}
