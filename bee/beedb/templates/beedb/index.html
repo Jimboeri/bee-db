@@ -13,11 +13,14 @@ Apiary list
       <div class="list-group">
       {% for ap in apList%}
         {{ ap.apiaryID }}
+        <a href="{% url 'beedb:apDetail' ap.id %}" class="list-group-item list-group-item-action list-group-item-success">{{ap.apiaryID}}</a>
       {% endfor %}
     {% else %}
       <p>No apiaries</p>
     {% endif %}
   </div>
-
+  <div id="msg_add_button" class="action_button">
+    <a href="{% url 'beedb:apAdd' %}" class="btn btn-info" role="button">Add Apiary</a>
+  </div>
   
 {% endblock %}

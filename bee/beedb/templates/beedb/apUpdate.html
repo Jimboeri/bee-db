@@ -1,0 +1,26 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Apiary Details
+{% endblock %}
+
+{% block web-body %}
+<div class="bee_background">
+  <div id="ap-header"><h3>Update Apiary information for {{ ap.apiaryID }}</h3></div>
+    <div id="ap_detail" class="content_block">
+      <div id="ap_det_table">
+        <form action="{% url 'beedb:apUpdate'  ap.id %}" method="POST">
+          {% csrf_token %}
+          <table>
+            {{ form.as_table }}
+          </table>
+        <input type="submit" value="Submit">
+        <span id="ap_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:apDetail' ap.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+ 
+</div>
+{% endblock %}
