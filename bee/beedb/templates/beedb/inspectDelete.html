@@ -1,0 +1,30 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Inspection Delete check
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="ins-header"><h3>Inspection delete check</h3></div>
+    <div id="ins_detail" class="content_block">
+      <div id="ins_det_table">
+        <form action="{% url 'beedb:inspectDel' ins.id %}" method="POST">
+          {% csrf_token %}
+          {{ fItems.management_form }}
+          {{ form.non_field_errors}}
+          <table>
+            <tr><th>Apiary : </th><th>{{ ins.colony.apiary.apiaryID }}</th></tr>
+            <tr><th>Colony : </th><th>{{ ins.colony.colonyID }}</th></tr>
+            <tr><th>Inspection date : </th><th>{{ ins.dt }}</th></tr>
+          </table>
+        <input type="submit" value="Confirm deletion">
+        <span id="ins_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:inspectDetail' ins.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+ 
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Colony Add
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="col-header"><h3>New Colony Information</h3></div>
+    <div id="ap_detail" class="content_block">
+      <div id="ap_det_table">
+        <form action="{% url 'beedb:colAdd' ap.id %}" method="POST">
+          {% csrf_token %}
+          {{ fItems.management_form }}
+          {{ form.non_field_errors}}
+          <table>
+            <tr><th>Apiary : </th><th>{{ col.apiary.apiaryID }}</th></tr>
+            {{ form.as_table }}
+          </table>
+        <input type="submit" value="Submit">
+        <span id="ap_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:apDetail' ap.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+ 
+</div>
+{% endblock %}

@@ -7,7 +7,7 @@ Apiary Details
 {% block web-body %}
 <div class="bee_background">
 
-  <div id="ap-header"><H2>Apiary information</H2></div>
+  <div id="ap-header"><H2>Apiary information</H2>
     <div id="ap_detail" class="content_block">
       <div id="ap_det_table">
         <table>
@@ -15,11 +15,25 @@ Apiary Details
           <tr><td>Description: </td><td class = "wrap_cell">{{ ap.descr }}</td></tr>
         </table>
       </div>
-      {% comment %}
       <div id="ap_det_button" class="action_button">
-        <a href="{% url 'beedb:apUpdate' ap.id %}" class="btn btn-info" role="button">Update details</a>
+        <a href="{% url 'beedb:apMod' ap.id %}" class="btn btn-info" role="button">Update details</a>
       </div>
-      {% endcomment %}
+    </div>
+    <div id="ap_colonies" class="content_block">
+      <H4>Colonies</H4>
+      <div class="table-responsive">
+        <table class="table table-hover table-sm">
+          {% for colony in ap.colony_set.all %}
+            <tr>
+              <td> <a href="{% url 'beedb:colDetail' colony.id %}" >{{colony.colonyID}}</a> </td>
+              <td>{{colony.descr}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div id="ap_det_button" class="action_button">
+        <a href="{% url 'beedb:colAdd' ap.id %}" class="btn btn-info" role="button">Add colony</a>
+      </div>
     </div>
   </div>
 

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 
@@ -41,9 +43,20 @@ class Profile(models.Model):
 
 
 class Colony(models.Model):
+    STATUS_CHOICES = [
+        ("C", "Current"),
+        ("D", "Dead"),
+        ("A", "Absconded"),
+    ]
     apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
     colonyID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
+    status = models.CharField(
+        max_length=1,
+        help_text="Current status of hive)",
+        choices=STATUS_CHOICES,
+        default="C",
+    )
 
     class Meta:
         ordering = ["colonyID"]
@@ -108,24 +121,31 @@ class Inspection(models.Model):
         (5, "Bees attach beekeeper"),
     ]
     colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
-    dt = models.DateTimeField(null=True, blank=True)
+    dt = models.DateTimeField(null=True, blank=True, default=timezone.now,)
     notes = models.TextField(blank=True, null=True)
     numbers = models.IntegerField(
-        help_text="How many bees in the hive", choices=NUMBER_CHOICES, default = 0,
+        help_text="How many bees in the hive (seams of bees)",
+        choices=NUMBER_CHOICES,
+        default=0,
     )
     eggs = models.IntegerField(
-        help_text="How much eggs and larvae is in the hive", choices=EGG_CHOICES, default = 0,
+        help_text="How much eggs and larvae is in the hive",
+        choices=EGG_CHOICES,
+        default=0,
     )
     varroa = models.IntegerField(
-        help_text="How much varroa is in the hive", choices=VARROA_CHOICES, default = 0,
+        help_text="How much varroa is in the hive", choices=VARROA_CHOICES, default=0,
     )
     weight = models.IntegerField(
-        help_text="How heavy is the hive", choices=WEIGHT_CHOICES, default = 0,
+        help_text="How heavy is the hive", choices=WEIGHT_CHOICES, default=0,
     )
     disease = models.IntegerField(
-        help_text="How healthy is the hive", choices=DISEASE_CHOICES, default = 0,
+        help_text="How healthy is the hive", choices=DISEASE_CHOICES, default=0,
     )
     temper = models.IntegerField(
-        help_text="How happyy is the hive", choices=TEMPER_CHOICES, default = 0,
+        help_text="How happy is the hive", choices=TEMPER_CHOICES, default=0,
     )
     queen_seen = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-dt"]

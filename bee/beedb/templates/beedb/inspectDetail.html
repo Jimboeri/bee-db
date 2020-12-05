@@ -1,0 +1,41 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Inspection Details
+{% endblock %}
+
+{% block web-body %}
+<div class="bee_background">
+
+  <div id="ins-header"><H2>Inspection details</H2>
+    <div id="col_detail" class="content_block">
+      <div id="ins_det_table">
+        <table>
+          <div class="dropdown text-right">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              Actions
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'beedb:inspectMod' ins.id %}">Update</a>
+              <a class="dropdown-item" href="{% url 'beedb:inspectDel' ins.id %}">Delete</a>
+            </div>
+          </div> 
+          <tr><th>Apiary : </th><th>{{ ins.colony.apiary.apiaryID }}</th></tr>
+          <tr><th>Colony Name : </th><th>{{ ins.colony.colonyID }}</th></tr>
+          <tr><td>Date : </td><td class = "wrap_cell">{{ ins.dt }}</td></tr>
+          <tr><td>Bee numbers : </td><td>{{ ins.get_numbers_display }}</td></tr>
+          <tr><td>Eggs : </td><td>{{ ins.get_eggs_display }}</td></tr>
+          <tr><td>Varroa : </td><td>{{ ins.get_varroa_display }}</td></tr>
+          <tr><td>Weight : </td><td>{{ ins.get_weight_display }}</td></tr>
+          <tr><td>Disease : </td><td>{{ ins.get_disease_display }}</td></tr>
+          <tr><td>Temper : </td><td>{{ ins.get_temper_display }}</td></tr>
+          <tr><td>Queen seen : </td><td>{{ ins.queen_seen }}</td></tr>
+          <tr><td>Notes : </td><td>{{ ins.notes }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <a href="{% url 'beedb:colDetail' ins.colony.id %}" class="btn btn-info" role="button">Colony</a>
+</div>
+{% endblock %}
