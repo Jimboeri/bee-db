@@ -25,7 +25,7 @@ SECRET_KEY = 'ow6stvx43)&emzkj%n=z5yy#m!q^f0v#b%p*(6&c07f7n+6afr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".west.net.nz", "ernie"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -80,7 +80,7 @@ DATABASES = {
 'NAME': 'postgres',
 'USER': 'postgres',
 'PASSWORD': 'mypassword',
-'HOST': 'db',
+'HOST': 'bee-db',
 'PORT': 5432,
 }
 }

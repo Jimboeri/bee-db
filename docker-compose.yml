@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  bee-db:
     image: postgres:11
     environment:
       POSTGRES_PASSWORD: mypassword
@@ -20,7 +20,7 @@ services:
     ports:
       - "8005:8000"
     depends_on:
-      - db
+      - bee-db
     networks:
       - default
 
