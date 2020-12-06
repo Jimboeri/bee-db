@@ -38,5 +38,6 @@ class InspectionForm(forms.ModelForm):
             "notes",
         ]
         widgets = {
-            "descr": forms.Textarea(attrs={"rows": 3}),
+            "notes": forms.Textarea(attrs={"rows": 3}),
+            "dt": forms.DateInput,
         }
