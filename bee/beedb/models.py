@@ -6,11 +6,24 @@ import datetime
 # Create your models here.
 
 
+
+class Beek(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    bkRegistration = models.CharField(max_length=10, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Apiary(models.Model):
     """
     """
 
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
+    beeknew = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
 
@@ -19,7 +32,6 @@ class Apiary(models.Model):
 
     def __str__(self):
         return self.apiaryID
-
 
 class Profile(models.Model):
     """
@@ -30,11 +42,12 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phoneNumber = models.CharField(max_length=50, blank=True, null=True)
     bkRegistration = models.CharField(max_length=10, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
     lastApiary = models.ForeignKey(
         Apiary,
         blank=True,
         null=True,
-        help_text="The last apiary shown on the index page",
+        help_text="The last apiary selected from the index page",
         on_delete=models.SET_NULL,
     )
 

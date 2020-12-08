@@ -37,7 +37,7 @@ Colony Details
       <table>
         {% for ins in col.inspection_set.all %}
           <tr>
-            <td><a href="{% url 'beedb:inspectDetail' ins.id %}" class="text-warning">{{ins.dt|date:"d/m/Y"}}</a></td>
+            <td><a href="{% url 'beedb:inspectDetail' ins.id %}" class="text-warning">{{ins.dt|date:"D d/m/Y"}}</a></td>
           </tr>
         {% endfor %}
       </table>

@@ -31,10 +31,8 @@ def apDetail(request, ap_ref):
 
 @login_required
 def apAdd(request):
-    # prj = get_object_or_404(Team, pk=prj_ref)
-    # print("BP1")
+
     if request.method == "POST":
-        # print("Post message received")
         nf = ApiaryAddForm(request.POST)
         if nf.is_valid():
             print("Valid BK 1")
@@ -47,7 +45,6 @@ def apAdd(request):
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        # print("BP2")
         nf = ApiaryAddForm()
 
     context = {"form": nf}
@@ -75,12 +72,10 @@ def apMod(request, ap_ref):
 @login_required
 def colAdd(request, ap_ref):
     ap = get_object_or_404(Apiary, pk=ap_ref)
-    print("BP1")
     if request.method == "POST":
         # print("Post message received")
         nf = ColonyAddForm(request.POST)
         if nf.is_valid():
-            print("Valid BK 1")
             col = Colony(
                 colonyID=nf.cleaned_data["colonyID"], descr=nf.cleaned_data["descr"]
             )
@@ -90,7 +85,6 @@ def colAdd(request, ap_ref):
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        print("BP2")
         nf = ColonyAddForm()
 
     context = {"form": nf, "ap": ap}
@@ -116,7 +110,6 @@ def colMod(request, col_ref):
             return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        print("BP2")
         nf = ColonyAddForm(instance=col)
 
     context = {"form": nf, "col": col}
