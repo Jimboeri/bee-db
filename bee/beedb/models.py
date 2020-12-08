@@ -22,8 +22,7 @@ class Apiary(models.Model):
     """
     """
 
-    beek = models.ForeignKey(User, on_delete=models.CASCADE)
-    beeknew = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
+    beek = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
 

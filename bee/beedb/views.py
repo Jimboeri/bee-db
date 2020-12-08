@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.views import generic
 from django.urls import reverse
 
-from .models import Apiary, Colony, Inspection
+from .models import Apiary, Colony, Inspection, Beek
 
 from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm
 
@@ -14,8 +14,8 @@ from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm
 
 @login_required
 def index(request):
-    print("Run index")
-    apList = Apiary.objects.filter(beek=request.user)
+    beek = Beek.objects.filter(user=request.user)[0]
+    apList = Apiary.objects.filter(beek=beek)
     print(f"Number of apiaries is {len(apList)}")
     context = {"apList": apList, "apiaryactive": "Y"}
     return render(request, "beedb/index.html", context)
@@ -24,14 +24,17 @@ def index(request):
 
 @login_required
 def apDetail(request, ap_ref):
+    #beek = Beek.objects.filter(user=request.user)[0]
     ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek.user != request.user:
+        return render(request, "beedb/not_authorised.html")
     context = {"ap": ap}
     return render(request, "beedb/apDetail.html", context)
 
 
 @login_required
 def apAdd(request):
-
+    beek = Beek.objects.filter(user=request.user)[0]
     if request.method == "POST":
         nf = ApiaryAddForm(request.POST)
         if nf.is_valid():
@@ -39,7 +42,7 @@ def apAdd(request):
             ap = Apiary(
                 apiaryID=nf.cleaned_data["apiaryID"], descr=nf.cleaned_data["descr"]
             )
-            ap.beek = request.user
+            ap.beek = beek
             ap.save()
 
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
@@ -190,3 +193,49 @@ def inspectDel(request, ins_ref):
     else:
         context = {"ins": ins}
     return render(request, "beedb/inspectDelete.html", context)
+
+@login_required
+def colTransfer1(request, col_ref):
+    beek = Beek.objects.filter(user=request.user)[0]
+    col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beeknew.user != request.user:
+        return render(request, "beedb/not_authorised.html")
+    beeks = Beek.objects.exclude(user=request.user)
+    context = {"col": col, "beeks": beeks}
+    return render(request, "beedb/colTransfer1.html", context)
+
+@login_required
+def colTransfer2(request, col_ref, beek_ref):
+    beek = Beek.objects.filter(user=request.user)[0]
+    col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beeknew.user != request.user:
+        return render(request, "beedb/not_authorised.html")
+    newbeek = get_object_or_404(Beek, pk=beek_ref)
+    
+    context = {"col": col, "newbeek": newbeek}
+    return render(request, "beedb/colTransfer2.html", context)
+
+@login_required
+def colTransfer3(request, col_ref, beek_ref):
+
+    beek = Beek.objects.filter(user=request.user)[0]
+    col = get_object_or_404(Colony, pk=col_ref)
+    ap = col.apiary
+    if col.apiary.beeknew.user != request.user:
+        return render(request, "beedb/not_authorised.html")
+    newbeek = get_object_or_404(Beek, pk=beek_ref)
+    print(f"Transfer colony {col.colonyID} to beek {newbeek.name}")
+    
+    bApiaries = Apiary.objects.filter(beeknew=newbeek)
+    if len(bApiaries) == 0:
+        ap = Apiary(apiaryID="Default", beek=request.user, beeknew=newbeek)
+        ap.save()
+        col.apiary = ap
+        col.save()
+    else:
+        col.apiary = bApiaries[0]
+        col.save()
+    
+    
+    context = {"ap": ap}
+    return render(request, "beedb/apDetail.html", context)

@@ -1,0 +1,32 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Colony Sell / transfer / gift
+{% endblock %}
+
+{% block web-body %}
+<div class="bee_background">
+
+  <div id="col-header"><H2>Colony Sell / transfer / gift</H2>
+    <div id="col_detail" class="content_block">
+      <div id="col_det_table">
+        <table>
+          <tr><th>Apiary : </th><th>{{ col.apiary.apiaryID }}</th></tr>
+          <tr><th>Colony Name : </th><th>{{ col.colonyID }}</th></tr>
+          <tr><td>Status : </td><td class = "wrap_cell">{{ col.get_status_display }}</td></tr>
+          <tr><td>Description : </td><td class = "wrap_cell">{{ col.descr }}</td></tr>
+        </table>
+        Select beekeeper to transfer the colony to:
+        <table>{% for beek in beeks %}
+          <p><a href="{% url 'beedb:colTransfer2' col.id beek.id %}" >
+            {{ beek.name }}
+          </a>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <a href="{% url 'beedb:colDetail' col.id %}" class="btn btn-info" role="button">Back</a>
+</div>
+{% endblock %}
