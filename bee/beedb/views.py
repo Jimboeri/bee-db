@@ -14,8 +14,8 @@ from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm
 
 @login_required
 def index(request):
-    beek = Beek.objects.filter(user=request.user)[0]
-    apList = Apiary.objects.filter(beek=beek)
+    
+    apList = Apiary.objects.filter(beek=request.user)
     print(f"Number of apiaries is {len(apList)}")
     context = {"apList": apList, "apiaryactive": "Y"}
     return render(request, "beedb/index.html", context)
@@ -24,9 +24,9 @@ def index(request):
 
 @login_required
 def apDetail(request, ap_ref):
-    #beek = Beek.objects.filter(user=request.user)[0]
+    
     ap = get_object_or_404(Apiary, pk=ap_ref)
-    if ap.beek.user != request.user:
+    if ap.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     context = {"ap": ap}
     return render(request, "beedb/apDetail.html", context)
@@ -34,7 +34,7 @@ def apDetail(request, ap_ref):
 
 @login_required
 def apAdd(request):
-    beek = Beek.objects.filter(user=request.user)[0]
+    
     if request.method == "POST":
         nf = ApiaryAddForm(request.POST)
         if nf.is_valid():
@@ -42,7 +42,7 @@ def apAdd(request):
             ap = Apiary(
                 apiaryID=nf.cleaned_data["apiaryID"], descr=nf.cleaned_data["descr"]
             )
-            ap.beek = beek
+            ap.beek = request.user
             ap.save()
 
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
