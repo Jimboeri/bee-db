@@ -8,7 +8,7 @@ Colony Update
 <div class="beedb_background">
   <div id="col-header"><h3>Update Colony Information</h3></div>
     <div id="ap_detail" class="content_block">
-      <div id="ap_det_table">
+      <div id="col-transfer_table">
         <form action="{% url 'beedb:colMod' col.id %}" method="POST">
           {% csrf_token %}
           {{ fItems.management_form }}

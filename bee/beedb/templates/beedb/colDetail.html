@@ -19,10 +19,7 @@ Colony Details
               <a class="dropdown-item" href="{% url 'beedb:inspectAdd' col.id %}">Inspect</a>
               <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Update colony</a>
               <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
-              <a class="dropdown-item" href="{% url 'beedb:colTransfer1' col.id %}">Sell colony</a>
-              <a class="dropdown-item" href="#">Split colony</a>
-              <a class="dropdown-item" href="#">Unite colony</a>
-              <a class="dropdown-item" href="#">Re-queen colony</a>
+              <a class="dropdown-item" href="{% url 'beedb:colTransfer' col.id %}">Sell/give colony</a>
             </div>
           </div> 
           <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th></tr>

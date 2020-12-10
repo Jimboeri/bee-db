@@ -60,6 +60,7 @@ class Colony(models.Model):
         ("C", "Current"),
         ("D", "Dead"),
         ("A", "Absconded"),
+        ("S", "Sold/given"),
     ]
     apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
     colonyID = models.CharField(max_length=50)
@@ -168,6 +169,7 @@ class Transfer(models.Model):
     #queen = .....
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     outgoing = models.BooleanField(default=True, help_text="True if colony going to another beekeeper")
+    transaction = models.IntegerField(default = 0, help_text = "1 - Sold")
     beek_name = models.CharField(max_length=50, blank=True, null=True)
     beek_registration = models.CharField(max_length=50, blank=True, null=True)
     beek_email = models.EmailField(max_length=50, blank=True, null=True)

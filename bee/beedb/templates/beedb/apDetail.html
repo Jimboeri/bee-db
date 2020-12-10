@@ -24,10 +24,12 @@ Apiary Details
       <div class="table-responsive">
         <table class="table table-hover table-sm">
           {% for colony in ap.colony_set.all %}
+            {% if colony.status == "C" %}
             <tr>
               <td> <a href="{% url 'beedb:colDetail' colony.id %}" >{{colony.colonyID}}</a> </td>
               <td>{{colony.descr}}</td>
             </tr>
+            {% endif %}
           {% endfor %}
         </table>
       </div>

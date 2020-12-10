@@ -16,13 +16,20 @@ Colony Sell / transfer / gift
           <tr><td>Status : </td><td class = "wrap_cell">{{ col.get_status_display }}</td></tr>
           <tr><td>Description : </td><td class = "wrap_cell">{{ col.descr }}</td></tr>
         </table>
-        Select beekeeper to transfer the colony to:
-        <table>{% for beek in beeks %}
-          <p><a href="{% url 'beedb:colTransfer2' col.id beek.id %}" >
-            {{ beek.name }}
-          </a>
-          </p>
-        {% endfor %}
+        Transfer details:
+        <form action="{% url 'beedb:colTransfer' col.id %}" method="POST">
+          {% csrf_token %}
+          {{ fItems.management_form }}
+          {{ form.non_field_errors}}
+          <table>
+            <tr><th>Colony : </th><th>{{ col.colonyID }}</th></tr>
+            {{ form.as_table }}
+          </table>
+        <input type="submit" value="Submit">
+        <span id="col_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:colDetail' col.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
       </div>
     </div>
   </div>

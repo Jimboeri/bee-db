@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from .models import Apiary, Colony, Inspection
 
-from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm
+from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm, TransferForm
 
 # Create your views here.
 
@@ -83,6 +83,7 @@ def colAdd(request, ap_ref):
                 colonyID=nf.cleaned_data["colonyID"], descr=nf.cleaned_data["descr"]
             )
             col.apiary = ap
+            col.status = "C"
             col.save()
 
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
@@ -194,48 +195,26 @@ def inspectDel(request, ins_ref):
         context = {"ins": ins}
     return render(request, "beedb/inspectDelete.html", context)
 
-@login_required
-def colTransfer1(request, col_ref):
-    #beek = Beek.objects.filter(user=request.user)[0]
-    col = get_object_or_404(Colony, pk=col_ref)
-    if col.apiary.beeknew.user != request.user:
-        return render(request, "beedb/not_authorised.html")
-    beeks = Beek.objects.exclude(user=request.user)
-    context = {"col": col, "beeks": beeks}
-    return render(request, "beedb/colTransfer1.html", context)
 
 @login_required
-def colTransfer2(request, col_ref, beek_ref):
-    #beek = Beek.objects.filter(user=request.user)[0]
-    col = get_object_or_404(Colony, pk=col_ref)
-    if col.apiary.beeknew.user != request.user:
-        return render(request, "beedb/not_authorised.html")
-    #newbeek = get_object_or_404(Beek, pk=beek_ref)
-    
-    context = {"col": col, "newbeek": newbeek}
-    return render(request, "beedb/colTransfer2.html", context)
+def colTransfer(request, col_ref):
 
-@login_required
-def colTransfer3(request, col_ref, beek_ref):
-
-    #beek = Beek.objects.filter(user=request.user)[0]
     col = get_object_or_404(Colony, pk=col_ref)
-    ap = col.apiary
-    if col.apiary.beeknew.user != request.user:
-        return render(request, "beedb/not_authorised.html")
-    #newbeek = get_object_or_404(Beek, pk=beek_ref)
-    print(f"Transfer colony {col.colonyID} to beek {newbeek.name}")
-    
-    bApiaries = Apiary.objects.filter(beeknew=newbeek)
-    if len(bApiaries) == 0:
-        ap = Apiary(apiaryID="Default", beek=request.user, beeknew=newbeek)
-        ap.save()
-        col.apiary = ap
-        col.save()
+    if request.method == "POST":
+        # print("Post message received")
+        nf = TransferForm(request.POST)
+        if nf.is_valid():
+            transRec = nf.save(commit=False)
+            transRec.colony = col
+            transRec.transaction = 1
+            transRec.save()
+            col.status = "S"
+            col.save()
+
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id]))
+    # if a GET (or any other method) we'll create a blank form
     else:
-        col.apiary = bApiaries[0]
-        col.save()
-    
-    
-    context = {"ap": ap}
-    return render(request, "beedb/apDetail.html", context)
+        nf = TransferForm()
+
+    context = {"form": nf, "col": col}
+    return render(request, "beedb/colTransfer.html", context)
