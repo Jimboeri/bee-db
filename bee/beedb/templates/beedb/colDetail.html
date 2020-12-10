@@ -25,7 +25,7 @@ Colony Details
               <a class="dropdown-item" href="#">Re-queen colony</a>
             </div>
           </div> 
-          <tr><th>Apiary : </th><th>{{ col.apiary.apiaryID }}</th></tr>
+          <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th></tr>
           <tr><th>Colony Name : </th><th>{{ col.colonyID }}</th></tr>
           <tr><td>Status : </td><td class = "wrap_cell">{{ col.get_status_display }}</td></tr>
           <tr><td>Description : </td><td class = "wrap_cell">{{ col.descr }}</td></tr>

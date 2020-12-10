@@ -20,8 +20,8 @@ Inspection Details
               <a class="dropdown-item" href="{% url 'beedb:inspectDel' ins.id %}">Delete</a>
             </div>
           </div> 
-          <tr><th>Apiary : </th><th>{{ ins.colony.apiary.apiaryID }}</th></tr>
-          <tr><th>Colony Name : </th><th>{{ ins.colony.colonyID }}</th></tr>
+          <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' ins.colony.apiary.id %}" class="text-info">{{ ins.colony.apiary.apiaryID }}</a></th></tr>
+          <tr><th>Colony Name : </th><th><a href="{% url 'beedb:colDetail' ins.colony.id %}" class="text-info">{{ ins.colony.colonyID }}</a></th></tr>
           <tr><td>Date : </td><td class = "wrap_cell">{{ ins.dt }}</td></tr>
           <tr><td>Bee numbers : </td><td>{{ ins.get_numbers_display }}</td></tr>
           <tr><td>Eggs : </td><td>{{ ins.get_eggs_display }}</td></tr>

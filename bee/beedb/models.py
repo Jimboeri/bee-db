@@ -7,22 +7,22 @@ import datetime
 
 
 
-class Beek(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    bkRegistration = models.CharField(max_length=10, blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
-    name = models.CharField(max_length=100)
-    email = models.EmailField(blank=True, null=True)
+#class Beek(models.Model):
+#    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+#    bkRegistration = models.CharField(max_length=10, blank=True, null=True)
+#    address = models.TextField(blank=True, null=True)
+#    name = models.CharField(max_length=100)
+#    email = models.EmailField(blank=True, null=True)
 
-    def __str__(self):
-        return self.name
+#    def __str__(self):
+#        return self.name
 
 
 class Apiary(models.Model):
     """
     """
 
-    beekold1 = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
+    #beekold1 = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
@@ -159,6 +159,22 @@ class Inspection(models.Model):
         help_text="How happy is the hive", choices=TEMPER_CHOICES, default=0,
     )
     queen_seen = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-dt"]
+
+class Transfer(models.Model):
+    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    #queen = .....
+    dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    outgoing = models.BooleanField(default=True, help_text="True if colony going to another beekeeper")
+    beek_name = models.CharField(max_length=50, blank=True, null=True)
+    beek_registration = models.CharField(max_length=50, blank=True, null=True)
+    beek_email = models.EmailField(max_length=50, blank=True, null=True)
+    beek_phone = models.CharField(max_length=50, blank=True, null=True)
+    beek_address = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    cost = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
 
     class Meta:
         ordering = ["-dt"]

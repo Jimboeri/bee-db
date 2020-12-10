@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.views import generic
 from django.urls import reverse
 
-from .models import Apiary, Colony, Inspection, Beek
+from .models import Apiary, Colony, Inspection
 
 from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm
 
@@ -196,7 +196,7 @@ def inspectDel(request, ins_ref):
 
 @login_required
 def colTransfer1(request, col_ref):
-    beek = Beek.objects.filter(user=request.user)[0]
+    #beek = Beek.objects.filter(user=request.user)[0]
     col = get_object_or_404(Colony, pk=col_ref)
     if col.apiary.beeknew.user != request.user:
         return render(request, "beedb/not_authorised.html")
@@ -206,11 +206,11 @@ def colTransfer1(request, col_ref):
 
 @login_required
 def colTransfer2(request, col_ref, beek_ref):
-    beek = Beek.objects.filter(user=request.user)[0]
+    #beek = Beek.objects.filter(user=request.user)[0]
     col = get_object_or_404(Colony, pk=col_ref)
     if col.apiary.beeknew.user != request.user:
         return render(request, "beedb/not_authorised.html")
-    newbeek = get_object_or_404(Beek, pk=beek_ref)
+    #newbeek = get_object_or_404(Beek, pk=beek_ref)
     
     context = {"col": col, "newbeek": newbeek}
     return render(request, "beedb/colTransfer2.html", context)
@@ -218,12 +218,12 @@ def colTransfer2(request, col_ref, beek_ref):
 @login_required
 def colTransfer3(request, col_ref, beek_ref):
 
-    beek = Beek.objects.filter(user=request.user)[0]
+    #beek = Beek.objects.filter(user=request.user)[0]
     col = get_object_or_404(Colony, pk=col_ref)
     ap = col.apiary
     if col.apiary.beeknew.user != request.user:
         return render(request, "beedb/not_authorised.html")
-    newbeek = get_object_or_404(Beek, pk=beek_ref)
+    #newbeek = get_object_or_404(Beek, pk=beek_ref)
     print(f"Transfer colony {col.colonyID} to beek {newbeek.name}")
     
     bApiaries = Apiary.objects.filter(beeknew=newbeek)
