@@ -1,24 +1,28 @@
 {% extends "beedb/webbase.html" %}
 
 {% block title %}
-Apiary Add
+Colony split
 {% endblock %}
 
 {% block web-body %}
 <div class="beedb_background">
-  <div id="ap-header"><h3>New Apiary Information</h3></div>
+  <div id="ap-header"><h3>Split colony</h3></div>
+    <div id="col-orig_detail" class="content_block">
+    Original colony {{ col.colonyID }}
+    </div>
     <div id="ap_detail" class="content_block">
       <div id="ap_det_table">
-        <form action="{% url 'beedb:apAdd' %}" method="POST">
+        New colony details
+        <form action="{% url 'beedb:colSplit' col.id %}" method="POST">
           {% csrf_token %}
           {{ fItems.management_form }}
           {{ form.non_field_errors}}
           <table>
             {{ form.as_table }}
           </table>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Split colony">
         <span id="ap_cancel_button" class="cancel_button">
-          <a href="{% url 'beedb:index'%}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+          <a href="{% url 'beedb:colDetail' col.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
         </span>
       </form>
     </div>
