@@ -5,16 +5,28 @@ from django.contrib.auth.models import User
 from django.views import generic
 from django.urls import reverse
 from django.utils import timezone
+from django import forms
 
-from .models import Apiary, Colony, Inspection, Transfer, Audit
+from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary
 
-from .forms import ApiaryAddForm, ColonyAddForm, InspectionForm, TransferForm, SwarmForm, PurchaseForm, ColonyModelForm
+from .forms import (
+    ApiaryAddForm,
+    ColonyAddForm,
+    InspectionForm,
+    TransferForm,
+    SwarmForm,
+    PurchaseForm,
+    ColonyModelForm,
+    DiaryModelForm,
+    DiaryForm,
+)
 
 # Create your views here.
 
+
 @login_required
 def index(request):
-    
+
     apList = Apiary.objects.filter(beek=request.user)
     print(f"Number of apiaries is {len(apList)}")
     context = {"apList": apList, "apiaryactive": "Y"}
@@ -24,7 +36,7 @@ def index(request):
 
 @login_required
 def apDetail(request, ap_ref):
-    
+
     ap = get_object_or_404(Apiary, pk=ap_ref)
     if ap.beek != request.user:
         return render(request, "beedb/not_authorised.html")
@@ -34,7 +46,7 @@ def apDetail(request, ap_ref):
 
 @login_required
 def apAdd(request):
-    
+
     if request.method == "POST":
         nf = ApiaryAddForm(request.POST)
         if nf.is_valid():
@@ -77,52 +89,85 @@ def colAdd(request, ap_ref, col_add_type):
     ap = get_object_or_404(Apiary, pk=ap_ref)
     if request.method == "POST":
         # print("Post message received")
-        if (col_add_type == 1):
+        if col_add_type == 1:
             nf = SwarmForm(request.POST)
             if nf.is_valid():
-                col = Colony(apiary=ap, colonyID=nf.cleaned_data['colonyName'], descr=nf.cleaned_data['descr'],status="C")
+                col = Colony(
+                    apiary=ap,
+                    colonyID=nf.cleaned_data["colonyName"],
+                    descr=nf.cleaned_data["descr"],
+                    status="C",
+                )
                 col.save()
                 tr = Transfer(colony=col, transaction=3)
-                tr.size = nf.cleaned_data['size']
-                tr.location = nf.cleaned_data['location']
-                tr.dt = nf.cleaned_data['dt']
-                tr.notes = nf.cleaned_data['notes']
+                tr.size = nf.cleaned_data["size"]
+                tr.location = nf.cleaned_data["location"]
+                tr.dt = nf.cleaned_data["dt"]
+                tr.notes = nf.cleaned_data["notes"]
                 tr.save()
-                audit = Audit(dt=timezone.now(), transaction_cd=3, beek=request.user, colony=col, apiary=col.apiary)
+                audit = Audit(
+                    dt=timezone.now(),
+                    transaction_cd=3,
+                    beek=request.user,
+                    colony=col,
+                    apiary=col.apiary,
+                )
                 audit.detail = f"Swarm caught at {tr.location}"
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
-        elif (col_add_type == 2):
+        elif col_add_type == 2:
             nf = PurchaseForm(request.POST)
             if nf.is_valid():
-                col = Colony(apiary=ap, colonyID=nf.cleaned_data['colonyName'], descr=nf.cleaned_data['descr'],status="C")
+                col = Colony(
+                    apiary=ap,
+                    colonyID=nf.cleaned_data["colonyName"],
+                    descr=nf.cleaned_data["descr"],
+                    status="C",
+                )
                 col.save()
                 tr = Transfer(colony=col, transaction=2)
-                tr.size = nf.cleaned_data['size']
-                tr.beek_name = nf.cleaned_data['beekName']
-                tr.beek_registration = nf.cleaned_data['beekReg']
-                tr.beek_email = nf.cleaned_data['beekEmail']
-                tr.beek_phone = nf.cleaned_data['beekPhone']
-                tr.beek_address = nf.cleaned_data['beekAddress']
-                tr.cost = nf.cleaned_data['cost']
-                tr.dt = nf.cleaned_data['dt']
-                tr.notes = nf.cleaned_data['notes']
+                tr.size = nf.cleaned_data["size"]
+                tr.beek_name = nf.cleaned_data["beekName"]
+                tr.beek_registration = nf.cleaned_data["beekReg"]
+                tr.beek_email = nf.cleaned_data["beekEmail"]
+                tr.beek_phone = nf.cleaned_data["beekPhone"]
+                tr.beek_address = nf.cleaned_data["beekAddress"]
+                tr.cost = nf.cleaned_data["cost"]
+                tr.dt = nf.cleaned_data["dt"]
+                tr.notes = nf.cleaned_data["notes"]
                 tr.save()
-                audit = Audit(dt=timezone.now(), transaction_cd=4, beek=request.user, colony=col, apiary=col.apiary)
+                audit = Audit(
+                    dt=timezone.now(),
+                    transaction_cd=4,
+                    beek=request.user,
+                    colony=col,
+                    apiary=col.apiary,
+                )
                 audit.detail = f"Colony purchased from {tr.beek_name}"
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
-        elif (col_add_type == 3):
+        elif col_add_type == 3:
             nf = ColonyAddForm(request.POST)
             if nf.is_valid():
-                col = Colony(apiary=ap, colonyID=nf.cleaned_data['colonyName'], descr=nf.cleaned_data['descr'],status="C")
+                col = Colony(
+                    apiary=ap,
+                    colonyID=nf.cleaned_data["colonyName"],
+                    descr=nf.cleaned_data["descr"],
+                    status="C",
+                )
                 col.save()
                 tr = Transfer(colony=col, transaction=4)
-                tr.size = nf.cleaned_data['size']
+                tr.size = nf.cleaned_data["size"]
                 tr.dt = timezone.now()
-                tr.notes = nf.cleaned_data['notes']
+                tr.notes = nf.cleaned_data["notes"]
                 tr.save()
-                audit = Audit(dt=timezone.now(), transaction_cd=4, beek=request.user, colony=col, apiary=col.apiary)
+                audit = Audit(
+                    dt=timezone.now(),
+                    transaction_cd=4,
+                    beek=request.user,
+                    colony=col,
+                    apiary=col.apiary,
+                )
                 audit.detail = "New colony entered "
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
@@ -139,9 +184,9 @@ def colAdd(request, ap_ref, col_add_type):
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         # if a GET (or any other method) we'll create a blank form
     else:
-        if (col_add_type == 1):
+        if col_add_type == 1:
             nf = SwarmForm()
-        elif (col_add_type == 2):
+        elif col_add_type == 2:
             nf = PurchaseForm()
         else:
             nf = ColonyAddForm()
@@ -153,7 +198,8 @@ def colAdd(request, ap_ref, col_add_type):
 @login_required
 def colDetail(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
-    context = {"col": col}
+    diary = col.diary_set.filter(completed=False)
+    context = {"col": col, "diary": diary}
     return render(request, "beedb/colDetail.html", context)
 
 
@@ -174,13 +220,17 @@ def colMod(request, col_ref):
     context = {"form": nf, "col": col}
     return render(request, "beedb/colMod.html", context)
 
+
 @login_required
 def colMoveChoose(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
-    apList = Apiary.objects.filter(beek=request.user).exclude(apiaryID=col.apiary.apiaryID)
+    apList = Apiary.objects.filter(beek=request.user).exclude(
+        apiaryID=col.apiary.apiaryID
+    )
 
     context = {"col": col, "apList": apList}
     return render(request, "beedb/colMoveChoose.html", context)
+
 
 @login_required
 def colMoveSelect(request, col_ref, ap_ref):
@@ -194,6 +244,7 @@ def colMoveSelect(request, col_ref, ap_ref):
 
     context = {"col": col, "ap": ap}
     return render(request, "beedb/colMoveSelect.html", context)
+
 
 @login_required
 def inspectDetail(request, ins_ref):
@@ -231,13 +282,16 @@ def inspectAdd(request, col_ref):
             ins.colony = col
             ins.save()
 
-            return HttpResponseRedirect(reverse("beedb:colDetail", args=[ins.colony.id]))
+            return HttpResponseRedirect(
+                reverse("beedb:colDetail", args=[ins.colony.id])
+            )
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = InspectionForm()
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/inspectAdd.html", context)
+
 
 @login_required
 def inspectDel(request, ins_ref):
@@ -265,7 +319,9 @@ def colTransfer(request, col_ref):
             transRec.save()
             col.status = "S"
             col.save()
-            audit = Audit(dt=timezone.now(), transaction_cd=1, beek=request.user, colony=col)
+            audit = Audit(
+                dt=timezone.now(), transaction_cd=1, beek=request.user, colony=col
+            )
             audit.detail = f"Colony sold to {transRec.beek_name} "
             audit.save()
 
@@ -277,6 +333,7 @@ def colTransfer(request, col_ref):
     context = {"form": nf, "col": col}
     return render(request, "beedb/colTransfer.html", context)
 
+
 @login_required
 def colSplit(request, col_ref):
 
@@ -285,14 +342,25 @@ def colSplit(request, col_ref):
         # print("Post message received")
         nf = ColonyAddForm(request.POST)
         if nf.is_valid():
-            newCol = Colony(apiary=col.apiary, colonyID=nf.cleaned_data['colonyName'], descr=nf.cleaned_data['descr'],status="C")
+            newCol = Colony(
+                apiary=col.apiary,
+                colonyID=nf.cleaned_data["colonyName"],
+                descr=nf.cleaned_data["descr"],
+                status="C",
+            )
             newCol.status = "C"
             newCol.save()
             tr = Transfer(colony=newCol, transaction=5)
-            tr.notes = nf.cleaned_data['notes']
-            tr.size = nf.cleaned_data['size']
+            tr.notes = nf.cleaned_data["notes"]
+            tr.size = nf.cleaned_data["size"]
             tr.save()
-            audit = Audit(dt=timezone.now(), transaction_cd=2, beek=request.user, colony=newCol, apiary=col.apiary)
+            audit = Audit(
+                dt=timezone.now(),
+                transaction_cd=2,
+                beek=request.user,
+                colony=newCol,
+                apiary=col.apiary,
+            )
             audit.detail = f"Colony {newCol.colonyID} split from {col.colonyID} "
             audit.save()
 
@@ -303,3 +371,58 @@ def colSplit(request, col_ref):
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colSplit.html", context)
+
+
+@login_required
+def diaryDetail(request, diary_ref):
+    diary = get_object_or_404(Diary, pk=diary_ref)
+    context = {"diary": diary}
+    return render(request, "beedb/diaryDetail.html", context)
+
+
+@login_required
+def diaryMod(request, diary_ref):
+    diary = get_object_or_404(Diary, pk=diary_ref)
+
+    if request.method == "POST":
+        # print("Post message received")
+        nf = DiaryModelForm(request.POST, instance=diary)
+        if nf.is_valid():
+            diary.save()
+
+            return HttpResponseRedirect(reverse("beedb:diaryDetail", args=[diary.id]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        nf = DiaryModelForm(instance=diary)
+
+    context = {"form": nf, "diary": diary}
+    return render(request, "beedb/diaryMod.html", context)
+
+
+@login_required
+def colDiaryAdd(request, col_ref):
+    col = get_object_or_404(Colony, pk=col_ref)
+
+    if request.method == "POST":
+        # print("Post message received")
+        nf = DiaryForm(request.POST)
+        if nf.is_valid():
+            diary = Diary(
+                apiary=col.apiary,
+                colony=col,
+                beek=request.user,
+                startDt=nf.cleaned_data["startDt"],
+                dueDt=nf.cleaned_data["dueDt"],
+                subject=nf.cleaned_data["subject"],
+                details=nf.cleaned_data["details"],
+            )
+            diary.save()
+
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        nf = DiaryForm()
+
+    context = {"form": nf, "col": col}
+    return render(request, "beedb/colDiaryAdd.html", context)
+

@@ -11,12 +11,18 @@ Apiary Details
     <div id="ap_detail" class="content_block">
       <div id="ap_det_table">
         <table>
+          <div class="dropdown text-right">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              Actions
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'beedb:apMod' ap.id %}">Update apiary details</a>
+              <a class="dropdown-item" href="{% url 'beedb:colAdd' ap.id  0 %}">Add colony</a>
+            </div>
+          </div> 
           <tr><th>Apiary Name: </th><th>{{ ap.apiaryID }}</th></tr>
           <tr><td>Description: </td><td class = "wrap_cell">{{ ap.descr }}</td></tr>
         </table>
-      </div>
-      <div id="ap_det_button" class="action_button">
-        <a href="{% url 'beedb:apMod' ap.id %}" class="btn btn-info" role="button">Update details</a>
       </div>
     </div>
     <div id="ap_colonies" class="content_block">
@@ -32,9 +38,6 @@ Apiary Details
             {% endif %}
           {% endfor %}
         </table>
-      </div>
-      <div id="ap_det_button" class="action_button">
-        <a href="{% url 'beedb:colAdd' ap.id 0 %}" class="btn btn-info" role="button">Add colony</a>
       </div>
     </div>
   </div>

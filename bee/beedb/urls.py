@@ -16,8 +16,11 @@ urlpatterns = [
     path("colony/moveSelect/<int:col_ref>/<int:ap_ref>/", views.colMoveSelect, name="colMoveSelect"),
     path("colony/transfer/<int:col_ref>/", views.colTransfer, name="colTransfer"),
     path("colony/split/<int:col_ref>/", views.colSplit, name="colSplit"),
+    path("colony/adddiary/<int:col_ref>/", views.colDiaryAdd, name="colDiaryAdd"),
     path("inspection/<int:ins_ref>/", views.inspectDetail, name="inspectDetail"),
     path("inspection/modify/<int:ins_ref>/", views.inspectMod, name="inspectMod"),
     path("inspection/add/<int:col_ref>/", views.inspectAdd, name="inspectAdd"),
     path("inspection/del/<int:ins_ref>/", views.inspectDel, name="inspectDel"),
+    path("diary/<int:diary_ref>/", views.diaryDetail, name="diaryDetail"),
+    path("diary/modify/<int:diary_ref>/", views.diaryMod, name="diaryMod"),
 ]

@@ -1,0 +1,39 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Diary entry Details
+{% endblock %}
+
+{% block web-body %}
+<div class="bee_background">
+
+  <div id="diary-header"><H2>Diary entry</H2>
+    <div id="diary_detail" class="content_block">
+      <div id="diary_det_table">
+        <table>
+          <div class="dropdown text-right">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              Actions
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'beedb:diaryMod' diary.id %}">Update</a>
+            </div>
+          </div> 
+          {% if diary.apiary %}
+            <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' diary.apiary.id %}" class="text-info">{{ diary.apiary.apiaryID }}</a></th></tr>
+          {% endif %}
+          {% if diary.colony %}
+            <tr><th>Colony : </th><th><a href="{% url 'beedb:colDetail' diary.colony.id %}" class="text-info">{{ diary.colony.colonyID }}</a></th></tr>
+          {% endif %}
+          <tr><td>Subject : </td><td class = "wrap_cell">{{ diary.subject }}</td></tr>
+          <tr><td>Description : </td><td class = "wrap_cell">{{ diary.details }}</td></tr>
+          <tr><td>Created : </td><td class = "wrap_cell">{{ diary.createdDt }}</td></tr>
+          <tr><td>Start date : </td><td class = "wrap_cell">{{ diary.startDt }}</td></tr>
+          <tr><td>Due date : </td><td class = "wrap_cell">{{ diary.dueDt }}</td></tr>
+          <tr><td>Completed : </td><td class = "wrap_cell">{{ diary.completed }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

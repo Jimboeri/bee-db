@@ -199,3 +199,21 @@ class Audit(models.Model):
     colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
     transaction_cd = models.IntegerField(default = 0,)
     detail = models.TextField(blank=True, null=True)
+
+class Diary(models.Model):
+    beek = models.ForeignKey(User, on_delete=models.CASCADE)
+    apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    createdDt = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    startDt = models.DateTimeField(null=True, blank=True)
+    dueDt = models.DateTimeField()
+    notifyDt = models.DateTimeField(null=True, blank=True)
+    subject = models.CharField(max_length=100)
+    details = models.TextField(blank=True, null=True)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Beek: {self.beek.username}, Subject: {self.subject}"
+
+    class Meta:
+        ordering = ["-dueDt"]

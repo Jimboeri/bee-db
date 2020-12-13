@@ -1,0 +1,36 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Add Diary 
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="diary-header"><h3>Add Diary Information</h3></div>
+    <div id="diary_detail" class="content_block">
+      <div id="diary_det_table">
+        <form action="{% url 'beedb:colDiaryAdd' col.id %}" method="POST">
+          {% csrf_token %}
+          {{ fItems.management_form }}
+          {{ form.non_field_errors}}
+          <table>
+            <tr>
+              <th>Apiary:</th>
+              <th><a href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
+            </tr>
+            <tr>
+              <th>Colony:</th>
+              <th><a href="{% url 'beedb:colDetail' col.id %}" class="text-info">{{ col.colonyID }}</a></th>
+            </tr>
+            {{ form.as_table }}
+          </table>
+        <input type="submit" value="Submit">
+        <span id="ap_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:colDetail' col.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+ 
+</div>
+{% endblock %}

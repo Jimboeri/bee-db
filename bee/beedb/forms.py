@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 
-from .models import Apiary, Colony, Inspection, Transfer
+from .models import Apiary, Colony, Inspection, Transfer, Diary
 
 
 class ApiaryAddForm(forms.ModelForm):
@@ -116,4 +116,25 @@ class PurchaseForm(forms.Form):
     notes = forms.CharField(widget=forms.Textarea, required=False)
     notes.widget.attrs.update(rows=3)
     cost = forms.DecimalField(label="Cost of hive", max_digits=8, decimal_places=2, initial=0)
+
+class DiaryModelForm(forms.ModelForm):
+    class Meta:
+        model = Diary
+        fields = [
+            "subject",
+            "details",
+            "startDt",
+            "dueDt",
+            "completed"
+        ]
+        widgets = {
+            "details": forms.Textarea(attrs={"rows": 3}),
+        }
+
+class DiaryForm(forms.Form):
+    subject = forms.CharField(max_length=100, label="Subject")
+    details = forms.CharField(widget=forms.Textarea, label="Description", required=False)
+    details.widget.attrs.update(rows=3)
+    startDt = forms.DateField(initial=timezone.now, label="Start:")
+    dueDt = forms.DateField(label="Due:")
 

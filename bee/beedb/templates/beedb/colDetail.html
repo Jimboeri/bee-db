@@ -17,6 +17,7 @@ Colony Details
             </button>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'beedb:inspectAdd' col.id %}">Inspect</a>
+              <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add diary entry</a>
               <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Update colony</a>
               <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
               <a class="dropdown-item" href="{% url 'beedb:colSplit' col.id %}">Split colony</a>
@@ -30,8 +31,22 @@ Colony Details
         </table>
       </div>
     </div>
+    {% if diary %}
+      <div id="col_diary" class="content_block">
+        <H3>Diary</H3>
+        <table>
+          {% for d in diary %}
+            <tr>
+              <td><a href="{% url 'beedb:diaryDetail' d.id %}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
+              <td>{{d.subject}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+      </div>
+    {% endif %}
+    
     <div id="col_inspections" class="content_block">
-    <H3>Inspections</H3>
+      <H3>Inspections</H3>
       <table>
         {% for ins in col.inspection_set.all %}
           <tr>
@@ -42,6 +57,5 @@ Colony Details
     </div>
   </div>
 
-  <a href="{% url 'beedb:apDetail' col.apiary.id %}" class="btn btn-info" role="button">Apiary</a>
 </div>
 {% endblock %}

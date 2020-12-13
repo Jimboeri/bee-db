@@ -1,0 +1,40 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Update Diary 
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="diary-header"><h3>Diary Information</h3></div>
+    <div id="diary_detail" class="content_block">
+      <div id="diary_det_table">
+        <form action="{% url 'beedb:diaryMod' diary.id %}" method="POST">
+          {% csrf_token %}
+          {{ fItems.management_form }}
+          {{ form.non_field_errors}}
+          <table>
+            {% if diary.apiary %}
+              <tr>
+                <th>Apiary:</th>
+                <th><a href="{% url 'beedb:apDetail' diary.apiary.id %}" class="text-info">{{ diary.apiary.apiaryID }}</a></th>
+              </tr>
+            {% endif %}
+            {% if diary.colony %}
+              <tr>
+                <th>Colony:</th>
+                <th><a href="{% url 'beedb:colDetail' diary.colony.id %}" class="text-info">{{ diary.colony.colonyID }}</a></th>
+              </tr>
+            {% endif %}
+            {{ form.as_table }}
+          </table>
+        <input type="submit" value="Submit">
+        <span id="ap_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:diaryDetail' diary.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+ 
+</div>
+{% endblock %}
