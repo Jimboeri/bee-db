@@ -4,7 +4,7 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="{% static "beedb/style.css" %}">    
+    <link rel="stylesheet" type="text/css" href="{% static "beedb/style.css" %}">    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -26,7 +26,7 @@
       {% endblock %}
     </title>
   </head>
-  <body class="bee_background">
+  <body class="bd_bee_background">
     {% block background %}
       <div class="container-fluid">
     {% endblock %}
@@ -39,7 +39,7 @@
         {% endif %}
       </div>
       <div id="pg_header">
-        <span class="heading_text">Bee hive database</span>
+        <span class="bd_heading_text">Bee hive database</span>
       </div>
 
       {% block navbar %}
@@ -70,11 +70,11 @@
         Bee database
       {% endblock %}
       <!-- START FOOTER -->
-      <div class="footer">
-        <table class="footer">
+      <div class="bd_footer">
+        <table class="bd_footer">
           <tr>
-            <td class="content-block">
-              <span class="author">&#169 Jim West</span>
+            <td class="bd_content-block">
+              <span class="bd_author">&#169 Jim West</span>
             </td>
           </tr>
         </table>

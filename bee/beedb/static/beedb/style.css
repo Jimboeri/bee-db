@@ -2,58 +2,38 @@
   box-sizing: border-box;
 }
 */
-body {
-    font-family:Verdana, Geneva, Arial, sans-serif;
-  }
+  body {
+      font-family:Verdana, Geneva, Arial, sans-serif;
+    }
   
-.bee_background {
-    background-color: lightyellow;
-}
+  .bd_bee_background {
+      background-color: lightyellow;
+  }
 
-  .lastseen {
-    font-style: italic;
-  }
-  
-  .descr {
-    font-style: italic;
-  }
-  
-  .topic {
-    font-family: Monospace;
-    color: blue;   
-  }
-  
-  .payload {
-    color: #0b772f; /*medium green */
-  /*     font-weight: bold;  */
-  }
-  
-  .nodename {
-    font-weight: bold;
-  }
-  
-  .mqtt_info {
-    color: lightskyblue;
-  }
-  
-  .content_block {
+  .bd_content_block {
     border-style: groove;
     border: 5px;
     border-radius: 15px;
     padding: 10px;
-    color: white;
-    background-color: blue;
+    color: black;
+    background-color: blanchedalmond;
     margin: 10px 0px 10px 0px; 
   }
-  
-  .action_button{
+
+  .bd_action_button{
     float: right;
   }
-  
-  .action_button{
-    ;
+
+  a.bd_menu:link {
+    color: maroon;
+  }  
+
+  .bd_table {
+    border-collapse: collapse;
+    width: 100%;
   }
-  
+
+  /*
   .nodeDownLink{
     color: red;
   }
@@ -65,8 +45,34 @@ body {
   .battCritical{
     color: orangered;
   }
+
+  .nodename {
+    font-weight: bold;
+  }
   
-  .yellow{
+  .mqtt_info {
+    color: lightskyblue;
+  }
+
+  .payload {
+    color: #0b772f; medium green
+       font-weight: bold;
+  }
+
+  .topic {
+    font-family: Monospace;
+    color: blue;   
+  }
+  
+  .lastseen {
+    font-style: italic;
+  }
+  
+  .descr {
+    font-style: italic;
+  }
+  
+ .yellow{
     color: yellow
   }
   
@@ -79,11 +85,14 @@ body {
     background-size: cover;
   }
   
-  .wrap_cell {
+
+  */
+
+   .wrap_cell {
     width: 50%;
   }
   
-  .heading_text {
+  .bd_heading_text {
     font-size: 2vw;
     font-weight: bold;
   }
@@ -105,20 +114,20 @@ body {
   /* -------------------------------------
       HEADER, FOOTER, MAIN
   ------------------------------------- */
-  
-  .content-block {
+/*  
+  .bd_content-block {
     padding-bottom: 10px;
     padding-top: 10px;
   }
-  
-  .footer {
+ */ 
+  .bd_footer {
     clear: both;
     Margin-top: 10px;
     text-align: center;
     width: 100%; 
   }
   
-  .footer td,
+  .bd_footer td,
     .footer p,
     .footer span,
     .footer a {
@@ -127,7 +136,7 @@ body {
       text-align: center; 
   }
   
-  .author a {
+  .bd_author a {
       color: inherit !important;
       font-family: inherit !important;
       font-size: inherit !important;
