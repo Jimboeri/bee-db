@@ -8,11 +8,11 @@ Apiary Details
 <div class="bee_background">
 
   <div id="ap-header"><H2>Apiary information</H2>
-    <div id="ap_detail" class="content_block">
+    <div id="ap_detail" class="bd_content_block">
       <div id="ap_det_table">
         <table>
           <div class="dropdown text-right">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
               Actions
             </button>
             <div class="dropdown-menu">
@@ -25,23 +25,21 @@ Apiary Details
         </table>
       </div>
     </div>
-    <div id="ap_colonies" class="content_block">
-      <H4>Colonies</H4>
-      <div class="table-responsive">
-        <table class="table table-hover table-sm">
+    <div id="ap_colonies" class="bd_content_block">
+      <H4>Colonies</H4>   
+        <table class="table">
           {% for colony in ap.colony_set.all %}
             {% if colony.status == "C" %}
             <tr>
-              <td> <a href="{% url 'beedb:colDetail' colony.id %}" >{{colony.colonyID}}</a> </td>
+              <td> <a class="text-warning" href="{% url 'beedb:colDetail' colony.id %}">{{colony.colonyID}}</a> </td>
               <td>{{colony.descr}}</td>
             </tr>
             {% endif %}
           {% endfor %}
-        </table>
-      </div>
+        </table>      
     </div>
   </div>
 
-  <a href="{% url 'beedb:index' %}" class="btn btn-info" role="button">Home</a>
+  <a href="{% url 'beedb:index' %}" class="btn btn-warning" role="button">Apiaries</a>
 </div>
 {% endblock %}

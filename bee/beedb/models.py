@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 
 # Create your models here.
 
@@ -53,6 +56,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+@receiver(post_save, sender=User)
+def createProfile(sender, **kwargs):
+    if kwargs.get('created', False):
+        Profile.objects.get_or_create(user=kwargs.get('instance'))
 
 
 class Colony(models.Model):

@@ -8,11 +8,11 @@ Colony Details
 <div class="bee_background">
 
   <div id="col-header"><H2>Colony information</H2>
-    <div id="col_detail" class="content_block">
+    <div id="col_detail" class="bd_content_block">
       <div id="col_det_table">
         <table>
           <div class="dropdown text-right">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
               Actions
             </button>
             <div class="dropdown-menu">
@@ -24,7 +24,7 @@ Colony Details
               <a class="dropdown-item" href="{% url 'beedb:colTransfer' col.id %}">Sell/give colony</a>
             </div>
           </div> 
-          <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th></tr>
+          <tr><th>Apiary : </th><th><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th></tr>
           <tr><th>Colony Name : </th><th>{{ col.colonyID }}</th></tr>
           <tr><td>Status : </td><td class = "wrap_cell">{{ col.get_status_display }}</td></tr>
           <tr><td>Description : </td><td class = "wrap_cell">{{ col.descr }}</td></tr>
@@ -32,9 +32,9 @@ Colony Details
       </div>
     </div>
     {% if diary %}
-      <div id="col_diary" class="content_block">
+      <div id="col_diary" class="bd_content_block">
         <H3>Diary</H3>
-        <table>
+        <table class="table">
           {% for d in diary %}
             <tr>
               <td><a href="{% url 'beedb:diaryDetail' d.id %}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
@@ -45,9 +45,9 @@ Colony Details
       </div>
     {% endif %}
     
-    <div id="col_inspections" class="content_block">
+    <div id="col_inspections" class="bd_content_block">
       <H3>Inspections</H3>
-      <table>
+      <table class="table">
         {% for ins in col.inspection_set.all %}
           <tr>
             <td><a href="{% url 'beedb:inspectDetail' ins.id %}" class="text-warning">{{ins.dt|date:"D d/m/Y"}}</a></td>

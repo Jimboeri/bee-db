@@ -1,11 +1,22 @@
 from django.contrib import admin
-from .models import Profile, Apiary, Colony, Inspection, Transfer, Audit, Diary
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 
-# Register your models here.
-admin.site.register(Profile)
-admin.site.register(Apiary)
-admin.site.register(Colony)
-admin.site.register(Inspection)
-admin.site.register(Transfer)
-admin.site.register(Audit)
-admin.site.register(Diary)
+from . import models
+
+class ProfileInline(admin.StackedInline):
+    model = models.Profile
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (ProfileInline, )
+
+admin.site.unregister(User) # unregister User model
+admin.site.register(User, CustomUserAdmin) # register User model with changes
+
+#admin.site.register(models.Profile)
+admin.site.register(models.Apiary)
+admin.site.register(models.Colony)
+admin.site.register(models.Inspection)
+admin.site.register(models.Transfer)
+admin.site.register(models.Audit)
+admin.site.register(models.Diary)

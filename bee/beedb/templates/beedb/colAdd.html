@@ -17,21 +17,21 @@ Colony Add
       <div>
         <span id="add_type_1" class="">
           {% if col_add_type == 0 or col_add_type == 1 %}
-            <a href="{% url 'beedb:colAdd' ap.id 1 %}" class="btn btn btn-success" role="button">Swarm</a>
+            <a href="{% url 'beedb:colAdd' ap.id 1 %}" class="btn btn btn-warning" role="button">Swarm</a>
           {% else %}
             <a href="{% url 'beedb:colAdd' ap.id 1 %}" class="btn btn btn-light" role="button">Swarm</a>
           {% endif %}
         </span>
         <span id="add_type_2" class="">
           {% if col_add_type == 0 or col_add_type == 2 %}
-            <a href="{% url 'beedb:colAdd' ap.id 2 %}" class="btn btn btn-success" role="button">Purchase/gift</a>
+            <a href="{% url 'beedb:colAdd' ap.id 2 %}" class="btn btn btn-warning" role="button">Purchase/gift</a>
           {% else %}
             <a href="{% url 'beedb:colAdd' ap.id 2 %}" class="btn btn btn-light" role="button">Purchase/gift</a>
           {% endif %}
         </span>
         <span id="add_type_3" class="">
           {% if col_add_type == 0 or col_add_type == 3 %}
-            <a href="{% url 'beedb:colAdd' ap.id 3 %}" class="btn btn btn-success" role="button">Initial setup</a>
+            <a href="{% url 'beedb:colAdd' ap.id 3 %}" class="btn btn btn-warning" role="button">Initial setup</a>
           {% else %}
             <a href="{% url 'beedb:colAdd' ap.id 3 %}" class="btn btn btn-light" role="button">Initial setup</a>
           {% endif %}

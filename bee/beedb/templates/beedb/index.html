@@ -7,20 +7,20 @@ Apiary list
 {% endblock %}
 
 {% block web-body %}
-
-  <div id="nodes">
+<div class="bd_bee_background">
+  <div id="apiaries">
     {% if apList %}
       <div class="list-group">
       {% for ap in apList%}
-        {{ ap.apiaryID }}
-        <a href="{% url 'beedb:apDetail' ap.id %}" class="list-group-item list-group-item-action list-group-item-success">{{ap.apiaryID}}</a>
+        <a href="{% url 'beedb:apDetail' ap.id %}" class="list-group-item list-group-item-action list-group-item-warning">{{ap.apiaryID}}</a>
       {% endfor %}
+      </div>
     {% else %}
       <p>No apiaries</p>
     {% endif %}
   </div>
-  <div id="msg_add_button" class="action_button">
-    <a href="{% url 'beedb:apAdd' %}" class="btn btn-info" role="button">Add Apiary</a>
+  <div id="msg_add_button" class="bd_action_button">
+    <a href="{% url 'beedb:apAdd' %}" class="btn btn-warning" role="button">Add Apiary</a>
   </div>
-  
+</div>
 {% endblock %}
