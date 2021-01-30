@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'beedb.apps.BeedbConfig',
 ]
 
@@ -123,3 +124,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL = "/beedb/login"
+
+# Email parameters
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = "465"
+EMAIL_HOST_USER = "auto@west.net.nz"
+EMAIL_HOST_PASSWORD = "snowfieldGrub"
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = "auto@west.net.nz"

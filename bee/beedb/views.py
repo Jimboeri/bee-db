@@ -1,10 +1,16 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib import auth, messages
 from django.views import generic
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
 from django import forms
 
 from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary
@@ -19,7 +25,9 @@ from .forms import (
     ColonyModelForm,
     DiaryModelForm,
     DiaryForm,
+    CustomUserCreationForm,
 )
+
 
 # Create your views here.
 
@@ -425,4 +433,67 @@ def colDiaryAdd(request, col_ref):
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colDiaryAdd.html", context)
+
+
+def login(request):
+    if request.user.is_authenticated:
+        return redirect("beedb:index")
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            # correct username and password login the user
+            auth.login(request, user)
+            return redirect("beedb:index")
+
+        else:
+            messages.error(request, "Error wrong username/password")
+
+    return render(request, "accounts/login.html")
+
+
+def logout(request):
+    auth.logout(request)
+    return render(request, "accounts/logout.html")
+
+
+def signup(request):
+
+    if request.user.is_authenticated:
+        return redirect("beedb:index")
+
+    if request.method == "POST":
+        f = CustomUserCreationForm(request.POST)
+        if f.is_valid():
+            f.save(request)
+            messages.success(request, "Account created successfully")
+            return redirect("beedb:login")
+
+    else:
+        f = CustomUserCreationForm()
+
+    return render(request, "accounts/signup.html", {"form": f})
+
+
+def activate_account(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.add_message(request, messages.INFO, "Account activated. Please login.")
+    else:
+        messages.add_message(
+            request,
+            messages.INFO,
+            "Link Expired. Contact admin to activate your account.",
+        )
+
+    return redirect("beedb:login")
 
