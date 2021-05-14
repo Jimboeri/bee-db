@@ -20,9 +20,19 @@ class ApiaryAddForm(forms.ModelForm):
         fields = [
             "apiaryID",
             "descr",
+            "ownerResident",
+            "residentPhone",
+            "address",
+            "latitude",
+            "longitude",
+            "location",
+            "hazards",
         ]
         widgets = {
             "descr": forms.Textarea(attrs={"rows": 3}),
+            "address": forms.Textarea(attrs={"rows": 3}),
+            "location": forms.Textarea(attrs={"rows": 3}),
+            "hazards": forms.Textarea(attrs={"rows": 3}),
         }
 
 
@@ -112,7 +122,7 @@ class PurchaseForm(forms.Form):
     colonyName = forms.CharField(max_length=50, label="Colony name:")
     descr = forms.CharField(widget=forms.Textarea, label="Description", required=False)
     descr.widget.attrs.update(rows=3)
-    beekName = forms.CharField(max_length=100, label="Beekeepers name")
+    beekName = forms.CharField(max_length=100, label="Selling beekeepers name")
     beekReg = forms.CharField(max_length=100, label="Beekeepers registration")
     beekEmail = forms.EmailField(max_length=100, label="Beekeepers email")
     beekPhone = forms.CharField(max_length=100, label="Beekeepers phone number")

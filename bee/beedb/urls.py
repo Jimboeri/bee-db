@@ -29,6 +29,7 @@ urlpatterns = [
     path("inspection/del/<int:ins_ref>/", views.inspectDel, name="inspectDel"),
     path("diary/<int:diary_ref>/", views.diaryDetail, name="diaryDetail"),
     path("diary/modify/<int:diary_ref>/", views.diaryMod, name="diaryMod"),
+    path("purch/", views.purchSales, name="purchSales"),
     path("logout/", views.logout, name="logout"),
     path("login/", views.login, name="login"),
     path("signup/", views.signup, name="signup"),

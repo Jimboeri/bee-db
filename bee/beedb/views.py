@@ -197,7 +197,7 @@ def colAdd(request, ap_ref, col_add_type):
         elif col_add_type == 2:
             nf = PurchaseForm()
         else:
-            nf = ColonyAddForm()
+            nf = ColonyAddForm() 
 
     context = {"form": nf, "ap": ap, "col_add_type": col_add_type}
     return render(request, "beedb/colAdd.html", context)
@@ -433,6 +433,27 @@ def colDiaryAdd(request, col_ref):
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colDiaryAdd.html", context)
+
+def purchSales(request):
+    aList = request.user.apiary_set.all()
+    print(f"Number of apiaries is {len(aList)}")
+    pList = []
+    sList = []
+    for a in aList:
+        for c in a.colony_set.all():
+            for t in c.transfer_set.filter(transaction__lte=2):
+                if t.transaction == 1:
+                    print(f"Sale")
+                    sList.append(t)
+                else:
+                    print(f"Purchase")
+                    pList.append(t)
+    disp = False
+    if pList or sList:
+        disp = True
+    context = {"pList": pList, "sList": sList, "disp": disp}
+    return render(request, "beedb/purchSales.html", context)
+
 
 
 def login(request):

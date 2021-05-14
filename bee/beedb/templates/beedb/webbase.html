@@ -10,16 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     {% block pagerefresh %}<meta http-equiv="refresh" content="600">{% endblock %}
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132422735-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-132422735-2');
-    </script>
-
+ 
     <title>
 	    {% block title %}
         Bee hive database
@@ -61,7 +52,8 @@
             {% endif %}
               <a class="nav-link" href="{% url 'beedb:index' %}">Apiaries</a>
             </li>
-
+            <li class="nav-item"></li>
+            <a class="nav-link" href="{% url 'beedb:purchSales' %}">Purchases & Sales</a>
           </ul>
         </div>
       </nav>

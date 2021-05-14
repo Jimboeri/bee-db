@@ -21,7 +21,7 @@ Colony Add
           {% else %}
             <a href="{% url 'beedb:colAdd' ap.id 1 %}" class="btn btn btn-light" role="button">Swarm</a>
           {% endif %}
-        </span>
+        </span> 
         <span id="add_type_2" class="">
           {% if col_add_type == 0 or col_add_type == 2 %}
             <a href="{% url 'beedb:colAdd' ap.id 2 %}" class="btn btn btn-warning" role="button">Purchase/gift</a>

@@ -1,0 +1,100 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Purchases & Sales
+{% endblock %}
+
+{% block web-body %}
+<div class="bd_bee_background">
+  <div id="purchSale">
+    {% if disp %}
+      <div class="list-group">
+        {% if pList %}
+            <H1>Purchases</H1>
+            <ul>
+            {% for p in pList%}
+              <div class="row font-weight-bold">
+                <div class="col-sm-2">Colony name</div>
+                <div class="col-sm-3">{{p.colony.colonyID}}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Beekeepers name</div>
+                <div class="col-sm-3">{{p.beek_name}}</div>
+                <div class="col-sm-2 font-italic">Registration ID</div>
+                <div class="col-sm-3">{{p.beek_registration}}</div> 
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Trans dt</div>
+                <div class="col-sm-3">{{p.dt|date:"D d M Y"}}</div>
+                <div class="col-sm-2 font-italic">Value</div>
+                <div class="col-sm-3">${{p.cost}}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Email</div>
+                <div class="col-sm-3">{{p.beek_email}}</div>
+                <div class="col-sm-2 font-italic">Phone</div>
+                <div class="col-sm-3">{{p.beek_phone}}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Beekeepers address</div>
+                <div class="col-sm-3">{{p.beek_address}}</div>
+                <div class="col-sm-2 font-italic">Notes</div>
+                <div class="col-sm-3">{{p.notes}}</div>
+              </div>
+
+              <br>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if sList %}
+            <H1>Sales</H1>
+            <ul>
+            {% for s in sList%}
+              <div class="row font-weight-bold">
+                <div class="col-sm-2">Colony name</div>
+                <div class="col-sm-3">{{s.colony.colonyID}}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Beekeepers name</div>
+                <div class="col-sm-3">{{s.beek_name}}</div>
+                <div class="col-sm-2 font-italic">Registration ID</div>
+                <div class="col-sm-3">{{s.beek_registration}}</div> 
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Trans dt</div>
+                <div class="col-sm-3">{{s.dt|date:"D d M Y"}}</div>
+                <div class="col-sm-2 font-italic">Value</div>
+                <div class="col-sm-3">${{s.cost}}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Email</div>
+                <div class="col-sm-3">{{s.beek_email}}</div>
+                <div class="col-sm-2 font-italic">Phone</div>
+                <div class="col-sm-3">{{s.beek_phone}}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-2 font-italic">Beekeepers address</div>
+                <div class="col-sm-3">{{s.beek_address}}</div>
+                <div class="col-sm-2 font-italic">Notes</div>
+                <div class="col-sm-3">{{s.notes}}</div>
+              </div>
+
+              <br>
+            {% endfor %}
+            </ul>
+        {% endif %}
+      </div>
+    {% else %}
+      <p>No purchases or sales</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - default
-    restart: always
+    #restart: always
 
   web:
     image: jimboeri/bee-db
@@ -25,7 +25,7 @@ services:
       - bee-db
     networks:
       - default
-    restart: always
+    #restart: always
 
 networks:
   #influxdb_default:

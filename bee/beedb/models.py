@@ -9,7 +9,6 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 
-
 #class Beek(models.Model):
 #    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 #    bkRegistration = models.CharField(max_length=10, blank=True, null=True)
@@ -29,6 +28,13 @@ class Apiary(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
+    latitude  = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    longitude  = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    ownerResident = models.CharField("Name of owner / occupier", max_length=200, blank=True, null=True)
+    residentPhone = models.CharField(max_length=50, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    location = models.TextField(blank=True, null=True, help_text="Where the hives are located")
+    hazards = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ["apiaryID"]
@@ -190,6 +196,10 @@ class Transfer(models.Model):
 
     class Meta:
         ordering = ["-dt"]
+
+    def __str__(self):
+        return(f"Colony: {self.colony.colonyID}")
+        
 
 class Audit(models.Model):
     """
