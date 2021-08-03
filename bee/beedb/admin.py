@@ -20,3 +20,5 @@ admin.site.register(models.Inspection)
 admin.site.register(models.Transfer)
 admin.site.register(models.Audit)
 admin.site.register(models.Diary)
+admin.site.register(models.Config)
+

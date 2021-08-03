@@ -13,7 +13,7 @@ services:
     #restart: always
 
   web:
-    image: jimboeri/bee-db
+    image: jimboeri/bee-db-web
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     #command: gunicorn bee.wsgi:application --bind 0.0.0.0:8000
@@ -26,6 +26,24 @@ services:
     networks:
       - default
     #restart: always
+
+  background:
+    image: jimboeri/bee-db-background
+    build:
+      context: .
+      dockerfile: script-dockerfile
+    command: python background.py
+    volumes:
+      - .:/code
+    #restart: always
+    depends_on:
+      - bee-db
+    environment:
+      BEEDB_TEST_DAILY: T
+      BEEDB_TESTING: Y
+      BEEDB_WEB_BASE_URL: http://localhost:8005
+    networks:
+      - default
 
 networks:
   #influxdb_default:

@@ -235,3 +235,12 @@ class Diary(models.Model):
 
     class Meta:
         ordering = ["-dueDt"]
+
+class Config(models.Model):
+    key = models.CharField(max_length=500)
+    configDt = models.DateTimeField(null=True, blank=True)
+    configValue = models.FloatField(null=True, blank=True)
+    lastUpdate = models.DateTimeField(null=True, blank=True, default=timezone.now)
+
+    def __str__(self):
+        return( f"{self.key}")
