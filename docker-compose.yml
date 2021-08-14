@@ -9,8 +9,9 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - default
-    #restart: always
+      #- default
+      - traefik_default
+    restart: always
 
   web:
     image: jimboeri/bee-db-web
@@ -19,13 +20,22 @@ services:
     #command: gunicorn bee.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
-    ports:
-      - "8005:8000"
+    #ports:
+    #  - "8005:8000"
+    expose:
+      - "8000"
     depends_on:
       - bee-db
     networks:
-      - default
-    #restart: always
+      #- default
+      - traefik_default
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dj-monitor.rule=Host(`beetest.west.net.nz`)
+      - traefik.http.routers.dj-monitor.entrypoints=websecure
+      - traefik.http.routers.dj-monitor.tls.certresolver=myresolver
+      - traefik.http.services.dj-monitor.loadbalancer.server.port=8000
 
   background:
     image: jimboeri/bee-db-background
@@ -35,7 +45,7 @@ services:
     command: python background.py
     volumes:
       - .:/code
-    #restart: always
+    restart: always
     depends_on:
       - bee-db
     environment:
@@ -43,12 +53,13 @@ services:
       BEEDB_TESTING: Y
       BEEDB_WEB_BASE_URL: http://localhost:8005
     networks:
-      - default
+      #- default
+      - traefik_default
 
 networks:
-  #influxdb_default:
-  #  external: True
-  default:
+  traefik_default:
+    external: True
+  #default:
 
 volumes:
   postgres-data:

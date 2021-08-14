@@ -134,3 +134,5 @@ EMAIL_HOST_USER = "auto@west.net.nz"
 EMAIL_HOST_PASSWORD = "snowfieldGrub"
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = "auto@west.net.nz"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

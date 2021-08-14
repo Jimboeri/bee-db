@@ -47,6 +47,22 @@ class ColonyModelForm(forms.ModelForm):
             "descr": forms.Textarea(attrs={"rows": 3}),
         }
 
+class ColonyDeadForm(forms.ModelForm):
+
+    class Meta:
+        FORM_CHOICES = [
+            ("D", "Dead"),
+            ("A", "Absconded"),
+        ]
+        model = models.Colony
+        fields = [
+            "status",
+            "notes",
+        ]
+        widgets = {
+            "status": forms.Select(attrs={"choices": FORM_CHOICES}),
+        }
+
 
 class ColonyAddForm(forms.Form):
     colonyName = forms.CharField(max_length=50, label="Colony name:")

@@ -76,15 +76,19 @@ class Colony(models.Model):
         ("A", "Absconded"),
         ("S", "Sold/given"),
     ]
+
     apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
     colonyID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=1,
         help_text="Current status of hive)",
         choices=STATUS_CHOICES,
         default="C",
     )
+    status_dt = models.DateTimeField(null=True, blank=True, default = timezone.now)
+    lastAction = models.DateTimeField(null=True, blank=True, default = timezone.now)
 
     class Meta:
         ordering = ["colonyID"]

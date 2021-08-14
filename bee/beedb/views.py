@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
 from django import forms
 
 from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary
@@ -18,6 +17,7 @@ from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary
 from .forms import (
     ApiaryAddForm,
     ColonyAddForm,
+    ColonyDeadForm,
     InspectionForm,
     TransferForm,
     SwarmForm,
@@ -28,6 +28,7 @@ from .forms import (
     CustomUserCreationForm,
 )
 
+import datetime
 
 # Create your views here.
 
@@ -49,6 +50,12 @@ def apDetail(request, ap_ref):
     if ap.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     context = {"ap": ap}
+    deadCol = []
+    for c in ap.colony_set.all():
+        if c.status == "D" or c.status == "A":
+            if c.status_dt > (timezone.now() - datetime.timedelta(weeks=104)):
+                deadCol.append(c)
+    context["deadCol"] = deadCol
     return render(request, "beedb/apDetail.html", context)
 
 
@@ -106,6 +113,7 @@ def colAdd(request, ap_ref, col_add_type):
                     descr=nf.cleaned_data["descr"],
                     status="C",
                 )
+
                 col.save()
                 tr = Transfer(colony=col, transaction=3)
                 tr.size = nf.cleaned_data["size"]
@@ -218,6 +226,7 @@ def colMod(request, col_ref):
         # print("Post message received")
         nf = ColonyModelForm(request.POST, instance=col)
         if nf.is_valid():
+            col.lastAction = timezone.now()
             col.save()
 
             return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
@@ -247,12 +256,32 @@ def colMoveSelect(request, col_ref, ap_ref):
 
     if request.method == "POST":
         col.apiary = ap
+        col.lastAction = timezone.now()
         col.save()
         return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
 
     context = {"col": col, "ap": ap}
     return render(request, "beedb/colMoveSelect.html", context)
 
+
+@login_required
+def colDead(request, col_ref):
+    col = get_object_or_404(Colony, pk=col_ref)
+    if request.method == "POST":
+        # print("Post message received")
+        nf = ColonyDeadForm(request.POST, instance=col)
+        if nf.is_valid():
+            col.status_dt = timezone.now()
+            col.lastAction = timezone.now()
+            col.save()
+
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        nf = ColonyDeadForm(instance=col)
+
+    context = {"form": nf, "col": col}
+    return render(request, "beedb/colDead.html", context)
 
 @login_required
 def inspectDetail(request, ins_ref):
