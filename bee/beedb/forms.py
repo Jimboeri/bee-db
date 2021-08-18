@@ -229,6 +229,9 @@ class CustomUserCreationForm(forms.Form):
         subject = render_to_string('accounts/email/activation_subject.txt', context)
         email = render_to_string('accounts/email/activation_email.txt', context)
 
-        send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
+        msg = models.Message(beek = user, subject = subject, body = email)
+        msg.save()
+
+        #send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
 
         return user

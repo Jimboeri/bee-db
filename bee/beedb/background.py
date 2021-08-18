@@ -7,7 +7,11 @@ import datetime
 import time
 from django.utils import timezone
 from django import template
+from django.core.mail import send_mail
+
 #from email.mime.text import MIMEText
+
+import apprise
 
 # timezone.make_aware(yourdate, timezone.get_current_timezone())
 
@@ -25,6 +29,7 @@ from beedb.models import (
     Audit,
     Diary,
     Config,
+    Message,
     #webNotification,
 )
 from django.contrib.auth.models import User
@@ -65,6 +70,44 @@ def check_config():
     cfg.save()
 
 
+def sendMessage(msg):
+    """
+    Function that takes a message and sends it out by whatever channel the user defines
+    """
+    beek = Profile.objects.filter(user=msg.beek)[0]
+
+    smtp_host = "smtp.gmail.com"
+    smtp_port = "465"
+    smtp_user = "auto@west.net.nz"
+    smtp_password = "jbmxqbvykpohrtmo"
+    smtp_from = "auto@west.net.nz"
+    smtp_from_name = "Bee database system"
+
+    lUser = smtp_user.split("@")
+    cUsr = lUser[0]
+    cDomain = lUser[1]
+
+    #print(f"Beek name is {beek.user.username}")
+    apobj = apprise.Apprise()
+    url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
+    print(f"URL is {url}")
+    apobj.add(url)
+    if not apobj.notify(
+            body = msg.body,
+            title = msg.subject,
+        ):
+        print(f"Email not sent URL is {url}")
+    else:
+    
+        msg.processed = True
+        msg.processedDt = timezone.now()
+        msg.save()
+    #print("About to use send_mail")
+    #send_mail(msg.subject, msg.body, settings.DEFAULT_FROM_EMAIL, [msg.beek.email])
+    #print("send_mail finished")
+
+    return
+
 # ******************************************************************
 def sys_background():
     """ The main program that cecks for back ground tasks
@@ -97,6 +140,12 @@ def sys_background():
             # update the checkpoint timer
             checkTimer = timezone.now()  # reset timer
             testPr("Time check")
+
+        msgProc = Message.objects.filter(processed=False)
+        if len(msgProc) > 0:
+            for msg in msgProc:
+                sendMessage(msg)
+                
 
 
 

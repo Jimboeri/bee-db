@@ -519,7 +519,7 @@ def signup(request):
         f = CustomUserCreationForm(request.POST)
         if f.is_valid():
             f.save(request)
-            messages.success(request, "Account created successfully")
+            messages.success(request, "Account created successfully, please check your email")
             return redirect("beedb:login")
 
     else:
