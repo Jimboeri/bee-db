@@ -75,7 +75,7 @@ def sendMessage(msg):
     Function that takes a message and sends it out by whatever channel the user defines
     """
     beek = Profile.objects.filter(user=msg.beek)[0]
-
+    """
     smtp_host = "smtp.gmail.com"
     smtp_port = "465"
     smtp_user = "auto@west.net.nz"
@@ -102,9 +102,13 @@ def sendMessage(msg):
         msg.processed = True
         msg.processedDt = timezone.now()
         msg.save()
-    #print("About to use send_mail")
-    #send_mail(msg.subject, msg.body, settings.DEFAULT_FROM_EMAIL, [msg.beek.email])
-    #print("send_mail finished")
+    """
+    print("About to use send_mail")
+    send_mail(subject = msg.subject, message = msg.body, from_email = settings.DEFAULT_FROM_EMAIL, recipient_list = [msg.beek.email], html_message = msg.html)
+    print("send_mail finished")
+    msg.processed = True
+    msg.processedDt = timezone.now()
+    msg.save()
 
     return
 

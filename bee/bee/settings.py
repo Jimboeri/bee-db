@@ -131,7 +131,7 @@ LOGIN_URL = "/beedb/login"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = "465"
 EMAIL_HOST_USER = "auto@west.net.nz"
-EMAIL_HOST_PASSWORD = "snowfieldGrub"
+EMAIL_HOST_PASSWORD = "jbmxqbvykpohrtmo"
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = "auto@west.net.nz"
 

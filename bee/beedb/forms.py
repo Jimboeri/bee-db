@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 
 # from .models import Apiary, Colony, Inspection, Transfer, Diary
 from . import models
-
+import os
 
 class ApiaryAddForm(forms.ModelForm):
     class Meta:
@@ -178,6 +178,7 @@ class DiaryForm(forms.Form):
 
 
 class CustomUserCreationForm(forms.Form):
+    
     #username = forms.CharField(label="Enter Username", min_length=4, max_length=150)
     email = forms.EmailField(label="Enter email")
     password1 = forms.CharField(label="Enter password", widget=forms.PasswordInput)
@@ -207,6 +208,7 @@ class CustomUserCreationForm(forms.Form):
         return password2
 
     def save(self, request):
+        eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
         user = User.objects.create_user(
             #self.cleaned_data["username"],
             self.cleaned_data["email"],
@@ -224,12 +226,15 @@ class CustomUserCreationForm(forms.Form):
             'domain': request.META['HTTP_HOST'],
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': default_token_generator.make_token(user),
+            'email': user.email,
+            'base_url': eWeb_Base_URL,
         }
 
         subject = render_to_string('accounts/email/activation_subject.txt', context)
         email = render_to_string('accounts/email/activation_email.txt', context)
+        html_msg = render_to_string('accounts/email/activation_email.html', context)
 
-        msg = models.Message(beek = user, subject = subject, body = email)
+        msg = models.Message(beek = user, subject = subject, body = email, html = html_msg)
         msg.save()
 
         #send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])

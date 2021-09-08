@@ -253,6 +253,7 @@ class Message(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100)
     body = models.TextField(blank=True, null=True)
+    html = models.TextField(blank=True, null=True)
     processed = models.BooleanField(default=False)
     createdDt = models.DateTimeField(default=timezone.now,)
     processedDt = models.DateTimeField(null=True, blank=True)
