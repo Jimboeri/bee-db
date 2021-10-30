@@ -9,8 +9,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      #- default
-      - traefik_default
+      - default
+      #- traefik_default
     restart: always
 
   web:
@@ -20,15 +20,15 @@ services:
     #command: gunicorn bee.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
-    #ports:
-    #  - "8005:8000"
-    expose:
-      - "8000"
+    ports:
+      - "8005:8000"
+    #expose:
+    #  - "8000"
     depends_on:
       - bee-db
     networks:
-      #- default
-      - traefik_default
+      - default
+      #- traefik_default
     restart: always
     labels:
       - traefik.enable=true
@@ -53,13 +53,13 @@ services:
       BEEDB_TESTING: Y
       BEEDB_WEB_BASE_URL: http://localhost:8005
     networks:
-      #- default
-      - traefik_default
+      - default
+      #- traefik_default
 
 networks:
-  traefik_default:
-    external: True
-  #default:
+  #traefik_default:
+  #  external: True
+  default:
 
 volumes:
   postgres-data:

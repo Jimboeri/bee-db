@@ -214,8 +214,11 @@ def colAdd(request, ap_ref, col_add_type):
 @login_required
 def colDetail(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
+    lst_inspect = {}
+    if col.inspection_set.all():
+        lst_inspect = col.inspection_set.all()[0]
     diary = col.diary_set.filter(completed=False)
-    context = {"col": col, "diary": diary}
+    context = {"col": col, "diary": diary, "lst_inspect": lst_inspect}
     return render(request, "beedb/colDetail.html", context)
 
 

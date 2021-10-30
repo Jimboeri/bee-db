@@ -7,17 +7,19 @@ Colony Details
 {% block web-body %}
 <div class="bee_background">
 
-  <div id="col-header"><H2>Colony information</H2>
+  <div id="col-header">
+    <H2>Colony information</H2>
     <div id="col_detail" class="bd_content_block">
       <div id="col_det_table">
         <table>
-          <div class="dropdown text-right">
-            <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-              Actions
-            </button>
-            {% if col.status == "C" %}
+          <div class="text-right">
+            <div class="btn-group">
+              <a class="btn btn-info" href="{% url 'beedb:inspectAdd' col.id %}">Inspect</a>
+              <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                Other actions
+              </button>
+              {% if col.status == "C" %}
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'beedb:inspectAdd' col.id %}">Inspect</a>
                 <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add diary entry</a>
                 <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Update colony</a>
                 <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
@@ -25,39 +27,56 @@ Colony Details
                 <a class="dropdown-item" href="{% url 'beedb:colTransfer' col.id %}">Sell/give colony</a>
                 <a class="dropdown-item" href="{% url 'beedb:colDead' col.id %}">Colony Dead</a>
               </div>
-            {% else %}
+              {% else %}
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Update colony</a>
               </div>
-            {% endif %}
-          </div> 
-          <tr><th>Apiary : </th><th><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th></tr>
-          <tr><th>Colony Name : </th><th>{{ col.colonyID }}</th></tr>
-          <tr><td>Status : </td><td class = "wrap_cell">{{ col.get_status_display }}</td></tr>
-          <tr><td>Description : </td><td class = "wrap_cell">{{ col.descr }}</td></tr>
+              {% endif %}
+            </div>
+          </div>
+
+          <tr class="d-flex">
+            <th  class="col-3">Apiary : </th>
+            <th><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
+          </tr>
+          <tr class="d-flex">
+            <th class="col-3">Colony Name : </th>
+            <th>{{ col.colonyID }}</th>
+          </tr>
+          <tr class="d-flex">
+            <td class="col-3">Description : </td>
+            <td class="wrap_cell">{{ col.descr }}</td>
+          </tr>
+          {% if lst_inspect %}
+            <tr class="d-flex">
+              <td class="col-3">Last inspection comment : </td>
+              <td class="wrap_cell">{{ lst_inspect.notes }}</td>
+            </tr>
+          {% endif %}
         </table>
       </div>
     </div>
     {% if diary %}
       <div id="col_diary" class="bd_content_block">
         <H3>Diary</H3>
-        <table class="table">
+        <table class="table table-borderless">
           {% for d in diary %}
-            <tr>
+            <tr class="d-flex">
               <td><a href="{% url 'beedb:diaryDetail' d.id %}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
-              <td>{{d.subject}}</td>
+              <td>{{ d.subject }}</td>
             </tr>
-        {% endfor %}
+          {% endfor %}
         </table>
       </div>
     {% endif %}
-    
+
     <div id="col_inspections" class="bd_content_block">
       <H3>Inspections</H3>
-      <table class="table">
+      <table class="table table-borderless">
         {% for ins in col.inspection_set.all %}
-          <tr>
+          <tr class="d-flex">
             <td><a href="{% url 'beedb:inspectDetail' ins.id %}" class="text-warning">{{ins.dt|date:"D d/m/Y"}}</a></td>
+            <td>{{ ins.notes }}</td>
           </tr>
         {% endfor %}
       </table>

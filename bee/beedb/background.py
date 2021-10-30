@@ -104,7 +104,7 @@ def sendMessage(msg):
         msg.save()
     """
     print("About to use send_mail")
-    send_mail(subject = msg.subject, message = msg.body, from_email = settings.DEFAULT_FROM_EMAIL, recipient_list = [msg.beek.email], html_message = msg.html)
+    #send_mail(subject = msg.subject, message = msg.body, from_email = settings.DEFAULT_FROM_EMAIL, recipient_list = [msg.beek.email], html_message = msg.html)
     print("send_mail finished")
     msg.processed = True
     msg.processedDt = timezone.now()
