@@ -1,0 +1,20 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Colony Combine Confirmation
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="col-header"><h3>Confirm colony combine</h3></div>
+    <div class="container-md rounded p-2 my-2  bg-warning">
+      <p>Please confirm that you want to combine <b>{{col1.colonyID}}</b> with <b>{{col2.colonyID}}</b></p>
+      <p>After confirming only <b>{{col1.colonyID}}</b> will be available</p>
+    </div>
+    <div class="btn-group">
+      <a class="btn btn-success" href="{% url 'beedb:colCombine2' col1.id col2.id %}">Yes, combine</a>
+      <a class="btn btn-warning" href="{% url 'beedb:colDetail' col1.id %}">Cancel</a>
+  </div>
+  </div>
+</div>
+{% endblock %}

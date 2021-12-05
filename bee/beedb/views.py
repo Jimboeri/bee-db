@@ -287,6 +287,40 @@ def colDead(request, col_ref):
     return render(request, "beedb/colDead.html", context)
 
 @login_required
+def colCombine(request, col_ref):
+    col = get_object_or_404(Colony, pk=col_ref)
+    otherCol = Colony.objects.filter(apiary=col.apiary).filter(status__exact="C")
+    otherCol = otherCol.exclude(colonyID__exact = col)
+    context = {"col": col, "colonies": otherCol}
+    return render(request, "beedb/colCombine.html", context)
+
+@login_required
+def colCombine1(request, col1_ref, col2_ref):
+    col1 = get_object_or_404(Colony, pk=col1_ref)
+    col2 = get_object_or_404(Colony, pk=col2_ref)
+    context = {"col1": col1, "col2": col2}
+    return render(request, "beedb/colCombine1.html", context)
+
+@login_required
+def colCombine2(request, col1_ref, col2_ref):
+    col1 = get_object_or_404(Colony, pk=col1_ref)
+    col2 = get_object_or_404(Colony, pk=col2_ref)
+    audit = Audit(
+                dt=timezone.now(),
+                transaction_cd=6,
+                beek=request.user,
+                colony=col2,
+                colony1=col1,
+                apiary=col1.apiary,
+        )
+    audit.detail = f"Colony {col2.colonyID} has been combined with {col1.colonyID} "
+    audit.save()
+    col2.status = "M"
+    col2.save()
+    context = {"col": col1}
+    return render(request, "beedb/colDetail.html", context)
+
+@login_required
 def inspectDetail(request, ins_ref):
     ins = get_object_or_404(Inspection, pk=ins_ref)
     context = {"ins": ins}

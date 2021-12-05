@@ -75,6 +75,7 @@ class Colony(models.Model):
         ("D", "Dead"),
         ("A", "Absconded"),
         ("S", "Sold/given"),
+        ("M", "Combined"),
     ]
 
     apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
@@ -214,11 +215,13 @@ class Audit(models.Model):
     3 - Collect swarm
     4 - Purchase / acquire colony
     5 - Initial colony creation
+    6 - Combine colonies
     """
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
     colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    colony1 = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
     transaction_cd = models.IntegerField(default = 0,)
     detail = models.TextField(blank=True, null=True)
 
