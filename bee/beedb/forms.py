@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from . import models
 import os
 
+
 class ApiaryAddForm(forms.ModelForm):
     class Meta:
         model = models.Apiary
@@ -47,6 +48,7 @@ class ColonyModelForm(forms.ModelForm):
             "descr": forms.Textarea(attrs={"rows": 3}),
         }
 
+
 class ColonyDeadForm(forms.ModelForm):
 
     class Meta:
@@ -66,7 +68,8 @@ class ColonyDeadForm(forms.ModelForm):
 
 class ColonyAddForm(forms.Form):
     colonyName = forms.CharField(max_length=50, label="Colony name:")
-    descr = forms.CharField(widget=forms.Textarea, label="Description", required=False)
+    descr = forms.CharField(widget=forms.Textarea,
+                            label="Description", required=False)
     descr.widget.attrs.update(rows=3)
     size = forms.IntegerField(
         initial=1,
@@ -136,13 +139,16 @@ class SwarmForm(forms.Form):
 
 class PurchaseForm(forms.Form):
     colonyName = forms.CharField(max_length=50, label="Colony name:")
-    descr = forms.CharField(widget=forms.Textarea, label="Description", required=False)
+    descr = forms.CharField(widget=forms.Textarea,
+                            label="Description", required=False)
     descr.widget.attrs.update(rows=3)
     beekName = forms.CharField(max_length=100, label="Selling beekeepers name")
     beekReg = forms.CharField(max_length=100, label="Beekeepers registration")
     beekEmail = forms.EmailField(max_length=100, label="Beekeepers email")
-    beekPhone = forms.CharField(max_length=100, label="Beekeepers phone number")
-    beekAddress = forms.CharField(widget=forms.Textarea, label="Beekeepers address")
+    beekPhone = forms.CharField(
+        max_length=100, label="Beekeepers phone number")
+    beekAddress = forms.CharField(
+        widget=forms.Textarea, label="Beekeepers address")
     beekAddress.widget.attrs.update(rows=3)
     dt = forms.DateField(initial=timezone.now)
     size = forms.IntegerField(
@@ -161,7 +167,7 @@ class PurchaseForm(forms.Form):
 class DiaryModelForm(forms.ModelForm):
     class Meta:
         model = models.Diary
-        fields = ["subject", "details", "startDt", "dueDt", "completed"]
+        fields = ["subject", "details", "dueDt", "completed"]
         widgets = {
             "details": forms.Textarea(attrs={"rows": 3}),
         }
@@ -173,18 +179,20 @@ class DiaryForm(forms.Form):
         widget=forms.Textarea, label="Description", required=False
     )
     details.widget.attrs.update(rows=3)
-    startDt = forms.DateField(initial=timezone.now, label="Start:")
-    dueDt = forms.DateField(label="Due:")
+    dueD = forms.DateField(initial=timezone.now, label="Start:")
+    #dueDt = forms.DateField(label="Due:")
 
 
 class CustomUserCreationForm(forms.Form):
-    
+
     #username = forms.CharField(label="Enter Username", min_length=4, max_length=150)
     email = forms.EmailField(label="Enter email")
-    password1 = forms.CharField(label="Enter password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Confirm password", widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label="Enter password", widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label="Confirm password", widget=forms.PasswordInput)
 
-    #def clean_username(self):
+    # def clean_username(self):
     #    username = self.cleaned_data["username"].lower()
     #    r = User.objects.filter(username=username)
     #    if r.count():
@@ -208,9 +216,10 @@ class CustomUserCreationForm(forms.Form):
         return password2
 
     def save(self, request):
-        eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
+        eWeb_Base_URL = os.getenv(
+            "BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
         user = User.objects.create_user(
-            #self.cleaned_data["username"],
+            # self.cleaned_data["username"],
             self.cleaned_data["email"],
             self.cleaned_data["email"],
             self.cleaned_data["password1"],
@@ -230,13 +239,42 @@ class CustomUserCreationForm(forms.Form):
             'base_url': eWeb_Base_URL,
         }
 
-        subject = render_to_string('accounts/email/activation_subject.txt', context)
-        email = render_to_string('accounts/email/activation_email.txt', context)
-        html_msg = render_to_string('accounts/email/activation_email.html', context)
+        subject = render_to_string(
+            'accounts/email/activation_subject.txt', context)
+        email = render_to_string(
+            'accounts/email/activation_email.txt', context)
+        html_msg = render_to_string(
+            'accounts/email/activation_email.html', context)
 
-        msg = models.Message(beek = user, subject = subject, body = email, html = html_msg)
+        msg = models.Message(beek=user, subject=subject,
+                             body=email, html=html_msg)
         msg.save()
 
         #send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
 
         return user
+
+
+class ProfileForm(forms.Form):
+    firstName = forms.CharField(max_length=50, label="First name:")
+    surName = forms.CharField(max_length=100, label="Surname:")
+    phoneNumber = forms.CharField(max_length=50, label="Mobile phone number:")
+    bkRegistration = forms.CharField(
+        max_length=10, label="Registration number:")
+    address = forms.CharField(widget=forms.Textarea(attrs={"rows": 4}),
+                              label="Physical address:")
+    email = forms.EmailField(label="Email address")
+
+
+class InspectPreferenceModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Profile
+        fields = ["inspectPeriodSummer",
+                  "inspectPeriodAutumn", 
+                  "inspectPeriodWinter", 
+                  "inspectPeriodSpring", 
+                  #"inspectHealthIndex",
+                  #"inspectManualIndex",
+                  #"inspectDiaryAdd",
+                  ]
+

@@ -1,0 +1,38 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block web-body %}
+  <div class="bd_bee_background">
+    <p> </p>
+    <div id="profileBase">
+      <div class="row">
+        <div class="column">
+          <nav class="navbar bd_bee_background">
+
+            <!-- Links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'beedb:profileDetail' %}">Personal details</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'beedb:change_password' %}">Reset password</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'beedb:inspectPrefDetail' %}">Inspection preferences</a>
+                </li>
+            </ul>
+            
+          </nav>
+        </div>
+        <div class="column">
+          {% block profile-body %}
+            TEST-profile-base
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -59,6 +59,15 @@ class Profile(models.Model):
         help_text="The last apiary selected from the index page",
         on_delete=models.SET_NULL,
     )
+    inspectPeriodSummer = models.IntegerField("Days between inspections in summer", default=14)
+    inspectPeriodAutumn = models.IntegerField(default=14)
+    inspectPeriodWinter = models.IntegerField(default=60)
+    inspectPeriodSpring = models.IntegerField(default=7)
+    inspectHealthIndex = models.BooleanField(default=True)
+    inspectManualIndex = models.BooleanField(default=False)
+    inspectDiaryAdd = models.BooleanField(default=True)
+
+    weeklySummary = models.CharField(max_length=1, default=" ")
 
     def __str__(self):
         return self.user.username
@@ -90,6 +99,8 @@ class Colony(models.Model):
     )
     status_dt = models.DateTimeField(null=True, blank=True, default = timezone.now)
     lastAction = models.DateTimeField(null=True, blank=True, default = timezone.now)
+    queenRight = models.BooleanField(default=True)
+    size = models.IntegerField(default=3)
 
     class Meta:
         ordering = ["colonyID"]

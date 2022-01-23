@@ -1,0 +1,36 @@
+{% extends "beedb/profile/profileBase.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block profile-body %}
+<div class="bd_bee_background">
+  <div id="profile">
+    Inspection preferences for beekeeper {{ beek.first_name }} {{ beek.last_name }}
+    <table class="table">
+      <tr>
+        <td>Days between inspections in summer</td>
+        <td>{{ beek.profile.inspectPeriodSummer }}</td>
+        <td rowspan="4">The days between inspection information is used to remind you of inspections that may be overdue as no inspection has been recorded</td>
+      </tr>
+      <tr>
+        <td>Days between inspections in autumn/fall</td>
+        <td>{{ beek.profile.inspectPeriodAutumn }}</td>
+      </tr>
+      <tr>
+        <td>Days between inspections in winter</td>
+        <td>{{ beek.profile.inspectPeriodWinter }}</td>
+      </tr>
+      <tr>
+        <td>Days between inspections in spring</td>
+        <td>{{ beek.profile.inspectPeriodSpring }}</td>
+      </tr>
+
+    </table>
+    <div id="profile_mod_button" class="action_button">
+      <a href="{% url 'beedb:inspectPrefMod' %}" class="btn btn-info" role="button">Update details</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

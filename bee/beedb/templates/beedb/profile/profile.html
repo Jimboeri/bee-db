@@ -1,0 +1,41 @@
+{% extends "beedb/profile/profileBase.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block profile-body %}
+<div class="bd_bee_background">
+  <div id="profile">
+    <table>
+      <tr>
+        <td>First name</td>
+        <td>{{ beek.first_name }}</td>
+      </tr>
+      <tr>
+        <td>Surname</td>
+        <td>{{ beek.last_name }}</td>
+      </tr>
+      <tr>
+        <td>Phone number</td>
+        <td>{{ beek.profile.phoneNumber }}</td>
+      </tr>
+      <tr>
+        <td>email</td>
+        <td>{{ beek.email }}</td>
+      </tr>
+      <tr>
+        <td>Registration number</td>
+        <td>{{ beek.profile.bkRegistration }}</td>
+      </tr>
+      <tr>
+        <td>Physical address</td>
+        <td>{{beek.profile.address}}</td>
+      </tr>
+    </table>
+    <div id="profile_mod_button" class="action_button">
+      <a href="{% url 'beedb:profileMod' %}" class="btn btn-info" role="button">Update details</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

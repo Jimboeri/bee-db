@@ -1,0 +1,24 @@
+{% extends "beedb/profile/profileBase.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block profile-body %}
+<div class="bd_bee_background">
+  <div id="profile">
+    <form action="{% url 'beedb:profileMod' %}" method="POST">
+      {% csrf_token %}
+      
+      {{ form.non_field_errors}}
+      <table>
+        {{ form.as_table }}
+      </table>
+    <input type="submit" value="Submit">
+    <span id="pf_cancel_button" class="cancel_button">
+      <a href="{% url 'beedb:profileDetail' %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+    </span>
+  </form>
+  </div>
+</div>
+{% endblock %}

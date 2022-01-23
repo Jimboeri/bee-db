@@ -351,10 +351,19 @@ def inspectAdd(request, col_ref):
     if request.method == "POST":
         # print("Post message received")
         nf = InspectionForm(request.POST)
+        df = DiaryForm(request.POST)
         if nf.is_valid():
             ins = nf.save(commit=False)
             ins.colony = col
             ins.save()
+
+            if df.is_valid():
+                if df.cleaned_data["subject"]:
+                    diary = Diary(beek= request.user, colony=col)
+                    diary.subject = df.cleaned_data["subject"]
+                    diary.details = df.cleaned_data["details"]
+                    diary.dueDt = df.cleaned_data["dueD"]
+                    diary.save()
 
             return HttpResponseRedirect(
                 reverse("beedb:colDetail", args=[ins.colony.id])
@@ -362,8 +371,9 @@ def inspectAdd(request, col_ref):
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = InspectionForm()
+        df = DiaryForm()
 
-    context = {"form": nf, "col": col}
+    context = {"form": nf, "col": col, "diaryForm": df}
     return render(request, "beedb/inspectAdd.html", context)
 
 

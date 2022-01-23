@@ -1,9 +1,8 @@
 from django.urls import path
-from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 
 
-from . import views
+from . import views, profile
 
 app_name = "beedb"
 urlpatterns = [
@@ -33,6 +32,18 @@ urlpatterns = [
     path("inspection/del/<int:ins_ref>/", views.inspectDel, name="inspectDel"),
     path("diary/<int:diary_ref>/", views.diaryDetail, name="diaryDetail"),
     path("diary/modify/<int:diary_ref>/", views.diaryMod, name="diaryMod"),
+
+    path("profile/", profile.profileDetail, name="profileDetail"),
+    path("profileMod/", profile.profileMod, name="profileMod"),
+    path("passwordMod/", auth_views.PasswordChangeView.as_view(
+            template_name='beedb/profile/change_password.html',
+            success_url = '/beedb/'
+        ),
+        name='change_password'
+    ),
+    path("inspectPrefDetail/", profile.inspectPrefDetail, name="inspectPrefDetail"),
+    path("inspectPrefMod/", profile.inspectPrefMod, name="inspectPrefMod"),
+
     path("purch/", views.purchSales, name="purchSales"),
     path("logout/", views.logout, name="logout"),
     path("login/", views.login, name="login"),

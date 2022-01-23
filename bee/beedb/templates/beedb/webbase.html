@@ -24,7 +24,7 @@
     
       <div id="logged_in">
         {% if user.is_authenticated %}
-          Hi {{ user.username|capfirst }} <a href="{% url 'beedb:logout' %}">Logout</a>
+          Hi <a href="{% url 'beedb:profileDetail' %}">{{ user.username|capfirst }}</a> <a href="{% url 'beedb:logout' %}">Logout</a>
         {% else %}
           <a href="{% url 'beedb:signup' %}">Sign Up</a>
           <a href="{% url 'beedb:login' %}">Login</a>

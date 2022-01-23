@@ -17,6 +17,7 @@ Inspection Update
             <tr><th>Apiary : </th><th>{{ ins.colony.apiary.apiaryID }}</th></tr>
             <tr><th>Colony : </th><th>{{ ins.colony.colonyID }}</th></tr>
             {{ form.as_table }}
+            {{ diaryForm.as_table }}
           </table>
         <input type="submit" value="Submit">
         <span id="ins_cancel_button" class="cancel_button">
@@ -25,6 +26,5 @@ Inspection Update
       </form>
     </div>
   </div>
- 
 </div>
 {% endblock %}
