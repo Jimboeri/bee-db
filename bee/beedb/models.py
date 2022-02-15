@@ -67,7 +67,10 @@ class Profile(models.Model):
     inspectManualIndex = models.BooleanField(default=False)
     inspectDiaryAdd = models.BooleanField(default=True)
 
-    weeklySummary = models.CharField(max_length=1, default=" ")
+    commsWeeklySummary = models.BooleanField("Do you want weekly summary emails?", default=False)
+    commsInspectionReminder = models.BooleanField(default=False)
+    commsLstWeeklyEmail = models.DateTimeField(null=True, blank=True)
+
 
     def __str__(self):
         return self.user.username

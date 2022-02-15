@@ -37,21 +37,21 @@ Colony Details
           </div>
 
           <tr class="d-flex">
-            <th  class="col-3">Apiary : </th>
-            <th><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
+            <th class="col">Apiary : </th>
+            <th class="col"><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
           </tr>
           <tr class="d-flex">
-            <th class="col-3">Colony Name : </th>
-            <th>{{ col.colonyID }}</th>
+            <th class="col">Colony Name : </th>
+            <th class="col">{{ col.colonyID }}</th>
           </tr>
           <tr class="d-flex">
-            <td class="col-3">Description : </td>
-            <td class="wrap_cell">{{ col.descr }}</td>
+            <td class="col">Description : </td>
+            <td class="col wrap_cell">{{ col.descr }}</td>
           </tr>
           {% if lst_inspect %}
             <tr class="d-flex">
-              <td class="col-3">Last inspection comment : </td>
-              <td class="wrap_cell">{{ lst_inspect.notes }}</td>
+              <td class="col">Last inspection comment : </td>
+              <td class="col wrap_cell">{{ lst_inspect.notes }}</td>
             </tr>
           {% endif %}
         </table>

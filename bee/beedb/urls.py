@@ -43,6 +43,8 @@ urlpatterns = [
     ),
     path("inspectPrefDetail/", profile.inspectPrefDetail, name="inspectPrefDetail"),
     path("inspectPrefMod/", profile.inspectPrefMod, name="inspectPrefMod"),
+    path("commsPrefDetail/", profile.commsPrefDetail, name="commsPrefDetail"),
+    path("commsPrefMod/", profile.commsPrefMod, name="commsPrefMod"),
 
     path("purch/", views.purchSales, name="purchSales"),
     path("logout/", views.logout, name="logout"),

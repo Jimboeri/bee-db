@@ -17,6 +17,7 @@ from .models import Apiary
 from .forms import (
     ProfileForm,
     InspectPreferenceModelForm,
+    CommsPreferenceModelForm,
 )
 
 import datetime
@@ -86,3 +87,27 @@ def inspectPrefMod(request):
 
     context = {"form": nf}
     return render(request, "beedb/profile/inspectPrefMod.html", context)
+
+@login_required
+def commsPrefDetail(request):
+
+    context = {"profileactive": "Y", "beek": request.user}
+    return render(request, "beedb/profile/commsPref.html", context)
+
+
+@login_required
+def commsPrefMod(request):
+    
+    if request.method == "POST":
+        # print("Post message received")
+        nf = CommsPreferenceModelForm(request.POST, instance=request.user.profile)
+        if nf.is_valid():
+            request.user.profile.save()
+
+            return HttpResponseRedirect(reverse("beedb:commsPrefDetail"))
+        # if a GET (or any other method) we'll create a blank form
+    else:
+        nf = CommsPreferenceModelForm(instance=request.user.profile)
+
+    context = {"form": nf}
+    return render(request, "beedb/profile/commsPrefMod.html", context)

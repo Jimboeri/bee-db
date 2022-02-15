@@ -278,3 +278,10 @@ class InspectPreferenceModelForm(forms.ModelForm):
                   #"inspectDiaryAdd",
                   ]
 
+class CommsPreferenceModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Profile
+        fields = ["commsWeeklySummary",
+                  #"commsInspectionReminder", 
+                  ]
+

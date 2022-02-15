@@ -1,0 +1,23 @@
+{% extends "beedb/profile/profileBase.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block profile-body %}
+<div class="bd_bee_background">
+  <div id="profile">
+    Communication preferences for beekeeper {{ beek.first_name }} {{ beek.last_name }}
+    <table class="table">
+      <tr>
+        <td>Send weekly summary email</td>
+        <td>{{ beek.profile.commsWeeklySummary }}</td>
+      </tr>
+
+    </table>
+    <div id="profile_mod_button" class="action_button">
+      <a href="{% url 'beedb:commsPrefMod' %}" class="btn btn-info" role="button">Update details</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
