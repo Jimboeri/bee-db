@@ -1,0 +1,60 @@
+{% extends "beedb/email/email-html-base.html" %}
+
+{% block title %}
+Weekly summary
+{% endblock %}
+
+{% block email-body %}
+  <p>Hi {{ beek.first_name|capfirst }}</p>
+
+<div id="apiaries" class="container-fluid">  
+  {% if apList %}
+    <div>
+      {% for apiary in apList %}
+        <div>
+          <h2>Apiary: <a href="{{web_base_url}}/beedb/apiary/{{apiary.element.id}}">{{ apiary.element.apiaryID }}</a></h2>
+          {% for colony in apiary.colonies %}
+            <div id="colony">
+              <b>Colony:</b> <a href="{{web_base_url}}/beedb/colony/{{colony.element.id}}">{{colony.element.colonyID}}</a> - {{colony.element.descr}}
+              {% if colony.lstInspection %}
+                <div class="indent">
+                  Last inspection: <a href="{{web_base_url}}/beedb/inspection/{{colony.lstInspection.id}}">{{ colony.lstInspection.dt|date:"D d M Y" }}</a>
+                </div>
+                <div class="indent2">Comment: {{ colony.lstInspection.notes }}</div>
+                {% if colony.lateInspectionWarning %}
+                  <div class="indent2 warning">You are overdue for an inspection. Your inspection preferences can be updated <a href="{{web_base_url}}/beedb/inspectPrefDetail/">here</a></div>
+                {% endif %}
+                
+              {% else %}
+                <div class="indent">This colony has no inspection records</div>
+              {% endif %}
+
+              {% if colony.reminders %}
+                <div class="indent bold">
+                  Reminders
+                </div>
+                {% for remind in colony.reminders %}
+                  <div class="indent2">
+                    <a href="{{web_base_url}}/beedb/diary/{{remind.id}}">{{ remind.subject }}</a> - Due by: {{ remind.dueDt|date:"D d M Y" }}
+                  </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+              
+            </div>
+            <br>
+          {% endfor %}
+          </div>
+        {% endfor %}
+    </div>
+  {% else %}
+    <h3>You have no apriaries registered</h3>
+  {% endif %}
+</div>
+
+<div class="notice">
+  This email is being sent to you as per your settings in the Bee database system. You can turn on and off these emails <a href="{{web_base_url}}/beedb/inspectPrefDetail/">here</a>,
+  and adjust your inspections timing preferences <a href="{{web_base_url}}/beedb/commsPrefDetail/">here</a>.
+</div>
+
+{% endblock %}

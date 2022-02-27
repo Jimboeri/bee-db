@@ -20,7 +20,7 @@ Colony Details
               </button>
               {% if col.status == "C" %}
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add diary entry</a>
+                <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add reminder</a>
                 <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Edit colony details</a>
                 <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
                 <a class="dropdown-item" href="{% url 'beedb:colSplit' col.id %}">Split colony</a>
@@ -59,7 +59,7 @@ Colony Details
     </div>
     {% if diary %}
       <div id="col_diary" class="bd_content_block">
-        <H3>Diary</H3>
+        <H3>Reminders</H3>
         <table class="table table-borderless">
           {% for d in diary %}
             <tr class="d-flex">

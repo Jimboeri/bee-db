@@ -1,24 +1,22 @@
 {% extends "beedb/webbase.html" %}
 
 {% block title %}
-Diary entry Details
+Reminder entry Details
 {% endblock %}
 
 {% block web-body %}
 <div class="bee_background">
 
-  <div id="diary-header"><H2>Diary entry</H2>
+  <div id="diary-header"><H2>Reminder entry</H2>
     <div id="diary_detail" class="content_block">
       <div id="diary_det_table">
         <table>
-          <div class="dropdown text-right">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-              Actions
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'beedb:diaryMod' diary.id %}">Update</a>
+          <div class="text-right">
+            <div class="btn-group">
+              <a class="btn btn-info" href="{% url 'beedb:diaryMod' diary.id %}">Update</a>
+              <a class="btn btn-warning" href="{% url 'beedb:colDiaryComplete' diary.id diary.colony.id%}">Mark completed</a>
             </div>
-          </div> 
+          </div>
           {% if diary.apiary %}
             <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' diary.apiary.id %}" class="text-info">{{ diary.apiary.apiaryID }}</a></th></tr>
           {% endif %}

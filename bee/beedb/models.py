@@ -42,6 +42,8 @@ class Apiary(models.Model):
     def __str__(self):
         return self.apiaryID
 
+
+
 class Profile(models.Model):
     """
     This model is used to extend the user model.
@@ -110,6 +112,14 @@ class Colony(models.Model):
 
     def __str__(self):
         return self.colonyID
+
+    def lastInspection(self):
+        lstInsp = self.inspection_set.order_by("-dt")[:1]
+        if len(lstInsp) > 0:
+            return(lstInsp[0])
+        else:
+            print("No inspections available")
+            return
 
 
 class Inspection(models.Model):
@@ -245,7 +255,7 @@ class Diary(models.Model):
     colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
     createdDt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     startDt = models.DateTimeField(null=True, blank=True)
-    dueDt = models.DateTimeField()
+    dueDt = models.DateTimeField("Date to complete by")
     notifyDt = models.DateTimeField(null=True, blank=True)
     subject = models.CharField(max_length=100)
     details = models.TextField(blank=True, null=True)

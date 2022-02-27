@@ -179,7 +179,7 @@ class DiaryForm(forms.Form):
         widget=forms.Textarea, label="Description", required=False
     )
     details.widget.attrs.update(rows=3)
-    dueD = forms.DateField(initial=timezone.now, label="Start:")
+    dueDt = forms.DateField(initial=timezone.now, label="Due:")
     #dueDt = forms.DateField(label="Due:")
 
 

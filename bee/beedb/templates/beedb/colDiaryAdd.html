@@ -1,12 +1,12 @@
 {% extends "beedb/webbase.html" %}
 
 {% block title %}
-Add Diary 
+Add Reminder 
 {% endblock %}
 
 {% block web-body %}
 <div class="beedb_background">
-  <div id="diary-header"><h3>Add Diary Information</h3></div>
+  <div id="diary-header"><h3>Add reminder</h3></div>
     <div id="diary_detail" class="content_block">
       <div id="diary_det_table">
         <form action="{% url 'beedb:colDiaryAdd' col.id %}" method="POST">

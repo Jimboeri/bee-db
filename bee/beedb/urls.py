@@ -32,6 +32,7 @@ urlpatterns = [
     path("inspection/del/<int:ins_ref>/", views.inspectDel, name="inspectDel"),
     path("diary/<int:diary_ref>/", views.diaryDetail, name="diaryDetail"),
     path("diary/modify/<int:diary_ref>/", views.diaryMod, name="diaryMod"),
+    path("diary/complete/<int:diary_ref>/<int:col_ref>/", views.colDiaryComplete, name="colDiaryComplete"),
 
     path("profile/", profile.profileDetail, name="profileDetail"),
     path("profileMod/", profile.profileMod, name="profileMod"),

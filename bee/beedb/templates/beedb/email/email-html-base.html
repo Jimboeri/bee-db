@@ -4,9 +4,10 @@
 <head>
   <meta name="viewport" content="width=device-width" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
   <title>
     {% block title %}
-    Bee dabase system system
+    Bee database system system
     {% endblock %}
   </title>
   <style>
@@ -27,7 +28,7 @@
       color: #0b772f;
     }
 
-    .nodename {
+    .bold {
       font-weight: bold;
     }
 
@@ -49,6 +50,24 @@
       display: inline-block;
       border-radius: 10px;
       font-weight: bold;
+    }
+
+    .warning {
+      color: orange;
+    }
+
+    div.indent {
+      text-indent: 20px;
+    }
+
+    div.indent2 {
+      text-indent: 50px;
+    }
+
+    div.notice {
+      border: 2px solid black;
+      border-radius: 5px;
+      background-color: rgb(211, 211, 211);
     }
 
     /* -------------------------------------

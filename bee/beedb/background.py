@@ -1,4 +1,5 @@
 
+import re
 import django
 import sys
 import os
@@ -20,7 +21,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bee.settings")
 django.setup()
 
 from django.contrib.auth.models import User
-import mailer
+#import mailer
 from beedb.models import (
     Apiary,
     Profile,
@@ -216,21 +217,28 @@ def procWeeklyReminders():
                     if colony.status == "C":        # only send details on current colonies
                         colDet = {"element": colony}
                         # get last inspection
+                        #i1 = colony.lastInspection()
                         insp = colony.inspection_set.order_by("-dt")[:1]
                         if len(insp) > 0:
                             print(f"Colony: {colony.colonyID}, last inspection dt : {insp[0].dt}")
                             colDet["lstInspection"] = insp[0]
                             if (timezone.now() - insp[0].dt) / datetime.timedelta(days=1) > currentInspectionCycle(beek):
                                 print("Inspection is late")
-                                colDet["inspectionWarning"] = "Inspection for this colony is late"
+                                colDet["lateInspectionWarning"] = "True"
                         else:
                             colDet["inspectionWarning"] = "This colony has no recorded inspections"
-                        lstInspect = Inspection.objects.filter
+
+                        reminders = colony.diary_set.order_by("dueDt").filter(completed=False)
+                        print(f"{len(reminders)} reminders found")
+                        colDet["reminders"] = reminders
+
                         colonyDets.append(colDet)
 
                 apDet["colonies"] = colonyDets
                 apiaryDets.append(apDet)
             print(apiaryDets)
+            context = {"apList": apiaryDets, "beek": beek, "web_base_url": eWeb_Base_URL}
+            sendEmail(context, "beedb/email/weekly_summary.html", beek)
 
 
 # ******************************************************************

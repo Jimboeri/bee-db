@@ -495,7 +495,7 @@ def colDiaryAdd(request, col_ref):
                 apiary=col.apiary,
                 colony=col,
                 beek=request.user,
-                startDt=nf.cleaned_data["startDt"],
+                #startDt=nf.cleaned_data["startDt"],
                 dueDt=nf.cleaned_data["dueDt"],
                 subject=nf.cleaned_data["subject"],
                 details=nf.cleaned_data["details"],
@@ -509,6 +509,15 @@ def colDiaryAdd(request, col_ref):
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colDiaryAdd.html", context)
+
+@login_required
+def colDiaryComplete(request, diary_ref, col_ref):
+    diary = get_object_or_404(Diary, pk=diary_ref)
+    diary.completed = True
+    diary.save()
+
+    return HttpResponseRedirect(reverse("beedb:colDetail", args=[col_ref]))
+
 
 def purchSales(request):
     aList = request.user.apiary_set.all()
