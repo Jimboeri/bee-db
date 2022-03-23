@@ -47,7 +47,16 @@ urlpatterns = [
     path("commsPrefDetail/", profile.commsPrefDetail, name="commsPrefDetail"),
     path("commsPrefMod/", profile.commsPrefMod, name="commsPrefMod"),
 
+    # Displays purchases & sales
     path("purch/", views.purchSales, name="purchSales"),
+
+    # Feedback section
+    path("fbIndex/", views.feedbackIndex, name="fbIndex"),
+    path("fbAdd/", views.userFeedbackAdd, name="userfbAdd"),
+    path("fbView/<int:fb_ref>", views.userFeedbackView, name="userfbView"),
+    path("fbMod/<int:fb_ref>", views.adminFeedbackMod, name="adminfbMod"),
+
+
     path("logout/", views.logout, name="logout"),
     path("login/", views.login, name="login"),
     path("signup/", views.signup, name="signup"),

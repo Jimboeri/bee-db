@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django import forms
 
-from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary
+from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback
 
 from .forms import (
     ApiaryAddForm,
@@ -26,6 +26,8 @@ from .forms import (
     DiaryModelForm,
     DiaryForm,
     CustomUserCreationForm,
+    UserFeedbackModelForm,
+    AdminFeedbackModelForm,
 )
 
 import datetime
@@ -603,3 +605,66 @@ def activate_account(request, uidb64, token):
 
     return redirect("beedb:login")
 
+@login_required
+def feedbackIndex(request):
+    if request.user.is_staff:
+        feedbackList = Feedback.objects.all()
+    else:
+        feedbackList = Feedback.objects.filter(beek=request.user)
+    #print(f"Number of feedbacks is/are {len(feedbackList)}")
+    context = {"fbList": feedbackList, "feedbackactive": "Y"}
+    return render(request, "beedb/indexFeedback.html", context)
+
+@login_required
+def userFeedbackAdd(request):
+    if request.method == "POST":
+        # print("Post message received")
+        nf = UserFeedbackModelForm(request.POST)
+        if nf.is_valid():
+            fb = Feedback(
+                beek=request.user,
+                subject=nf.cleaned_data["subject"],
+                detail=nf.cleaned_data["detail"],
+                feedbackType=nf.cleaned_data["feedbackType"],
+            )
+            fb.save()
+
+            return HttpResponseRedirect(reverse("beedb:fbIndex"))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        nf = UserFeedbackModelForm()
+
+    context = {"form": nf}
+    return render(request, "beedb/userFeedbackAdd.html", context)
+
+@login_required
+def userFeedbackView(request, fb_ref):
+
+    fb = get_object_or_404(Feedback, pk=fb_ref)
+    context = {"fb": fb}
+    return render(request, "beedb/userFeedbackView.html", context)
+
+@login_required
+def adminFeedbackMod(request, fb_ref):
+    fb = get_object_or_404(Feedback, pk=fb_ref)
+
+    if request.method == "POST":
+        # print("Post message received")
+        nf = AdminFeedbackModelForm(request.POST, instance=fb)
+        if nf.is_valid():
+            print(nf.changed_data)
+            print("Feedback mod ")
+            if "devComment" in nf.changed_data:
+                fb.lstCommentDt = timezone.now()
+            if "status" in nf.changed_data:
+                fb.lstStatusDt = timezone.now()
+            nf.save()
+            fb.save()
+
+            return HttpResponseRedirect(reverse("beedb:userfbView", args=[fb.id]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        nf = AdminFeedbackModelForm(instance=fb)
+
+    context = {"form": nf, "fb": fb}
+    return render(request, "beedb/adminFeedbackMod.html", context)

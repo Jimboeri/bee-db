@@ -33,60 +33,13 @@
     width: 100%;
   }
 
-  /*
-  .nodeDownLink{
-    color: red;
-  }
-  
-  .battWarning{
-    color: orange;
-  }
-  
-  .battCritical{
-    color: orangered;
+  .inset {
+    padding-left: 15px;
   }
 
-  .nodename {
-    font-weight: bold;
-  }
-  
-  .mqtt_info {
-    color: lightskyblue;
-  }
-
-  .payload {
-    color: #0b772f; medium green
-       font-weight: bold;
-  }
-
-  .topic {
-    font-family: Monospace;
-    color: blue;   
-  }
-  
-  .lastseen {
+  .italics {
     font-style: italic;
   }
-  
-  .descr {
-    font-style: italic;
-  }
-  
- .yellow{
-    color: yellow
-  }
-  
-  .logo {
-    max-width: 30%;
-    padding: 10px 10px 10px 10px;
-  }
-  
-  .background1 {
-    background-size: cover;
-  }
-  
-
-  */
 
    .wrap_cell {
     width: 50%;

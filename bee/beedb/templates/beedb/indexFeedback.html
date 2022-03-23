@@ -1,0 +1,44 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Feedback
+{% endblock %}
+
+{% block web-body %}
+<div class="bd_bee_background">
+  <div id="feedback">
+    {% if fbList %}
+      <div class="list-group">
+        <div class="list-group">
+          {% for fb in fbList%}
+            <a href="{% url 'beedb:userfbView' fb.id %}" class="list-group-item list-group-item-action list-group-item-warning">
+              {{fb.subject}}<br>
+              {% if user.is_staff %}
+              <div class="inset">Submitted by: {{ fb.beek.username }}</div>
+              {% endif %}
+              <div class="inset"><b>Details </b>{{fb.detail}}</div>
+              <div class="inset">
+                Submitted on: {{fb.createdDt}} - Feedback type: 
+                {% if "F" in fb.feedbackType %}
+                  General feedback
+                {% elif "B" in fb.feedbackType %}
+                  Bug report
+                {% elif "R" in fb.feedbackType %}
+                  Request a feature
+                {% elif "S" in fb.feedbackType %}
+                  Suggestion
+                {% endif %}
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <p>No feedback yet</p>
+    {% endif %}
+  </div>
+  <div id="msg_add_button" class="bd_action_button">
+    <a href="{% url 'beedb:userfbAdd' %}" class="btn btn-warning" role="button">Create Feedback</a>
+  </div>
+</div>
+{% endblock %}

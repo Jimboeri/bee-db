@@ -9,7 +9,7 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 
-#class Beek(models.Model):
+# class Beek(models.Model):
 #    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 #    bkRegistration = models.CharField(max_length=10, blank=True, null=True)
 #    address = models.TextField(blank=True, null=True)
@@ -28,12 +28,14 @@ class Apiary(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
-    latitude  = models.DecimalField(max_digits=10, decimal_places=5, default=0)
-    longitude  = models.DecimalField(max_digits=10, decimal_places=5, default=0)
-    ownerResident = models.CharField("Name of owner / occupier", max_length=200, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    longitude = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    ownerResident = models.CharField(
+        "Name of owner / occupier", max_length=200, blank=True, null=True)
     residentPhone = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-    location = models.TextField(blank=True, null=True, help_text="Where the hives are located")
+    location = models.TextField(
+        blank=True, null=True, help_text="Where the hives are located")
     hazards = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -41,7 +43,6 @@ class Apiary(models.Model):
 
     def __str__(self):
         return self.apiaryID
-
 
 
 class Profile(models.Model):
@@ -61,7 +62,8 @@ class Profile(models.Model):
         help_text="The last apiary selected from the index page",
         on_delete=models.SET_NULL,
     )
-    inspectPeriodSummer = models.IntegerField("Days between inspections in summer", default=14)
+    inspectPeriodSummer = models.IntegerField(
+        "Days between inspections in summer", default=14)
     inspectPeriodAutumn = models.IntegerField(default=14)
     inspectPeriodWinter = models.IntegerField(default=60)
     inspectPeriodSpring = models.IntegerField(default=7)
@@ -69,13 +71,14 @@ class Profile(models.Model):
     inspectManualIndex = models.BooleanField(default=False)
     inspectDiaryAdd = models.BooleanField(default=True)
 
-    commsWeeklySummary = models.BooleanField("Do you want weekly summary emails?", default=False)
+    commsWeeklySummary = models.BooleanField(
+        "Do you want weekly summary emails?", default=False)
     commsInspectionReminder = models.BooleanField(default=False)
     commsLstWeeklyEmail = models.DateTimeField(null=True, blank=True)
 
-
     def __str__(self):
         return self.user.username
+
 
 @receiver(post_save, sender=User)
 def createProfile(sender, **kwargs):
@@ -102,8 +105,10 @@ class Colony(models.Model):
         choices=STATUS_CHOICES,
         default="C",
     )
-    status_dt = models.DateTimeField(null=True, blank=True, default = timezone.now)
-    lastAction = models.DateTimeField(null=True, blank=True, default = timezone.now)
+    status_dt = models.DateTimeField(
+        null=True, blank=True, default=timezone.now)
+    lastAction = models.DateTimeField(
+        null=True, blank=True, default=timezone.now)
     queenRight = models.BooleanField(default=True)
     size = models.IntegerField(default=3)
 
@@ -207,28 +212,34 @@ class Inspection(models.Model):
     class Meta:
         ordering = ["-dt"]
 
+
 class Transfer(models.Model):
-    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
-    #queen = .....
+    colony = models.ForeignKey(
+        Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    # queen = .....
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
-    outgoing = models.BooleanField(default=True, help_text="True if colony going to another beekeeper")
-    transaction = models.IntegerField(default = 0, help_text = "1 - Sold/given, 2 - Bought/received, 3 - Swarm, 4 - New entry, 5 - Split")
+    outgoing = models.BooleanField(
+        default=True, help_text="True if colony going to another beekeeper")
+    transaction = models.IntegerField(
+        default=0, help_text="1 - Sold/given, 2 - Bought/received, 3 - Swarm, 4 - New entry, 5 - Split")
     beek_name = models.CharField(max_length=50, blank=True, null=True)
     beek_registration = models.CharField(max_length=50, blank=True, null=True)
     beek_email = models.EmailField(max_length=50, blank=True, null=True)
     beek_phone = models.CharField(max_length=50, blank=True, null=True)
     beek_address = models.TextField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
-    cost = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    cost = models.DecimalField(
+        max_digits=8, decimal_places=2, blank=True, null=True)
     location = models.CharField(max_length=200, blank=True, null=True)
-    size = models.IntegerField(default = 0, help_text = "1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)")
+    size = models.IntegerField(
+        default=0, help_text="1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)")
 
     class Meta:
         ordering = ["-dt"]
 
     def __str__(self):
         return(f"Colony: {self.colony.colonyID}")
-        
+
 
 class Audit(models.Model):
     """
@@ -243,17 +254,24 @@ class Audit(models.Model):
     """
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
-    apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
-    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
-    colony1 = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
-    transaction_cd = models.IntegerField(default = 0,)
+    apiary = models.ForeignKey(
+        Apiary, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(
+        Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    colony1 = models.ForeignKey(
+        Colony, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    transaction_cd = models.IntegerField(default=0,)
     detail = models.TextField(blank=True, null=True)
+
 
 class Diary(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
-    apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
-    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
-    createdDt = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    apiary = models.ForeignKey(
+        Apiary, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(
+        Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    createdDt = models.DateTimeField(
+        null=True, blank=True, default=timezone.now)
     startDt = models.DateTimeField(null=True, blank=True)
     dueDt = models.DateTimeField("Date to complete by")
     notifyDt = models.DateTimeField(null=True, blank=True)
@@ -267,14 +285,17 @@ class Diary(models.Model):
     class Meta:
         ordering = ["-dueDt"]
 
+
 class Config(models.Model):
     key = models.CharField(max_length=500)
     configDt = models.DateTimeField(null=True, blank=True)
     configValue = models.FloatField(null=True, blank=True)
-    lastUpdate = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    lastUpdate = models.DateTimeField(
+        null=True, blank=True, default=timezone.now)
 
     def __str__(self):
-        return( f"{self.key}")
+        return(f"{self.key}")
+
 
 class Message(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -284,3 +305,37 @@ class Message(models.Model):
     processed = models.BooleanField(default=False)
     createdDt = models.DateTimeField(default=timezone.now,)
     processedDt = models.DateTimeField(null=True, blank=True)
+
+
+class Feedback(models.Model):
+    """
+    Table to store feedback, bug reports etc
+    """
+    FEEDBACK_CHOICES = [
+        ("F", "General feedback"),
+        ("B", "Bug report (error)"),
+        ("R", "Request a feature"),
+        ("S", "Suggestion"),
+    ]
+    STATUS_CHOICES = [
+        ("N", "New feedback"),
+        ("I", "Issue raised"),
+        ("A", "Archived"),
+    ]
+    beek = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=100, help_text="A short description")
+    detail = models.TextField(blank=True, null=True,
+                              help_text="The detail of your feedback")
+    feedbackType = models.CharField(
+        max_length=1, help_text="What sort of feedback is this?", choices=FEEDBACK_CHOICES, default="F",)
+    status = models.CharField(max_length=1, blank=True, null=True, default="N", choices=STATUS_CHOICES, )
+        # status codes:
+        #       N - New
+        #       A - Archived (won't be seen)
+    devComment = models.TextField(blank=True, null=True)
+    createdDt = models.DateTimeField(default=timezone.now,)
+    lstStatusDt = models.DateTimeField(null=True, blank=True)
+    lstCommentDt = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return(f"{self.subject} (from {self.beek.username})")

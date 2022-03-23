@@ -1,0 +1,41 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Add Feedback
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="fb-header"><h3>Your feedback</h3></div>
+    <div id="fb_detail" class="content_block">
+      <div class="row">
+        <div class="col-sm-2">Subject :</div>
+        <div class="col italics">{{ fb.subject }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">Details :</div>
+        <div class="col italics">{{ fb.detail }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">Submitted on :</div>
+        <div class="col italics">{{ fb.createdDt }}</div>
+      </div>
+      {% if fb.devComment %}
+        <div class="row">
+          <div class="col-sm-2">Updated from developer :</div>
+          <div class="col italics">{{ fb.devComment }} (Last updated {{ fb.lstCommentDt }})</div>
+        </div> 
+      {% endif %}
+    </div>
+      {% if user.is_staff %}
+        <span id="fb_update_button" class="">
+          <a href="{% url 'beedb:adminfbMod' fb.id %}" class="btn btn-link btn-warning" role="button">Update</a>
+        </span>
+      {% endif %}
+      <span id="fb_cancel_button" class="cancel_button">
+        <a href="{% url 'beedb:fbIndex' %}" class="btn btn-link btn-outline-warning" role="button">Back</a>
+      </span>
+  </div>
+ 
+</div>
+{% endblock %}

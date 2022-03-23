@@ -285,3 +285,20 @@ class CommsPreferenceModelForm(forms.ModelForm):
                   #"commsInspectionReminder", 
                   ]
 
+
+class UserFeedbackModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Feedback
+        fields = ["feedbackType",
+                  "subject",
+                  "detail",
+                  ]
+
+
+class AdminFeedbackModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Feedback
+        fields = ["status",
+                  "devComment",
+                  ]
+

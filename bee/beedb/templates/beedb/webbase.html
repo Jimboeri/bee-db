@@ -48,12 +48,20 @@
             {% if apiaryactive %}
               <li class="nav-item active">
             {% else %}
-              <li class="nav-item"></li>
+              <li class="nav-item">
             {% endif %}
               <a class="nav-link" href="{% url 'beedb:index' %}">Apiaries</a>
             </li>
-            <li class="nav-item"></li>
+            <li class="nav-item">
             <a class="nav-link" href="{% url 'beedb:purchSales' %}">Purchases & Sales</a>
+            </li>
+            {% if feedbackactive %}
+              <li class="nav-item active">
+            {% else %}
+              <li class="nav-item">
+            {% endif %}
+            <a class="nav-link" href="{% url 'beedb:fbIndex' %}">Feedback & Comments</a>
+            </li>
           </ul>
         </div>
       </nav>

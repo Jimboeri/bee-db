@@ -1,0 +1,39 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Feedback modification
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="fb-header">
+    <h3>Feedback update</h3>
+  </div>
+  <div id="fb_detail" class="content_block">
+    <div id="fb_det_table">
+      <form action="{% url 'beedb:adminfbMod' fb.id %}" method="POST">
+        {% csrf_token %}
+        {{ fItems.management_form }}
+        {{ form.non_field_errors}}
+        <table>
+          <tr>
+            <th>User:</th>
+            <th>{{ fb.beek.username }}</a></th>
+          </tr>
+          <tr>
+            <td>Subject:</td>
+            <td>{{ fb.subject }}</td>
+          </tr>
+
+          {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+        <span id="ap_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:userfbView' fb.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
