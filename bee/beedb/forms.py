@@ -9,10 +9,12 @@ from django.utils.http import urlsafe_base64_encode
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
 
 # from .models import Apiary, Colony, Inspection, Transfer, Diary
 from . import models
 import os
+import datetime
 
 
 class ApiaryAddForm(forms.ModelForm):
@@ -97,8 +99,10 @@ class InspectionForm(forms.ModelForm):
         ]
         widgets = {
             "notes": forms.Textarea(attrs={"rows": 3}),
-            "dt": forms.DateInput,
+            "dt": AdminDateWidget,
+            "queen_seen": forms.CheckboxInput(attrs={'onChange': "toggleVisibility('diary');"}),
         }
+        #queen_seen.widget.attrs.update({'onChange': 'check_user(this.value);'})
 
 
 class TransferForm(forms.ModelForm):
@@ -179,8 +183,12 @@ class DiaryForm(forms.Form):
         widget=forms.Textarea, label="Description", required=False
     )
     details.widget.attrs.update(rows=3)
-    dueDt = forms.DateField(initial=timezone.now, label="Due:")
-    #dueDt = forms.DateField(label="Due:")
+    dueDt = forms.DateField(initial=timezone.now() + datetime.timedelta(weeks=1), label="Due:")
+    
+    widgets = {
+            "dueDt": AdminDateWidget,
+        }
+
 
 
 class CustomUserCreationForm(forms.Form):

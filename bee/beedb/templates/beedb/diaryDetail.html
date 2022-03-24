@@ -25,8 +25,8 @@ Reminder entry Details
           {% endif %}
           <tr><td>Subject : </td><td class = "wrap_cell">{{ diary.subject }}</td></tr>
           <tr><td>Description : </td><td class = "wrap_cell">{{ diary.details }}</td></tr>
-          <tr><td>Created : </td><td class = "wrap_cell">{{ diary.createdDt }}</td></tr>
-          <tr><td>Due date : </td><td class = "wrap_cell">{{ diary.dueDt }}</td></tr>
+          <tr><td>Created : </td><td class = "wrap_cell">{{ diary.createdDt|date:"D d M Y" }}</td></tr>
+          <tr><td>Due date : </td><td class = "wrap_cell">{{ diary.dueDt|date:"D d M Y" }}</td></tr>
           <tr><td>Completed : </td><td class = "wrap_cell">{{ diary.completed }}</td></tr>
         </table>
       </div>

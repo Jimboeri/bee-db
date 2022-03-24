@@ -1,5 +1,5 @@
-docker-compose.yml
 bee/bee/settings.py
 db-dump
 postgres-data.tar.bz2
 *.pyc
+docker-compose.yml

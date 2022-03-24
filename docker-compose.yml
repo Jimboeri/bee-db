@@ -45,7 +45,7 @@ services:
     command: python background.py
     volumes:
       - .:/code
-    restart: always
+    #restart: always
     depends_on:
       - bee-db
     environment:
