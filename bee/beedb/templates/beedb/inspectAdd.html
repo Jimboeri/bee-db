@@ -6,25 +6,102 @@ Add Inspection
 
 {% block web-body %}
 <div class="beedb_background">
-  <div id="ins-header"><h3>Add Inspection</h3></div>
-    <div id="ins_detail" class="content_block">
-      <div id="ins_det_table">
-        <form action="{% url 'beedb:inspectAdd' col.id %}" method="POST">
-          {% csrf_token %}
-          {{ fItems.management_form }}
-          {{ form.non_field_errors}}
-          <table>
-            <tr><th>Apiary : </th><th>{{ col.apiary.apiaryID }}</th></tr>
-            <tr><th>Colony : </th><th>{{ col.colonyID }}</th></tr>
-            {{ form.as_table }}
-          </table>
+  <div id="ins-header">
+    <h3>Add Inspection</h3>
+  </div>
+  <div id="ins_detail" class="content_block">
+    <div id="ins_det_table">
+      <form action="{% url 'beedb:inspectAdd' col.id %}" method="POST">
+        {% csrf_token %}
+        {{ fItems.management_form }}
+        {{ form.non_field_errors}}
+        <table>
+          <tr>
+            <th>Apiary : </th>
+            <th>{{ col.apiary.apiaryID }}</th>
+          </tr>
+          <tr>
+            <th>Colony : </th>
+            <th>{{ col.colonyID }}</th>
+          </tr>
+          <tr>
+            <td>Date:</td>
+            <td>{{ form.dt }} (YYYY-MM-DD) {{ form.dt.errors }}</td>
+          </tr>
+          <tr>
+            <td>Bee numbers:</td>
+            <td>{{ form.numbers }}<br>{{ form.numbers.help_text }} {{ form.numbers.errors }}</td>
+          </tr>
+          <tr>
+            <td>Eggs & larvae:</td>
+            <td>{{ form.eggs }}<br>{{ form.eggs.help_text }} {{ form.eggs.errors }}</td>
+          </tr>
+          <tr>
+            <td>Varroa:</td>
+            <td>{{ form.varroa }}<br>{{ form.varroa.help_text }} {{ form.varroa.errors }}</td>
+          </tr>
+          <tr>
+            <td>Weight:</td>
+            <td>{{ form.weight }}<br>{{ form.weight.help_text }} {{ form.weight.errors }}</td>
+          </tr>
+          <tr>
+            <td>Disease:</td>
+            <td>{{ form.disease }}<br>{{ form.disease.help_text }} {{ form.disease.errors }}</td>
+          </tr>
+          <tr>
+            <td>Temper:</td>
+            <td>{{ form.temper }}<br>{{ form.temper.help_text }} {{ form.temper.errors }}</td>
+          </tr>
+          <tr>
+            <td>Queen seen:</td>
+            <td>{{ form.queen_seen }}</td>
+            <td id="Jim"> </td>
+          </tr>
+          <tr>
+            <td>Notes:</td>
+            <td>{{ form.notes }}</td>
+          </tr>
+          <tr>
+            <td>Add a reminder?</td>
+            <td><input type="checkbox" id="diary" name="diary" value="remind"
+                onChange="rowVisibility('diary', 'dLine1', 'dLine2', 'dLine3');"></td>
+          </tr>
+          <tr id="dLine1" style="display: none;">
+            <td>Reminder subject</td>
+            <td>{{diaryForm.subject}}</td>
+          </tr>
+          <tr id="dLine2" style="display: none;">
+            <td>Details</td>
+            <td>{{diaryForm.details}}</td>
+          </tr>
+          <tr id="dLine3" style="display: none;">
+            <td>Due</td>
+            <td>{{diaryForm.dueDt}}</td>
+          </tr>
+        </table>
         <input type="submit" value="Submit">
         <span id="ins_cancel_button" class="cancel_button">
           <a href="{% url 'beedb:colDetail' col.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
         </span>
       </form>
     </div>
+
   </div>
- 
 </div>
+
+<script language="JavaScript">
+
+  function rowVisibility(boxId, rowId1, rowId2, rowId3) {
+    const box = document.getElementById(boxId);
+    if (box.checked) {
+      document.getElementById(rowId1).style.display = "";
+      document.getElementById(rowId2).style.display = "";
+      document.getElementById(rowId3).style.display = "";
+    } else {
+      document.getElementById(rowId1).style.display = "none";
+      document.getElementById(rowId2).style.display = "none";
+      document.getElementById(rowId3).style.display = "none";
+    }
+  }
+</script>
 {% endblock %}

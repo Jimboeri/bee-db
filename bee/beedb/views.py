@@ -364,7 +364,7 @@ def inspectAdd(request, col_ref):
                     diary = Diary(beek= request.user, colony=col)
                     diary.subject = df.cleaned_data["subject"]
                     diary.details = df.cleaned_data["details"]
-                    diary.dueDt = df.cleaned_data["dueD"]
+                    diary.dueDt = df.cleaned_data["dueDt"]
                     diary.save()
 
             return HttpResponseRedirect(

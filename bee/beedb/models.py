@@ -186,28 +186,30 @@ class Inspection(models.Model):
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now,)
     notes = models.TextField(blank=True, null=True)
     numbers = models.IntegerField(
-        help_text="How many bees in the hive (seams of bees)",
+        help_text="How many bees in the hive (seams of bees)?",
         choices=NUMBER_CHOICES,
         default=0,
     )
     eggs = models.IntegerField(
-        help_text="How much eggs and larvae is in the hive",
+        help_text="How much eggs and larvae is in the hive?",
         choices=EGG_CHOICES,
         default=0,
     )
     varroa = models.IntegerField(
-        help_text="How much varroa is in the hive", choices=VARROA_CHOICES, default=0,
+        help_text="How much varroa is in the hive?", choices=VARROA_CHOICES, default=0,
     )
     weight = models.IntegerField(
-        help_text="How heavy is the hive", choices=WEIGHT_CHOICES, default=0,
+        help_text="How heavy is the hive?", choices=WEIGHT_CHOICES, default=0,
     )
     disease = models.IntegerField(
-        help_text="How healthy is the hive", choices=DISEASE_CHOICES, default=0,
+        help_text="How healthy is the hive?", choices=DISEASE_CHOICES, default=0,
     )
     temper = models.IntegerField(
-        help_text="How happy is the hive", choices=TEMPER_CHOICES, default=0,
+        help_text="How happy is the hive?", choices=TEMPER_CHOICES, default=0,
     )
     queen_seen = models.BooleanField(default=False)
+
+    
 
     class Meta:
         ordering = ["-dt"]
@@ -339,3 +341,33 @@ class Feedback(models.Model):
     
     def __str__(self):
         return(f"{self.subject} (from {self.beek.username})")
+
+class TreatmentType(models.Model):
+    """
+    Table to store types of treatments
+    """
+    name = models.CharField(max_length=100)
+    manufacturer = models.CharField(max_length=100)
+    organic = models.BooleanField(default=False)
+    requireRemoval = models.BooleanField(default=False)
+    daysInHive = models.IntegerField()
+    url = models.URLField()
+    description = models.TextField()
+    instructions = models.TextField()
+
+    def __str__(self):
+        return(f"{self.name}")
+
+class Treatment(models.Model):
+    treatment = models.ForeignKey(TreatmentType, on_delete=models.CASCADE)
+    colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    insertDt = models.DateTimeField(blank=True, null=True)
+    removeDt = models.DateTimeField(blank=True, null=True)
+    notes = models.TextField()
+    inspection = models.ForeignKey(
+        Inspection, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    def __str__(self):
+        return(f"{self.treatment.name} in {colony.colonyID}")
+    
