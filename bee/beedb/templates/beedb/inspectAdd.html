@@ -63,20 +63,22 @@ Add Inspection
           </tr>
           <tr>
             <td>Add a reminder?</td>
-            <td><input type="checkbox" id="diary" name="diary" value="remind"
-                onChange="rowVisibility('diary', 'dLine1', 'dLine2', 'dLine3');"></td>
+            <td>{{ form.addDiary }}</td>
           </tr>
-          <tr id="dLine1" style="display: none;">
+          <tr>
+            <td>{{ diaryForm.non_field_errors}}</td>
+          </tr>
+          <tr id="dLine1">
             <td>Reminder subject</td>
-            <td>{{diaryForm.subject}}</td>
+            <td>{{diaryForm.subject}} {{ diaryForm.subject.errors }}</td>
           </tr>
-          <tr id="dLine2" style="display: none;">
+          <tr id="dLine2">
             <td>Details</td>
-            <td>{{diaryForm.details}}</td>
+            <td>{{diaryForm.details}} {{ diaryForm.subject.details }}</td>
           </tr>
-          <tr id="dLine3" style="display: none;">
+          <tr id="dLine3"">
             <td>Due</td>
-            <td>{{diaryForm.dueDt}}</td>
+            <td>{{diaryForm.dueDt}} {{ diaryForm.subject.dueDt }}</td>
           </tr>
         </table>
         <input type="submit" value="Submit">
@@ -89,19 +91,20 @@ Add Inspection
   </div>
 </div>
 
-<script language="JavaScript">
-
-  function rowVisibility(boxId, rowId1, rowId2, rowId3) {
-    const box = document.getElementById(boxId);
-    if (box.checked) {
-      document.getElementById(rowId1).style.display = "";
-      document.getElementById(rowId2).style.display = "";
-      document.getElementById(rowId3).style.display = "";
-    } else {
-      document.getElementById(rowId1).style.display = "none";
-      document.getElementById(rowId2).style.display = "none";
-      document.getElementById(rowId3).style.display = "none";
-    }
+<script>
+console.log("run on load");
+const box = document.getElementById("id_addDiary");
+if (box.checked) {
+  console.log("Diary checked");
+    document.getElementById("dLine1").style.display = "";
+    document.getElementById("dLine2").style.display = "";
+    document.getElementById("dLine3").style.display = "";
+  } else {
+    console.log("Diary NOT checked");
+    document.getElementById("dLine1").style.display = "none";
+    document.getElementById("dLine2").style.display = "none";
+    document.getElementById("dLine3").style.display = "none";
   }
 </script>
+
 {% endblock %}

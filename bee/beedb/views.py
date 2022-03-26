@@ -31,6 +31,7 @@ from .forms import (
 )
 
 import datetime
+import logging
 
 # Create your views here.
 
@@ -349,32 +350,44 @@ def inspectMod(request, ins_ref):
 
 @login_required
 def inspectAdd(request, col_ref):
+    logging.info("Enter inspectAdd")
     col = get_object_or_404(Colony, pk=col_ref)
     if request.method == "POST":
-        # print("Post message received")
+        logging.info("Post message received")
         nf = InspectionForm(request.POST)
         df = DiaryForm(request.POST)
         if nf.is_valid():
+            logging.info("Inspection valid")
             ins = nf.save(commit=False)
             ins.colony = col
             ins.save()
-
-            if df.is_valid():
-                if df.cleaned_data["subject"]:
-                    diary = Diary(beek= request.user, colony=col)
-                    diary.subject = df.cleaned_data["subject"]
-                    diary.details = df.cleaned_data["details"]
-                    diary.dueDt = df.cleaned_data["dueDt"]
-                    diary.save()
-
-            return HttpResponseRedirect(
-                reverse("beedb:colDetail", args=[ins.colony.id])
-            )
+            logging.info("checking diary")
+            if nf.cleaned_data["addDiary"]:
+                if df.is_valid():
+                    logging.info("diary is valid")
+                    if df.cleaned_data["subject"]:
+                        logging.info("Diary subject not blank")
+                        diary = Diary(beek= request.user, colony=col)
+                        diary.subject = df.cleaned_data["subject"]
+                        diary.details = df.cleaned_data["details"]
+                        diary.dueDt = df.cleaned_data["dueDt"]
+                        diary.save()
+                        return HttpResponseRedirect(
+                                reverse("beedb:colDetail", args=[ins.colony.id])
+                            )
+                #else:
+                #    if df.cleaned_data["details"]:
+                #        df.add_error('subject', 'Need to have a subject for the reminder')
+                #        context = {"form": nf, "col": col, "diaryForm": df}
+                #        return render(request, "beedb/inspectAdd.html", context)
+            else:
+                return HttpResponseRedirect(
+                    reverse("beedb:colDetail", args=[ins.colony.id])
+                )
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = InspectionForm()
         df = DiaryForm()
-
     context = {"form": nf, "col": col, "diaryForm": df}
     return render(request, "beedb/inspectAdd.html", context)
 

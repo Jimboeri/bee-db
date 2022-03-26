@@ -96,11 +96,13 @@ class InspectionForm(forms.ModelForm):
             "temper",
             "queen_seen",
             "notes",
+            "addDiary",
         ]
         widgets = {
             "notes": forms.Textarea(attrs={"rows": 3}),
             "dt": AdminDateWidget,
-            "queen_seen": forms.CheckboxInput(attrs={'onChange': "toggleVisibility('diary');"}),
+            "addDiary": forms.CheckboxInput(attrs={'onChange': "rowVisibility3('id_addDiary', 'dLine1', 'dLine2', 'dLine3');"}),
+
         }
         #queen_seen.widget.attrs.update({'onChange': 'check_user(this.value);'})
 
@@ -178,17 +180,25 @@ class DiaryModelForm(forms.ModelForm):
 
 
 class DiaryForm(forms.Form):
-    subject = forms.CharField(max_length=100, label="Subject")
+    subject = forms.CharField(max_length=100, label="Subject", required=False)
     details = forms.CharField(
         widget=forms.Textarea, label="Description", required=False
     )
     details.widget.attrs.update(rows=3)
-    dueDt = forms.DateField(initial=timezone.now() + datetime.timedelta(weeks=1), label="Due:")
-    
-    widgets = {
-            "dueDt": AdminDateWidget,
-        }
+    dueDt = forms.DateField(initial=timezone.now() +
+                            datetime.timedelta(weeks=1), label="Due:")
 
+    widgets = {
+        "dueDt": AdminDateWidget,
+    }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        subject = cleaned_data.get("subject")
+        details = cleaned_data.get("details")
+
+        if details and not subject:
+            self.add_error('subject', 'Need to have a subject for the reminder')
 
 
 class CustomUserCreationForm(forms.Form):
@@ -278,19 +288,20 @@ class InspectPreferenceModelForm(forms.ModelForm):
     class Meta:
         model = models.Profile
         fields = ["inspectPeriodSummer",
-                  "inspectPeriodAutumn", 
-                  "inspectPeriodWinter", 
-                  "inspectPeriodSpring", 
-                  #"inspectHealthIndex",
-                  #"inspectManualIndex",
-                  #"inspectDiaryAdd",
+                  "inspectPeriodAutumn",
+                  "inspectPeriodWinter",
+                  "inspectPeriodSpring",
+                  # "inspectHealthIndex",
+                  # "inspectManualIndex",
+                  # "inspectDiaryAdd",
                   ]
+
 
 class CommsPreferenceModelForm(forms.ModelForm):
     class Meta:
         model = models.Profile
         fields = ["commsWeeklySummary",
-                  #"commsInspectionReminder", 
+                  # "commsInspectionReminder",
                   ]
 
 
@@ -309,4 +320,3 @@ class AdminFeedbackModelForm(forms.ModelForm):
         fields = ["status",
                   "devComment",
                   ]
-

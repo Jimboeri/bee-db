@@ -64,9 +64,12 @@ class Profile(models.Model):
     )
     inspectPeriodSummer = models.IntegerField(
         "Days between inspections in summer", default=14)
-    inspectPeriodAutumn = models.IntegerField(default=14)
-    inspectPeriodWinter = models.IntegerField(default=60)
-    inspectPeriodSpring = models.IntegerField(default=7)
+    inspectPeriodAutumn = models.IntegerField(
+        "Days between inspections in autumn/fall", default=14)
+    inspectPeriodWinter = models.IntegerField(
+        "Days between inspections in winter", default=60)
+    inspectPeriodSpring = models.IntegerField(
+        "Days between inspections in spring", default=7)
     inspectHealthIndex = models.BooleanField(default=True)
     inspectManualIndex = models.BooleanField(default=False)
     inspectDiaryAdd = models.BooleanField(default=True)
@@ -208,8 +211,7 @@ class Inspection(models.Model):
         help_text="How happy is the hive?", choices=TEMPER_CHOICES, default=0,
     )
     queen_seen = models.BooleanField(default=False)
-
-    
+    addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
 
     class Meta:
         ordering = ["-dt"]
@@ -277,7 +279,7 @@ class Diary(models.Model):
     startDt = models.DateTimeField(null=True, blank=True)
     dueDt = models.DateTimeField("Date to complete by")
     notifyDt = models.DateTimeField(null=True, blank=True)
-    subject = models.CharField(max_length=100)
+    subject = models.CharField(max_length=100, null=True, blank=True)
     details = models.TextField(blank=True, null=True)
     completed = models.BooleanField(default=False)
 
@@ -330,17 +332,19 @@ class Feedback(models.Model):
                               help_text="The detail of your feedback")
     feedbackType = models.CharField(
         max_length=1, help_text="What sort of feedback is this?", choices=FEEDBACK_CHOICES, default="F",)
-    status = models.CharField(max_length=1, blank=True, null=True, default="N", choices=STATUS_CHOICES, )
-        # status codes:
-        #       N - New
-        #       A - Archived (won't be seen)
+    status = models.CharField(max_length=1, blank=True,
+                              null=True, default="N", choices=STATUS_CHOICES, )
+    # status codes:
+    #       N - New
+    #       A - Archived (won't be seen)
     devComment = models.TextField(blank=True, null=True)
     createdDt = models.DateTimeField(default=timezone.now,)
     lstStatusDt = models.DateTimeField(null=True, blank=True)
     lstCommentDt = models.DateTimeField(null=True, blank=True)
-    
+
     def __str__(self):
         return(f"{self.subject} (from {self.beek.username})")
+
 
 class TreatmentType(models.Model):
     """
@@ -358,6 +362,7 @@ class TreatmentType(models.Model):
     def __str__(self):
         return(f"{self.name}")
 
+
 class Treatment(models.Model):
     treatment = models.ForeignKey(TreatmentType, on_delete=models.CASCADE)
     colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
@@ -367,7 +372,6 @@ class Treatment(models.Model):
     notes = models.TextField()
     inspection = models.ForeignKey(
         Inspection, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
     def __str__(self):
         return(f"{self.treatment.name} in {colony.colonyID}")
-    
