@@ -375,3 +375,12 @@ class Treatment(models.Model):
 
     def __str__(self):
         return(f"{self.treatment.name} in {colony.colonyID}")
+
+class SizeChoice(models.Model):
+    size = models.IntegerField()
+    type = models.CharField(max_length=10)
+    value = models.IntegerField()
+    text = models.CharField(max_length=30)
+
+    def __str__(self):
+        return(f"Size: {self.size}, type: {self.type}, value: {self.value}, text: {self.text}")
