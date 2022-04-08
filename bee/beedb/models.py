@@ -5,19 +5,9 @@ import datetime
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
+import logging
 
 # Create your models here.
-
-
-# class Beek(models.Model):
-#    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-#    bkRegistration = models.CharField(max_length=10, blank=True, null=True)
-#    address = models.TextField(blank=True, null=True)
-#    name = models.CharField(max_length=100)
-#    email = models.EmailField(blank=True, null=True)
-
-#    def __str__(self):
-#        return self.name
 
 
 class Apiary(models.Model):
@@ -98,6 +88,14 @@ class Colony(models.Model):
         ("M", "Combined"),
     ]
 
+    SIZE_CHOICES = [
+        (1, "Micro - 3 - mini frames"),
+        (2, "Little - queen castle or nuc"),
+        (3, "Small - single storey brood chamber, 9-10 frames"),
+        (4, "Large - double storey brood chamber, 18 - 20 frames"),
+        (5, "Huge - 3 or more storey brood chamber"),
+    ]
+
     apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
     colonyID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
@@ -113,7 +111,11 @@ class Colony(models.Model):
     lastAction = models.DateTimeField(
         null=True, blank=True, default=timezone.now)
     queenRight = models.BooleanField(default=True)
-    size = models.IntegerField(default=3)
+    size = models.IntegerField(
+        default=3,
+        help_text="Size of the colony",
+        choices=SIZE_CHOICES,
+    )
 
     class Meta:
         ordering = ["colonyID"]
@@ -135,14 +137,8 @@ class Inspection(models.Model):
     Model for colony inspections
     """
 
-    NUMBER_CHOICES = [
-        (0, "Not recorded"),
-        (1, "Bees on 20 or more frames"),
-        (2, "Bees on 10 - 20 frames"),
-        (3, "bees on 4 - 9 frames"),
-        (4, "Bees on 3 or less frames"),
-        (5, "Less than a frame of bees"),
-    ]
+    # These choices are overwritten from a DB table, but are necessary for validation
+
     EGG_CHOICES = [
         (0, "Not recorded"),
         (1, "Lots of eggs & larvae, good brood pattern"),
@@ -154,18 +150,19 @@ class Inspection(models.Model):
     VARROA_CHOICES = [
         (0, "Not recorded"),
         (1, "No varroa seen"),
-        (2, "1 - 2 varroa"),
-        (3, "3 - 6 varroa"),
-        (4, "7 - 15 varroa"),
-        (5, "More than 15 varroa"),
+        (2, "1 - 2 varroa / 300 bees"),
+        (3, "3 - 6 varroa / 300 bees"),
+        (4, "7 - 15 varroa / 300 bees"),
+        (5, "More than 15 varroa / 300 bees"),
     ]
+    # These choices are overwritten from a DB table, but are necessary for validation
     WEIGHT_CHOICES = [
         (0, "Not recorded"),
-        (1, "Greater than 20 kg"),
-        (2, "15 - 20 kg, plenty of stores"),
-        (3, "10 - 15 kg"),
-        (4, "Less than 10 kg, hardly any stores"),
-        (5, "No weight, no stores"),
+        (1, "Not recorded"),
+        (2, "Not recorded"),
+        (3, "Not recorded"),
+        (4, "Not recorded"),
+        (5, "No stores"),
     ]
     DISEASE_CHOICES = [
         (0, "Not recorded"),
@@ -189,8 +186,6 @@ class Inspection(models.Model):
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now,)
     notes = models.TextField(blank=True, null=True)
     numbers = models.IntegerField(
-        help_text="How many bees in the hive (seams of bees)?",
-        choices=NUMBER_CHOICES,
         default=0,
     )
     eggs = models.IntegerField(
@@ -202,7 +197,7 @@ class Inspection(models.Model):
         help_text="How much varroa is in the hive?", choices=VARROA_CHOICES, default=0,
     )
     weight = models.IntegerField(
-        help_text="How heavy is the hive?", choices=WEIGHT_CHOICES, default=0,
+        default=0,
     )
     disease = models.IntegerField(
         help_text="How healthy is the hive?", choices=DISEASE_CHOICES, default=0,
@@ -212,9 +207,57 @@ class Inspection(models.Model):
     )
     queen_seen = models.BooleanField(default=False)
     addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
+    size = models.IntegerField(blank=True, null=True)
 
     class Meta:
         ordering = ["-dt"]
+
+    def numChoiceDisplay(self):
+        Numbs = SizeChoice.objects.filter(size=self.size).filter(
+            type__iexact='Number').filter(value=self.numbers)
+        if Numbs:
+            return(Numbs[0].text)
+        return(" ")
+
+    def weightChoiceDisplay(self):
+        Numbs = SizeChoice.objects.filter(size=self.size).filter(
+            type__iexact='Weight').filter(value=self.weight)
+        if Numbs:
+            return(Numbs[0].text)
+        return(" ")
+
+    def healthScore(self):
+        nPoss = 0
+        nScore = 0
+        if self.numbers > 0:
+            nPoss = nPoss + 5
+            nScore = nScore + 6 - self.numbers
+        
+        if self.eggs > 0:
+            nPoss = nPoss + 5
+            nScore = nScore + 6 - self.eggs
+
+        if self.varroa > 0:
+            nPoss = nPoss + 10
+            nScore = nScore + 11 - self.varroa*2
+        else:
+            nPoss = nPoss + 1
+
+        if self.weight > 0:
+            nPoss = nPoss + 5
+            nScore = nScore + 6 - self.weight
+
+        if self.disease > 0:
+            nPoss = nPoss + 3
+            nScore = nScore + 4 - self.disease
+
+        if self.temper > 0:
+            nPoss = nPoss + 3
+            nScore = nScore + 4 - self.temper
+
+        logging.debug(f"Health score, Poss: {nPoss}, Score {nScore}, result {(nScore / nPoss) * 100}%")
+        return((nScore / nPoss) * 100)
+
 
 
 class Transfer(models.Model):
@@ -376,11 +419,15 @@ class Treatment(models.Model):
     def __str__(self):
         return(f"{self.treatment.name} in {colony.colonyID}")
 
+
 class SizeChoice(models.Model):
     size = models.IntegerField()
     type = models.CharField(max_length=10)
     value = models.IntegerField()
-    text = models.CharField(max_length=30)
+    text = models.CharField(max_length=40)
+
+    class Meta:
+        ordering = ["type", "size", "value"]
 
     def __str__(self):
         return(f"Size: {self.size}, type: {self.type}, value: {self.value}, text: {self.text}")
