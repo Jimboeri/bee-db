@@ -30,6 +30,8 @@ from .forms import (
     AdminFeedbackModelForm,
 )
 
+from .utils import sizeChoices
+
 import datetime
 import logging
 
@@ -54,7 +56,7 @@ def apDetail(request, ap_ref):
         return render(request, "beedb/not_authorised.html")
     context = {"ap": ap}
     deadCol = []
-    for c in ap.colony_set.all():
+    for c in ap.colony_set.all().order_by("-status_dt"):
         if c.status == "D" or c.status == "A":
             if c.status_dt > (timezone.now() - datetime.timedelta(weeks=104)):
                 deadCol.append(c)
@@ -326,7 +328,7 @@ def colCombine2(request, col1_ref, col2_ref):
 @login_required
 def inspectDetail(request, ins_ref):
     ins = get_object_or_404(Inspection, pk=ins_ref)
-    context = {"ins": ins}
+    context = {"ins": ins, 'currUser': request.user}
     return render(request, "beedb/inspectDetail.html", context)
 
 
@@ -335,15 +337,15 @@ def inspectMod(request, ins_ref):
     ins = get_object_or_404(Inspection, pk=ins_ref)
     if request.method == "POST":
         # print("Post message received")
-        nf = InspectionForm(request.POST, instance=ins)
+        nf = InspectionForm(request.POST, instance=ins, inColony = ins.colony)
         if nf.is_valid():
             ins.save()
 
             return HttpResponseRedirect(reverse("beedb:inspectDetail", args=[ins.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = InspectionForm(instance=ins)
-
+        nf = InspectionForm(instance=ins, inColony = ins.colony)
+        
     context = {"form": nf, "ins": ins}
     return render(request, "beedb/inspectMod.html", context)
 
@@ -353,15 +355,14 @@ def inspectAdd(request, col_ref):
     logging.info("Enter inspectAdd")
     col = get_object_or_404(Colony, pk=col_ref)
     if request.method == "POST":
-        logging.info("Post message received")
-        nf = InspectionForm(request.POST)
+        nf = InspectionForm(request.POST, inColony = col)
         df = DiaryForm(request.POST)
         if nf.is_valid():
             logging.info("Inspection valid")
             ins = nf.save(commit=False)
             ins.colony = col
+            ins.size = col.size
             ins.save()
-            logging.info("checking diary")
             if nf.cleaned_data["addDiary"]:
                 if df.is_valid():
                     logging.info("diary is valid")
@@ -375,18 +376,14 @@ def inspectAdd(request, col_ref):
                         return HttpResponseRedirect(
                                 reverse("beedb:colDetail", args=[ins.colony.id])
                             )
-                #else:
-                #    if df.cleaned_data["details"]:
-                #        df.add_error('subject', 'Need to have a subject for the reminder')
-                #        context = {"form": nf, "col": col, "diaryForm": df}
-                #        return render(request, "beedb/inspectAdd.html", context)
             else:
                 return HttpResponseRedirect(
                     reverse("beedb:colDetail", args=[ins.colony.id])
                 )
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = InspectionForm()
+        nf = InspectionForm(inColony = col)
+        #logging.info(sizeChoices(col.size, "Number"))
         df = DiaryForm()
     context = {"form": nf, "col": col, "diaryForm": df}
     return render(request, "beedb/inspectAdd.html", context)
