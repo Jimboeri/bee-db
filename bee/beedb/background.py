@@ -32,6 +32,7 @@ from beedb.models import (
     Diary,
     Config,
     Message,
+    SizeChoice,
     # webNotification,
 )
 
@@ -81,6 +82,30 @@ def check_config():
         cfg.configValue = 4                 # Mon = 0, Fri = 4, Sun = 6
         cfg.lastUpdate = timezone.now()
     cfg.save()
+
+
+
+# ******************************************************************
+def loadSizeChoices():
+    """Loads model data from JSON file"""
+
+    with open('sizeChoice.json') as f:
+        data = json.load(f)
+        for t in data:
+            print(t['Type'])
+            for rec in t['Records']:
+                print(rec['Value'])
+                sizeChoice, created = SizeChoice.objects.get_or_create(
+                    size=rec['Size'],
+                    type=t['Type'],
+                    value =rec['Value'],    
+                )
+                sizeChoice.text =rec['Text']
+                sizeChoice.save()
+            print("-----")
+
+
+
 
 # ******************************************************************
 
@@ -256,6 +281,9 @@ def sys_background():
 
     # lets ensure the needed config parameters are available
     check_config()
+    
+    # Do initial table load
+    loadSizeChoices()
 
     # initialise timers
     checkTimer = timezone.now()

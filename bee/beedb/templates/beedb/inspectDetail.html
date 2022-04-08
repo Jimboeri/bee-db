@@ -23,13 +23,16 @@ Inspection Details
           <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' ins.colony.apiary.id %}" class="text-info">{{ ins.colony.apiary.apiaryID }}</a></th></tr>
           <tr><th>Colony Name : </th><th><a href="{% url 'beedb:colDetail' ins.colony.id %}" class="text-info">{{ ins.colony.colonyID }}</a></th></tr>
           <tr><td>Date : </td><td class = "wrap_cell">{{ ins.dt }}</td></tr>
-          <tr><td>Bee numbers : </td><td>{{ ins.get_numbers_display }}</td></tr>
+          <tr><td>Bee numbers : </td><td>{{ ins.numChoiceDisplay }}</td></tr>
           <tr><td>Eggs : </td><td>{{ ins.get_eggs_display }}</td></tr>
           <tr><td>Varroa : </td><td>{{ ins.get_varroa_display }}</td></tr>
-          <tr><td>Weight : </td><td>{{ ins.get_weight_display }}</td></tr>
+          <tr><td>Weight : </td><td>{{ ins.weightChoiceDisplay }}</td></tr>
           <tr><td>Disease : </td><td>{{ ins.get_disease_display }}</td></tr>
           <tr><td>Temper : </td><td>{{ ins.get_temper_display }}</td></tr>
           <tr><td>Queen seen : </td><td>{{ ins.queen_seen }}</td></tr>
+          {% if currUser.username == 'jim' %}
+            <tr><td>Colony health : </td><td>{{ ins.healthScore|floatformat:"0" }}%</td></tr>
+          {% endif %}
           <tr><td>Notes : </td><td>{{ ins.notes }}</td></tr>
         </table>
       </div>

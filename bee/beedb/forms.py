@@ -11,10 +11,12 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
 
-# from .models import Apiary, Colony, Inspection, Transfer, Diary
+from .utils import sizeChoices
+
 from . import models
 import os
 import datetime
+import logging
 
 
 class ApiaryAddForm(forms.ModelForm):
@@ -45,6 +47,7 @@ class ColonyModelForm(forms.ModelForm):
         fields = [
             "colonyID",
             "descr",
+            "size",
         ]
         widgets = {
             "descr": forms.Textarea(attrs={"rows": 3}),
@@ -74,10 +77,10 @@ class ColonyAddForm(forms.Form):
                             label="Description", required=False)
     descr.widget.attrs.update(rows=3)
     size = forms.IntegerField(
-        initial=1,
+        initial=3,
         min_value=1,
-        max_value=4,
-        help_text="1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)",
+        max_value=5,
+        help_text="Colony size",
     )
     notes = forms.CharField(widget=forms.Textarea, required=False)
     notes.widget.attrs.update(rows=3)
@@ -104,7 +107,20 @@ class InspectionForm(forms.ModelForm):
             "addDiary": forms.CheckboxInput(attrs={'onChange': "rowVisibility3('id_addDiary', 'dLine1', 'dLine2', 'dLine3');"}),
 
         }
-        #queen_seen.widget.attrs.update({'onChange': 'check_user(this.value);'})
+
+    def __init__(self, *args, inColony, **kwargs):
+        try:
+            self.colony = inColony
+            super(InspectionForm, self).__init__(*args, **kwargs)
+            logging.info(f"colony is {self.colony.colonyID}")
+            #self.fields['numbers'].choices=sizeChoices(self.colony.size, "Number")
+            self.fields['numbers'] = forms.ChoiceField(choices=sizeChoices(
+                self.colony.size, "Number"), help_text="How many bees in the hive (seams of bees)?",)
+            self.fields['weight'] = forms.ChoiceField(choices=sizeChoices(
+                self.colony.size, "Weight"), help_text="How heavy is the hive?",)
+
+        except Exception as e:
+            logging.debug(f"Initialisation error is {e}")
 
 
 class TransferForm(forms.ModelForm):
@@ -198,7 +214,8 @@ class DiaryForm(forms.Form):
         details = cleaned_data.get("details")
 
         if details and not subject:
-            self.add_error('subject', 'Need to have a subject for the reminder')
+            self.add_error(
+                'subject', 'Need to have a subject for the reminder')
 
 
 class CustomUserCreationForm(forms.Form):
