@@ -64,6 +64,9 @@
     background-color: orange;
   }
   
+
+  #map { height: 600px; }
+
   /* -------------------------------------
       HEADER, FOOTER, MAIN
   ------------------------------------- */

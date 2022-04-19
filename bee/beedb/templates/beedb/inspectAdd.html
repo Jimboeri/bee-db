@@ -92,19 +92,19 @@ Add Inspection
 </div>
 
 <script>
-console.log("run on load");
-const box = document.getElementById("id_addDiary");
-if (box.checked) {
-  console.log("Diary checked");
-    document.getElementById("dLine1").style.display = "";
-    document.getElementById("dLine2").style.display = "";
-    document.getElementById("dLine3").style.display = "";
-  } else {
-    console.log("Diary NOT checked");
-    document.getElementById("dLine1").style.display = "none";
-    document.getElementById("dLine2").style.display = "none";
-    document.getElementById("dLine3").style.display = "none";
-  }
+  console.log("run on load");
+  const box = document.getElementById("id_addDiary");
+  if (box.checked) {
+    console.log("Diary checked");
+      document.getElementById("dLine1").style.display = "";
+      document.getElementById("dLine2").style.display = "";
+      document.getElementById("dLine3").style.display = "";
+    } else {
+      console.log("Diary NOT checked");
+      document.getElementById("dLine1").style.display = "none";
+      document.getElementById("dLine2").style.display = "none";
+      document.getElementById("dLine3").style.display = "none";
+    }
 </script>
 
 {% endblock %}
