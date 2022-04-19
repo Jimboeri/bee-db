@@ -8,7 +8,7 @@ from django.contrib import auth, messages
 from django.views import generic
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django import forms
 
@@ -34,6 +34,7 @@ from .utils import sizeChoices
 
 import datetime
 import logging
+from geopy.distance import distance
 
 # Create your views here.
 
@@ -43,7 +44,49 @@ def index(request):
 
     apList = Apiary.objects.filter(beek=request.user)
     print(f"Number of apiaries is {len(apList)}")
-    context = {"apList": apList, "apiaryactive": "Y"}
+    mapCoord = {
+        'minLat' : 0,
+        'maxLat' : 0,
+        'centreLat' : 0,
+        'minLong' : 0,
+        'maxLong' : 0,
+        'centreLong' : 0,
+    }
+    for a in apList:
+        if a.latitude and a.longitude:
+            if mapCoord['minLat'] == 0:
+                mapCoord['minLat'] = a.latitude
+                mapCoord['maxLat'] = a.latitude
+            if mapCoord['minLong'] == 0:
+                mapCoord['minLong'] = a.longitude
+                mapCoord['maxLong'] = a.longitude
+            if a.latitude < mapCoord['minLat']:
+                mapCoord['minLat'] = a.latitude
+            if a.latitude > mapCoord['maxLat']:
+                mapCoord['maxLat'] = a.latitude
+            if a.longitude < mapCoord['minLong']:
+                mapCoord['minLong'] = a.longitude
+            if a.longitude > mapCoord['maxLong']:
+                mapCoord['maxLong'] = a.longitude
+    mapCoord['centreLat'] = (mapCoord['minLat'] + mapCoord['maxLat']) / 2
+    mapCoord['centreLong'] = (mapCoord['minLong'] + mapCoord['maxLong']) / 2
+    mapCoord['maxDist'] = distance((mapCoord['minLat'], mapCoord['minLong']), (mapCoord['maxLat'], mapCoord['maxLong'])).m
+    if mapCoord['maxDist'] < 1000:
+        mapCoord['zoom'] = 16
+    elif mapCoord['maxDist'] < 3500:
+        mapCoord['zoom'] = 15
+    elif mapCoord['maxDist'] < 5000:
+        mapCoord['zoom'] = 14
+    elif mapCoord['maxDist'] < 8000:
+        mapCoord['zoom'] = 13
+    elif mapCoord['maxDist'] < 20000:
+        mapCoord['zoom'] = 12
+    elif mapCoord['maxDist'] < 100000:
+        mapCoord['zoom'] = 11
+    else:
+        mapCoord['zoom'] = 10
+    context = {"apList": apList, "apiaryactive": "Y", "mapCoord": mapCoord}
+
     return render(request, "beedb/index.html", context)
     # return HttpResponse("Hello, world. You're at the beedb index.")
 
@@ -598,7 +641,7 @@ def signup(request):
 
 def activate_account(request, uidb64, token):
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
+        uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
