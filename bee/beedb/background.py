@@ -10,6 +10,7 @@ import time
 from django.utils import timezone
 from django import template
 from django.core.mail import send_mail
+import logging
 
 #from email.mime.text import MIMEText
 
@@ -53,8 +54,6 @@ def testPr(tStr):
     return
 
 # ******************************************************************
-
-
 def check_config():
     """
     Checks config table and creates any config enties needed
@@ -62,6 +61,7 @@ def check_config():
     # last daily update
     cfg, created = Config.objects.get_or_create(key="lstDaily")
     if created:
+        logging.info("Config entry lstDaily created")
         cfg.configDt = timezone.now()
         cfg.configValue = 8                 # lets do 8:00 am
         cfg.lastUpdate = timezone.now()
@@ -70,6 +70,7 @@ def check_config():
     # last weekly update
     cfg, created = Config.objects.get_or_create(key="lstWeekly")
     if created:
+        logging.info("Config entry lstWeekly created")
         cfg.configDt = timezone.now()
         cfg.configValue = 8                 # lets do 8:00 am
         cfg.lastUpdate = timezone.now()
@@ -78,6 +79,7 @@ def check_config():
     # Day of week for weekly emails
     cfg, created = Config.objects.get_or_create(key="commsWeeklyDay")
     if created:
+        logging.info("Config entry commsWeeklyDay created")
         cfg.configDt = timezone.now()
         cfg.configValue = 4                 # Mon = 0, Fri = 4, Sun = 6
         cfg.lastUpdate = timezone.now()
@@ -92,9 +94,9 @@ def loadSizeChoices():
     with open('sizeChoice.json') as f:
         data = json.load(f)
         for t in data:
-            print(t['Type'])
+            logging.debug(t['Type'])
             for rec in t['Records']:
-                print(rec['Value'])
+                #logging.debug(rec['Value'])
                 sizeChoice, created = SizeChoice.objects.get_or_create(
                     size=rec['Size'],
                     type=t['Type'],
@@ -102,14 +104,10 @@ def loadSizeChoices():
                 )
                 sizeChoice.text =rec['Text']
                 sizeChoice.save()
-            print("-----")
-
-
+            logging.debug("-----")
 
 
 # ******************************************************************
-
-
 def sendMessage(msg):
     """
     Function that takes a message and sends it out by whatever channel the user defines
@@ -236,10 +234,12 @@ def procWeeklyReminders():
                 apDet = {"apID": ap.apiaryID,
                          "element": ap}
                 colonies = Colony.objects.filter(apiary = ap)
+                liveApiary = False
                 colonyDets = []
                 for colony in colonies:
                     print(f"Processing colony: {colony.colonyID}")
                     if colony.status == "C":        # only send details on current colonies
+                        liveApiary = True
                         colDet = {"element": colony}
                         # get last inspection
                         #i1 = colony.lastInspection()
@@ -260,11 +260,13 @@ def procWeeklyReminders():
                         colonyDets.append(colDet)
 
                 apDet["colonies"] = colonyDets
-                apiaryDets.append(apDet)
+                if liveApiary:          # Onle send info if there are live colonies
+                    apiaryDets.append(apDet)
             print(apiaryDets)
-            context = {"apList": apiaryDets, "beek": beek, "web_base_url": eWeb_Base_URL}
-            sendEmail(context, "beedb/email/weekly_summary.html", beek)
-
+            if len(apiaryDets) > 0:
+                context = {"apList": apiaryDets, "beek": beek, "web_base_url": eWeb_Base_URL}
+                sendEmail(context, "beedb/email/weekly_summary.html", beek)
+    return
 
 # ******************************************************************
 def sys_background():
@@ -273,11 +275,11 @@ def sys_background():
 
     global scriptID
 
-    print(" ")
-    print(" ")
-    print("---------------------------------")
-    print("Start function - Background script")
-    print("---------------------------------")
+    logging.info(" ")
+    logging.info(" ")
+    logging.info("---------------------------------")
+    logging.info("Start function - Background script")
+    logging.info("---------------------------------")
 
     # lets ensure the needed config parameters are available
     check_config()
@@ -291,10 +293,10 @@ def sys_background():
     startTime = timezone.now()
     startedTime = timezone.now()
 
-    print("About to start loop")
+    logging.info("About to start loop")
 
     if testFlag:
-        print("Testing - run weekly summary proc")
+        logging.info("Testing - run weekly summary proc")
         procWeeklyReminders()
 
     while True:
