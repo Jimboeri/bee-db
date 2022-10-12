@@ -42,6 +42,11 @@ from geopy.distance import distance
 @login_required
 def index(request):
 
+    beek=request.user
+    if beek.is_superuser:
+        logging.debug(f"Get = {request.GET}")
+
+
     apList = Apiary.objects.filter(beek=request.user)
     print(f"Number of apiaries is {len(apList)}")
     mapCoord = {
@@ -573,10 +578,17 @@ def colDiaryComplete(request, diary_ref, col_ref):
 
     return HttpResponseRedirect(reverse("beedb:colDetail", args=[col_ref]))
 
+@login_required
+def reports(request):
+    """
+    View that displays available reports.
+    """
+
+    return render(request, "beedb/reports.html")
 
 def purchSales(request):
     aList = request.user.apiary_set.all()
-    print(f"Number of apiaries is {len(aList)}")
+    #print(f"Number of apiaries is {len(aList)}")
     pList = []
     sList = []
     for a in aList:
@@ -593,7 +605,6 @@ def purchSales(request):
         disp = True
     context = {"pList": pList, "sList": sList, "disp": disp}
     return render(request, "beedb/purchSales.html", context)
-
 
 
 def login(request):

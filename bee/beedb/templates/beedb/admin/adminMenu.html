@@ -1,0 +1,13 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Admin menu
+{% endblock %}
+
+{% block web-body %}
+
+<h3>Available options</h3>
+
+<a href="{% url 'beedb:admBeekeepers' %}" >Beekeepers</a><br>
+
+{% endblock %}

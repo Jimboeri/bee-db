@@ -55,7 +55,7 @@
               <a class="nav-link" href="{% url 'beedb:index' %}">Apiaries</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="{% url 'beedb:purchSales' %}">Purchases & Sales</a>
+              <a class="nav-link" href="{% url 'beedb:reports' %}">Reports</a>
             </li>
             {% if feedbackactive %}
               <li class="nav-item active">
@@ -64,6 +64,11 @@
             {% endif %}
             <a class="nav-link" href="{% url 'beedb:fbIndex' %}">Feedback & Comments</a>
             </li>
+            {% if user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'beedb:adminMenu' %}">Admin options</a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       </nav>

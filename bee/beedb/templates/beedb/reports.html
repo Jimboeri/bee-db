@@ -1,0 +1,15 @@
+{% extends "beedb/webbase.html" %}
+
+{% block pagerefresh %}<meta http-equiv="refresh" content="300">{% endblock %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block web-body %}
+
+<h3>Available reports</h3>
+
+<a href="{% url 'beedb:purchSales' %}" >Purchases & sales </a><br>
+
+{% endblock %}

@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 
-from . import views, profile
+from . import views, profile, adminViews
 
 app_name = "beedb"
 urlpatterns = [
@@ -47,7 +47,8 @@ urlpatterns = [
     path("commsPrefDetail/", profile.commsPrefDetail, name="commsPrefDetail"),
     path("commsPrefMod/", profile.commsPrefMod, name="commsPrefMod"),
 
-    # Displays purchases & sales
+    # Displays reports
+    path("reports/", views.reports, name="reports"),
     path("purch/", views.purchSales, name="purchSales"),
 
     # Feedback section
@@ -56,6 +57,9 @@ urlpatterns = [
     path("fbView/<int:fb_ref>", views.userFeedbackView, name="userfbView"),
     path("fbMod/<int:fb_ref>", views.adminFeedbackMod, name="adminfbMod"),
 
+    #Admin section
+    path("adminIndex/", adminViews.adminMenu, name="adminMenu"),
+    path("adminBeekeepers/", adminViews.admBeekeepers, name="admBeekeepers"),
 
     path("logout/", views.logout, name="logout"),
     path("login/", views.login, name="login"),

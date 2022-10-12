@@ -1,0 +1,21 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Admin - Beekeepers
+{% endblock %}
+
+{% block web-body %}
+
+<h3>Beekeepers</h3>
+
+<div>
+    <table class="table">
+        {% for beek in beeks %}
+            <tr>
+                <td><a href="{% url 'beedb:index' %}?beek={{admUsr.id}}" class="list-group-item list-group-item-action list-group-item-warning">{{ beek.username }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}
