@@ -259,7 +259,6 @@ class Inspection(models.Model):
         return((nScore / nPoss) * 100)
 
 
-
 class Transfer(models.Model):
     colony = models.ForeignKey(
         Colony, on_delete=models.SET_NULL, null=True, blank=True)
