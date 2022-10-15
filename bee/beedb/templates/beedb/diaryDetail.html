@@ -11,17 +11,21 @@ Reminder entry Details
     <div id="diary_detail" class="content_block">
       <div id="diary_det_table">
         <table>
+          {% if usrInfo.isOwner %}
           <div class="text-right">
             <div class="btn-group">
               <a class="btn btn-info" href="{% url 'beedb:diaryMod' diary.id %}">Update</a>
               <a class="btn btn-warning" href="{% url 'beedb:colDiaryComplete' diary.id diary.colony.id%}">Mark completed</a>
             </div>
           </div>
+          {% else %}
+            <tr><th>Beekeeper: </th><th>{{ usrInfo.procBeek.username }}</th></tr>
+          {% endif %}
           {% if diary.apiary %}
-            <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' diary.apiary.id %}" class="text-info">{{ diary.apiary.apiaryID }}</a></th></tr>
+            <tr><th>Apiary : </th><th><a href="{% url 'beedb:apDetail' diary.apiary.id %}{{usrInfo.getParams}}" class="text-info">{{ diary.apiary.apiaryID }}</a></th></tr>
           {% endif %}
           {% if diary.colony %}
-            <tr><th>Colony : </th><th><a href="{% url 'beedb:colDetail' diary.colony.id %}" class="text-info">{{ diary.colony.colonyID }}</a></th></tr>
+            <tr><th>Colony : </th><th><a href="{% url 'beedb:colDetail' diary.colony.id %}{{usrInfo.getParams}}" class="text-info">{{ diary.colony.colonyID }}</a></th></tr>
           {% endif %}
           <tr><td>Subject : </td><td class = "wrap_cell">{{ diary.subject }}</td></tr>
           <tr><td>Description : </td><td class = "wrap_cell">{{ diary.details }}</td></tr>

@@ -30,7 +30,7 @@ from .forms import (
     AdminFeedbackModelForm,
 )
 
-from .utils import sizeChoices
+from .utils import sizeChoices, usrCheck
 
 import datetime
 import logging
@@ -39,16 +39,14 @@ from geopy.distance import distance
 # Create your views here.
 
 
+
 @login_required
 def index(request):
 
-    beek=request.user
-    if beek.is_superuser:
-        logging.debug(f"Get = {request.GET}")
+    usrInfo = usrCheck(request)
 
-
-    apList = Apiary.objects.filter(beek=request.user)
-    print(f"Number of apiaries is {len(apList)}")
+    apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
+    logging.info(f"Number of apiaries is {len(apList)}")
     mapCoord = {
         'minLat' : 0,
         'maxLat' : 0,
@@ -91,16 +89,17 @@ def index(request):
     else:
         mapCoord['zoom'] = 10
     context = {"apList": apList, "apiaryactive": "Y", "mapCoord": mapCoord}
-
+    context['usrInfo'] = usrInfo
+    
     return render(request, "beedb/index.html", context)
-    # return HttpResponse("Hello, world. You're at the beedb index.")
 
 
 @login_required
 def apDetail(request, ap_ref):
 
+    usrInfo = usrCheck(request)
     ap = get_object_or_404(Apiary, pk=ap_ref)
-    if ap.beek != request.user:
+    if ap.beek != usrInfo["procBeek"]:
         return render(request, "beedb/not_authorised.html")
     context = {"ap": ap}
     deadCol = []
@@ -109,11 +108,15 @@ def apDetail(request, ap_ref):
             if c.status_dt > (timezone.now() - datetime.timedelta(weeks=104)):
                 deadCol.append(c)
     context["deadCol"] = deadCol
+    context['usrInfo'] = usrInfo
     return render(request, "beedb/apDetail.html", context)
 
 
 @login_required
 def apAdd(request):
+    usrInfo = usrCheck(request)
+    if request.user != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
 
     if request.method == "POST":
         nf = ApiaryAddForm(request.POST)
@@ -136,7 +139,10 @@ def apAdd(request):
 
 @login_required
 def apMod(request, ap_ref):
+
     ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
         nf = ApiaryAddForm(request.POST, instance=ap)
@@ -155,6 +161,8 @@ def apMod(request, ap_ref):
 @login_required
 def colAdd(request, ap_ref, col_add_type):
     ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
         if col_add_type == 1:
@@ -266,18 +274,25 @@ def colAdd(request, ap_ref, col_add_type):
 
 @login_required
 def colDetail(request, col_ref):
+    usrInfo = usrCheck(request)
     col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
     lst_inspect = {}
     if col.inspection_set.all():
         lst_inspect = col.inspection_set.all()[0]
     diary = col.diary_set.filter(completed=False)
     context = {"col": col, "diary": diary, "lst_inspect": lst_inspect}
+    context['usrInfo'] = usrInfo
+
     return render(request, "beedb/colDetail.html", context)
 
 
 @login_required
 def colMod(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
         nf = ColonyModelForm(request.POST, instance=col)
@@ -375,14 +390,21 @@ def colCombine2(request, col1_ref, col2_ref):
 
 @login_required
 def inspectDetail(request, ins_ref):
+    usrInfo = usrCheck(request)
     ins = get_object_or_404(Inspection, pk=ins_ref)
+    if ins.colony.apiary.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
     context = {"ins": ins, 'currUser': request.user}
+    context['usrInfo'] = usrInfo
     return render(request, "beedb/inspectDetail.html", context)
 
 
 @login_required
 def inspectMod(request, ins_ref):
+
     ins = get_object_or_404(Inspection, pk=ins_ref)
+    if ins.colony.apiary.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
         nf = InspectionForm(request.POST, instance=ins, inColony = ins.colony)
@@ -400,8 +422,10 @@ def inspectMod(request, ins_ref):
 
 @login_required
 def inspectAdd(request, col_ref):
-    logging.info("Enter inspectAdd")
+    
     col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         nf = InspectionForm(request.POST, inColony = col)
         df = DiaryForm(request.POST)
@@ -440,6 +464,8 @@ def inspectAdd(request, col_ref):
 @login_required
 def inspectDel(request, ins_ref):
     ins = get_object_or_404(Inspection, pk=ins_ref)
+    if ins.colony.apiary.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
     col = ins.colony
     if request.method == "POST":
         ins.delete()
@@ -519,8 +545,16 @@ def colSplit(request, col_ref):
 
 @login_required
 def diaryDetail(request, diary_ref):
+    usrInfo = usrCheck(request)
     diary = get_object_or_404(Diary, pk=diary_ref)
+    if diary.colony:
+        if diary.colony.apiary.beek != usrInfo["procBeek"]:
+            return render(request, "beedb/not_authorised.html")
+    elif diary.apiary:
+        if diary.apiary.beek != usrInfo["procBeek"]:
+            return render(request, "beedb/not_authorised.html")
     context = {"diary": diary}
+    context['usrInfo'] = usrInfo
     return render(request, "beedb/diaryDetail.html", context)
 
 

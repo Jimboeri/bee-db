@@ -13,32 +13,36 @@ Colony Details
       <div id="col_det_table">
         <table>
           <div class="text-right">
-            <div class="btn-group">
-              <a class="btn btn-info" href="{% url 'beedb:inspectAdd' col.id %}">Inspect</a>
-              <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                Other actions
-              </button>
-              {% if col.status == "C" %}
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add reminder</a>
-                <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Edit colony details</a>
-                <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
-                <a class="dropdown-item" href="{% url 'beedb:colSplit' col.id %}">Split colony</a>
-                <a class="dropdown-item" href="{% url 'beedb:colCombine' col.id %}">Combine colonies</a>
-                <a class="dropdown-item" href="{% url 'beedb:colTransfer' col.id %}">Sell/give colony</a>
-                <a class="dropdown-item" href="{% url 'beedb:colDead' col.id %}">Colony Dead</a>
+            {% if usrInfo.isOwner %}
+              <div class="btn-group">
+                <a class="btn btn-info" href="{% url 'beedb:inspectAdd' col.id %}">Inspect</a>
+                <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                  Other actions
+                </button>
+                {% if col.status == "C" %}
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add reminder</a>
+                  <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Edit colony details</a>
+                  <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
+                  <a class="dropdown-item" href="{% url 'beedb:colSplit' col.id %}">Split colony</a>
+                  <a class="dropdown-item" href="{% url 'beedb:colCombine' col.id %}">Combine colonies</a>
+                  <a class="dropdown-item" href="{% url 'beedb:colTransfer' col.id %}">Sell/give colony</a>
+                  <a class="dropdown-item" href="{% url 'beedb:colDead' col.id %}">Colony Dead</a>
+                </div>
+                {% else %}
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Update colony</a>
+                </div>
+                {% endif %}
               </div>
-              {% else %}
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Update colony</a>
-              </div>
-              {% endif %}
-            </div>
+            {% else %}
+            <tr><th>Beekeeper: </th><th>{{ usrInfo.procBeek.username }}</th></tr>
+            {% endif %}
           </div>
 
           <tr class="d-flex">
             <th class="col">Apiary : </th>
-            <th class="col"><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
+            <th class="col"><a class="text-warning" href="{% url 'beedb:apDetail' col.apiary.id %}{{usrInfo.getParams}}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
           </tr>
           <tr class="d-flex">
             <th class="col">Colony Name : </th>
@@ -63,7 +67,7 @@ Colony Details
         <table class="table table-borderless">
           {% for d in diary %}
             <tr class="d-flex">
-              <td><a href="{% url 'beedb:diaryDetail' d.id %}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
+              <td><a href="{% url 'beedb:diaryDetail' d.id %}{{usrInfo.getParams}}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
               <td>{{ d.subject }}</td>
             </tr>
           {% endfor %}
@@ -76,7 +80,7 @@ Colony Details
       <table class="table table-borderless">
         {% for ins in col.inspection_set.all %}
           <tr class="d-flex">
-            <td><a href="{% url 'beedb:inspectDetail' ins.id %}" class="text-warning">{{ins.dt|date:"D d/m/Y"}}</a></td>
+            <td><a href="{% url 'beedb:inspectDetail' ins.id %}{{usrInfo.getParams}}" class="text-warning">{{ins.dt|date:"D d/m/Y"}}</a></td>
             <td>{{ ins.notes }}</td>
           </tr>
         {% endfor %}
