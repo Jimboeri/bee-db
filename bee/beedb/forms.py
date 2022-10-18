@@ -18,6 +18,16 @@ import os
 import datetime
 import logging
 
+# define some re-used choice options
+VARROA_CHOICES = [
+        (0, "Not recorded"),
+        (1, "No varroa seen"),
+        (2, "1 - 2 varroa / 300 bees"),
+        (3, "3 - 6 varroa / 300 bees"),
+        (4, "7 - 15 varroa / 300 bees"),
+        (5, "More than 15 varroa / 300 bees"),
+    ]
+
 
 class ApiaryAddForm(forms.ModelForm):
     class Meta:
@@ -337,3 +347,28 @@ class AdminFeedbackModelForm(forms.ModelForm):
         fields = ["status",
                   "devComment",
                   ]
+
+class TreatInInspectForm(forms.Form):
+    treatmentType = forms.ModelChoiceField(models.TreatmentType.objects.all())
+    preVarroa = forms.ChoiceField(choices=VARROA_CHOICES)
+    notes = forms.CharField(
+        widget=forms.Textarea, label="Description", required=False
+    )
+    notes.widget.attrs.update(rows=3)
+    removeDt = forms.DateField(initial=timezone.now() +
+                            datetime.timedelta(weeks=1), label="Due:")
+
+    widgets = {
+        "removeDt": AdminDateWidget,
+    }
+
+    """
+    def clean(self):
+        cleaned_data = super().clean()
+        subject = cleaned_data.get("subject")
+        details = cleaned_data.get("details")
+
+        if details and not subject:
+            self.add_error(
+                'subject', 'Need to have a subject for the reminder')
+    """

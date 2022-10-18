@@ -7,6 +7,16 @@ from django.db.models.signals import post_save
 
 import logging
 
+# define some re-used choice options
+VARROA_CHOICES = [
+        (0, "Not recorded"),
+        (1, "No varroa seen"),
+        (2, "1 - 2 varroa / 300 bees"),
+        (3, "3 - 6 varroa / 300 bees"),
+        (4, "7 - 15 varroa / 300 bees"),
+        (5, "More than 15 varroa / 300 bees"),
+    ]
+
 # Create your models here.
 
 
@@ -138,7 +148,6 @@ class Inspection(models.Model):
     """
 
     # These choices are overwritten from a DB table, but are necessary for validation
-
     EGG_CHOICES = [
         (0, "Not recorded"),
         (1, "Lots of eggs & larvae, good brood pattern"),
@@ -147,14 +156,7 @@ class Inspection(models.Model):
         (4, "A few larvae, no eggs seen"),
         (5, "None"),
     ]
-    VARROA_CHOICES = [
-        (0, "Not recorded"),
-        (1, "No varroa seen"),
-        (2, "1 - 2 varroa / 300 bees"),
-        (3, "3 - 6 varroa / 300 bees"),
-        (4, "7 - 15 varroa / 300 bees"),
-        (5, "More than 15 varroa / 300 bees"),
-    ]
+
     # These choices are overwritten from a DB table, but are necessary for validation
     WEIGHT_CHOICES = [
         (0, "Not recorded"),
@@ -396,8 +398,8 @@ class TreatmentType(models.Model):
     manufacturer = models.CharField(max_length=100)
     organic = models.BooleanField(default=False)
     requireRemoval = models.BooleanField(default=False)
-    daysInHive = models.IntegerField()
-    url = models.URLField()
+    daysInHive = models.IntegerField(blank=True, null=True)
+    url = models.URLField(blank=True, null=True)
     description = models.TextField()
     instructions = models.TextField()
 
@@ -411,9 +413,15 @@ class Treatment(models.Model):
     completed = models.BooleanField(default=False)
     insertDt = models.DateTimeField(blank=True, null=True)
     removeDt = models.DateTimeField(blank=True, null=True)
-    notes = models.TextField()
+    notes = models.TextField(blank=True, null=True)
     inspection = models.ForeignKey(
         Inspection, on_delete=models.SET_NULL, null=True, blank=True)
+    preVarroa = models.IntegerField(
+        help_text="How much varroa is in the hive before treating?", choices=VARROA_CHOICES, default=0,
+    )
+    postVarroa = models.IntegerField(
+        help_text="How much varroa is in the hive after treating?", choices=VARROA_CHOICES, default=0,
+    )
 
     def __str__(self):
         return(f"{self.treatment.name} in {colony.colonyID}")
