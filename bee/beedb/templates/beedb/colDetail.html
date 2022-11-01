@@ -22,6 +22,7 @@ Colony Details
                 {% if col.status == "C" %}
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add reminder</a>
+                  <a class="dropdown-item" href="{% url 'beedb:treatmentAdd' col.id %}">Add treatment</a>
                   <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Edit colony details</a>
                   <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
                   <a class="dropdown-item" href="{% url 'beedb:colSplit' col.id %}">Split colony</a>
@@ -61,24 +62,43 @@ Colony Details
         </table>
       </div>
     </div>
-    {% if diary %}
+    {% if diary or treatments %}
       <div id="col_diary" class="bd_content_block">
-        <H3>Reminders</H3>
-        <table class="table table-borderless">
-          {% for d in diary %}
-            <tr class="d-flex">
-              <td><a href="{% url 'beedb:diaryDetail' d.id %}{{usrInfo.getParams}}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
-              <td>{{ d.subject }}</td>
-            </tr>
-          {% endfor %}
-        </table>
+        {% if diary %}
+          <H3>Reminders</H3>
+          <table class="table table-borderless">
+            {% for d in diary %}
+              <tr class="d-flex">
+                <td><a href="{% url 'beedb:diaryDetail' d.id %}{{usrInfo.getParams}}" class="text-warning">{{d.dueDt|date:"D d/m/Y"}}</a></td>
+                <td>{{ d.subject }}</td>
+                {% if d.dueDt < today %}
+                  <td><span class = "badge badge-warning">Overdue</span></td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+        {% if treatments %}
+          <H3>Treatments still in the colony</H3>
+          <table class="table table-borderless">
+            {% for t in treatments %}
+              <tr class="d-flex">
+                <td><a href="{% url 'beedb:treatDetail' t.id %}{{usrInfo.getParams}}" class="text-warning">{{t.treatmentType.name}}</a></td>
+                <td>Remove on: {{ t.removeDt|date:"D d/m/Y" }}</td>
+                {% if t.removeDt < today %}
+                  <td><span class = "badge badge-warning">Overdue for removal</span></td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
       </div>
     {% endif %}
 
     <div id="col_inspections" class="bd_content_block">
-      <H3>Inspections</H3>
+      <H3>Inspections in the last year</H3>
       <table class="table table-borderless">
-        {% for ins in col.inspection_set.all %}
+        {% for ins in pastInspections %}
           <tr class="d-flex">
             <td><a href="{% url 'beedb:inspectDetail' ins.id %}{{usrInfo.getParams}}" class="text-warning">{{ins.dt|date:"D d/m/Y"}}</a></td>
             <td>{{ ins.notes }}</td>
@@ -86,6 +106,21 @@ Colony Details
         {% endfor %}
       </table>
     </div>
+
+    {% if pastTreatments %}
+    <div id="col_treatments" class="bd_content_block">
+      <H3>Treatments in the last year</H3>
+      <table class="table table-borderless">
+        {% for tr in pastTreatments %}
+          <tr class="d-flex">
+            <td><a href="{% url 'beedb:treatDetail' tr.id %}{{usrInfo.getParams}}" class="text-warning">{{tr.insertDt|date:"D d/m/Y"}}</a></td>
+            <td>{{ tr.treatmentType.name }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% endif %}
+
   </div>
 
 </div>

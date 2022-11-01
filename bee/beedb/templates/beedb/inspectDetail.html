@@ -13,11 +13,11 @@ Inspection Details
         <table>
           {% if usrInfo.isOwner %}
             <div class="dropdown text-right">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <a class="btn btn-info" href="{% url 'beedb:inspectMod' ins.id %}">Edit</a>
+              <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
                 Actions
               </button>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'beedb:inspectMod' ins.id %}">Update</a>
                 <a class="dropdown-item" href="{% url 'beedb:inspectDel' ins.id %}">Delete</a>
               </div>
             </div> 
@@ -41,7 +41,7 @@ Inspection Details
         </table>
       </div>
     </div>
-  </div>
+  </div> 
 
   <a href="{% url 'beedb:colDetail' ins.colony.id %}{{usrInfo.getParams}}" class="btn btn-info" role="button">Colony</a>
 </div>

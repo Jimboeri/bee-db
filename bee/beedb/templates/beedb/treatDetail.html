@@ -1,0 +1,46 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Treatment Details
+{% endblock %}
+
+{% block web-body %}
+
+<div id="treat-header"><H2>Treatment details</H2>
+</div>
+
+<div id="treat_detail" class="content_block">
+  <div id="treat_det_table">
+    <table>
+      {% if usrInfo.isOwner %}
+        <div class="text-right">
+            <div class="btn-group">
+            <a class="btn btn-info" href="{% url 'beedb:treatMod' treat.id %}">Update</a>
+            {% if treat.completed is not True %}
+              {% if treat.treatmentType.requireRemoval %}
+                <a class="btn btn-warning" href="{% url 'beedb:treatComplete' treat.id %}">Mark treatment removed</a>
+              {% endif %}
+            {% endif %}
+            </div>
+        </div>
+      {% else %}
+        <tr><th>Beekeeper: </th><th>{{ usrInfo.procBeek.username }}</th></tr>
+      {% endif %}
+      <tr><th>Colony : </th><th><a href="{% url 'beedb:colDetail' treat.colony.id %}{{usrInfo.getParams}}" class="text-info">{{ treat.colony.colonyID }}</a></th></tr>
+      <tr><td>Treatment Type : </td><td class = "wrap_cell">{{ treat.treatmentType }}</td></tr>
+      <tr><td>Description : </td><td class = "wrap_cell text-muted">{{ treat.treatmentType.description }}</td></tr>
+      <tr><td>Instructions : </td><td class = "wrap_cell text-muted">{{ treat.treatmentType.instructions }}</td></tr>
+      <tr><td>Notes : </td><td class = "wrap_cell">{{ treat.trNotes }}</td></tr>
+      <tr><td>Treatment date : </td><td class = "wrap_cell">{{ treat.insertDt|date:"D d M Y" }}</td></tr>
+      {% if treat.treatmentType.requireRemoval %}
+        <tr><td>Date to remove : </td><td class = "wrap_cell">{{ treat.removeDt|date:"D d M Y" }}</td></tr>
+        <tr><td>Treatment removed : </td><td class = "wrap_cell">{{ treat.completed }}</td></tr>
+      {% endif %}
+      <tr><td>Varroa count before : </td><td class = "wrap_cell">{{ treat.get_preVarroa_display }}</td></tr>
+      <tr><td>Varroa count after : </td><td class = "wrap_cell">{{ treat.get_postVarroa_display }}</td></tr>
+    </table>
+  </div>
+</div>
+<a href="{% url 'beedb:colDetail' treat.colony.id %}{{usrInfo.getParams}}" class="btn btn-info" role="button">Back</a>
+
+{% endblock %}

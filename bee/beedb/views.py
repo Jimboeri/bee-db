@@ -12,13 +12,14 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django import forms
 
-from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback
+from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback, Treatment, TreatmentType
 
 from .forms import (
     ApiaryAddForm,
     ColonyAddForm,
     ColonyDeadForm,
     InspectionForm,
+    InspectionOptionsForm,
     TransferForm,
     SwarmForm,
     PurchaseForm,
@@ -26,15 +27,22 @@ from .forms import (
     DiaryModelForm,
     DiaryForm,
     CustomUserCreationForm,
+    TreatInInspectForm,
     UserFeedbackModelForm,
     AdminFeedbackModelForm,
+    NewTreatmentForm,
+    ModTreatmentForm,
+    RemoveTreatmentForm,
 )
 
 from .utils import sizeChoices, usrCheck
 
 import datetime
 import logging
+import os
 from geopy.distance import distance
+
+eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
 # Create your views here.
 
@@ -103,11 +111,22 @@ def apDetail(request, ap_ref):
         return render(request, "beedb/not_authorised.html")
     context = {"ap": ap}
     deadCol = []
+    liveCol = []
     for c in ap.colony_set.all().order_by("-status_dt"):
         if c.status == "D" or c.status == "A":
             if c.status_dt > (timezone.now() - datetime.timedelta(weeks=104)):
                 deadCol.append(c)
+        if c.status == "C":
+            badges = []
+            if c.diary_set.filter(completed=False).filter(dueDt__lte = timezone.now()):
+                badges.append("Overdue reminder")
+            if c.treatment_set.filter(completed=False).filter(removeDt__lte = timezone.now()):
+                badges.append("Treatment needs removal")
+
+            cCol = {"colony": c, "badges": badges}
+            liveCol.append(cCol)
     context["deadCol"] = deadCol
+    context["liveCol"] = liveCol
     context['usrInfo'] = usrInfo
     return render(request, "beedb/apDetail.html", context)
 
@@ -281,9 +300,16 @@ def colDetail(request, col_ref):
     lst_inspect = {}
     if col.inspection_set.all():
         lst_inspect = col.inspection_set.all()[0]
-    diary = col.diary_set.filter(completed=False)
-    context = {"col": col, "diary": diary, "lst_inspect": lst_inspect}
+    diary = col.diary_set.filter(completed=False).order_by('dueDt')
+    treatments = col.treatment_set.filter(completed=False).order_by('removeDt')
+    yearAgo = timezone.now() - datetime.timedelta(weeks=52)
+    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by('-insertDt')
+    pastInspections = col.inspection_set.filter(dt__gte=yearAgo).order_by('-dt')
+    context = {"col": col, "diary": diary, "lst_inspect": lst_inspect, "treatments": treatments}
     context['usrInfo'] = usrInfo
+    context['today'] = timezone.now()
+    context["pastTreatments"] = pastTreatments
+    context["pastInspections"] = pastInspections
 
     return render(request, "beedb/colDetail.html", context)
 
@@ -422,42 +448,78 @@ def inspectMod(request, ins_ref):
 
 @login_required
 def inspectAdd(request, col_ref):
-    
+    logging.debug("InspectAdd function")
     col = get_object_or_404(Colony, pk=col_ref)
     if col.apiary.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
+        logging.debug('Processing inspection')
         nf = InspectionForm(request.POST, inColony = col)
-        df = DiaryForm(request.POST)
-        if nf.is_valid():
-            logging.info("Inspection valid")
+        df = DiaryModelForm(request.POST)
+        tf = TreatInInspectForm(request.POST)
+        optForm = InspectionOptionsForm(request.POST)
+
+        optForm.is_valid()
+
+        lDiary = True
+        if optForm.cleaned_data["addReminder"]:
+            if not df.is_valid():
+                # should redisplay the form
+                lDiary = False
+
+        lTreatment = True
+        if optForm.cleaned_data["addTreatment"]:
+            if not tf.is_valid():
+                # should redisplay the form
+                lTreatment = False
+            if tf.cleaned_data['treatmentType'] is None:
+                lTreatment = False
+            logging.debug(f"TreatmentType = {tf.cleaned_data['treatmentType']}")
+
+        logging.debug(f"lDiary = {lDiary} and lTreatment = {lTreatment}")
+
+        if nf.is_valid() and optForm.is_valid() and lDiary and lTreatment:
+            logging.info(f"Inspection valid, cleaned data = {nf.cleaned_data}")
             ins = nf.save(commit=False)
             ins.colony = col
             ins.size = col.size
             ins.save()
-            if nf.cleaned_data["addDiary"]:
+            if optForm.cleaned_data["addReminder"]:
                 if df.is_valid():
                     logging.info("diary is valid")
                     if df.cleaned_data["subject"]:
                         logging.info("Diary subject not blank")
-                        diary = Diary(beek= request.user, colony=col)
-                        diary.subject = df.cleaned_data["subject"]
-                        diary.details = df.cleaned_data["details"]
-                        diary.dueDt = df.cleaned_data["dueDt"]
+                        diary = df.save(commit=False)
+                        diary.beek= request.user
+                        diary.colony=col
                         diary.save()
-                        return HttpResponseRedirect(
-                                reverse("beedb:colDetail", args=[ins.colony.id])
-                            )
-            else:
-                return HttpResponseRedirect(
+            if optForm.cleaned_data["addTreatment"]:
+                logging.debug("Treatment starting")
+                if tf.is_valid():
+                    logging.debug(f"Treatment is valid, ")
+                    cTreatmentType = tf.cleaned_data["treatmentType"]
+                    tTypes = TreatmentType.objects.filter(name=cTreatmentType)
+                    if tTypes:  #Definately found a tratement type
+                        treatment = Treatment(treatmentType = tTypes[0], colony = col)
+                        treatment.insertDt = ins.dt
+                        treatment.preVarroa = ins.varroa
+                        treatment.removeDt = tf.cleaned_data["removeDt"]
+                        treatment.trNotes = tf.cleaned_data["trNotes"]
+                        if not treatment.treatmentType.requireRemoval:
+                            treatment.completed = True
+                        treatment.save()
+
+            return HttpResponseRedirect(
                     reverse("beedb:colDetail", args=[ins.colony.id])
                 )
     # if a GET (or any other method) we'll create a blank form
     else:
+        optForm = InspectionOptionsForm()
         nf = InspectionForm(inColony = col)
         #logging.info(sizeChoices(col.size, "Number"))
-        df = DiaryForm()
-    context = {"form": nf, "col": col, "diaryForm": df}
+        df = DiaryModelForm()
+        tf = TreatInInspectForm(request.POST)
+    context = {"form": nf, "col": col, "diaryForm": df, "TreatForm": tf, "optForm":optForm}
     return render(request, "beedb/inspectAdd.html", context)
 
 
@@ -542,7 +604,7 @@ def colSplit(request, col_ref):
     context = {"form": nf, "col": col}
     return render(request, "beedb/colSplit.html", context)
 
-
+# Diary / reminder views
 @login_required
 def diaryDetail(request, diary_ref):
     usrInfo = usrCheck(request)
@@ -554,9 +616,8 @@ def diaryDetail(request, diary_ref):
         if diary.apiary.beek != usrInfo["procBeek"]:
             return render(request, "beedb/not_authorised.html")
     context = {"diary": diary}
-    context['usrInfo'] = usrInfo
+    context["usrInfo"] = usrInfo  # type: ignore
     return render(request, "beedb/diaryDetail.html", context)
-
 
 @login_required
 def diaryMod(request, diary_ref):
@@ -575,7 +636,6 @@ def diaryMod(request, diary_ref):
 
     context = {"form": nf, "diary": diary}
     return render(request, "beedb/diaryMod.html", context)
-
 
 @login_required
 def colDiaryAdd(request, col_ref):
@@ -611,6 +671,82 @@ def colDiaryComplete(request, diary_ref, col_ref):
     diary.save()
 
     return HttpResponseRedirect(reverse("beedb:colDetail", args=[col_ref]))
+
+# Varroa treatment views
+@login_required
+def treatmentAdd(request, col_ref):
+    col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
+    if request.method == "POST":
+        # print("Post message received")
+        
+        ntf = NewTreatmentForm(request.POST)
+        #logging.debug(f"Form = {ntf}")
+        #logging.debug(f"TreatmentType = {ntf.cleaned_data['treatmentType']}")
+        if ntf.is_valid():
+            treatment = ntf.save(commit=False)
+            treatment.colony = col
+            if not treatment.treatmentType.requireRemoval:
+                treatment.completed = True
+            treatment.save()
+
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+        else:
+            logging.debug(f"Invalid treatment form {ntf.non_field_errors}")
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        ntf = NewTreatmentForm()
+        
+    context = {"form": ntf, "col": col}
+    return render(request, "beedb/treatmentAdd.html", context)
+
+@login_required
+def treatDetail(request, treat_ref):
+    usrInfo = usrCheck(request)
+    treat = get_object_or_404(Treatment, pk=treat_ref)
+    if treat.colony.apiary.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
+    context = {"treat": treat}
+    context['usrInfo'] = usrInfo  # type: ignore
+    return render(request, "beedb/treatDetail.html", context)
+
+@login_required
+def treatMod(request, treat_ref):
+    treat = get_object_or_404(Treatment, pk=treat_ref)
+
+    if request.method == "POST":
+        # print("Post message received")
+        tf = ModTreatmentForm(request.POST, instance=treat)
+        if tf.is_valid():
+            tf.save()
+
+            return HttpResponseRedirect(reverse("beedb:treatDetail", args=[treat.id]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        tf = ModTreatmentForm(instance=treat)
+
+    context = {"form": tf, "treat": treat}
+    return render(request, "beedb/treatMod.html", context)
+
+@login_required
+def treatComplete(request, treat_ref):
+    treat = get_object_or_404(Treatment, pk=treat_ref)
+    if request.method == "POST":
+        # print("Post message received")
+        tf = RemoveTreatmentForm(request.POST, instance=treat)
+        if tf.is_valid():
+            tf.save()
+
+            return HttpResponseRedirect(reverse("beedb:treatDetail", args=[treat.id]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        treat.completed = True
+        tf = RemoveTreatmentForm(instance=treat)
+
+    context = {"form": tf, "treat": treat}
+    return render(request, "beedb/treatRemove.html", context)
+   
 
 @login_required
 def reports(request):

@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
 
 from .utils import sizeChoices
+from .widgets import FengyuanChenDatePickerInput
 
 from . import models
 import os
@@ -20,13 +21,13 @@ import logging
 
 # define some re-used choice options
 VARROA_CHOICES = [
-        (0, "Not recorded"),
-        (1, "No varroa seen"),
-        (2, "1 - 2 varroa / 300 bees"),
-        (3, "3 - 6 varroa / 300 bees"),
-        (4, "7 - 15 varroa / 300 bees"),
-        (5, "More than 15 varroa / 300 bees"),
-    ]
+    (0, "Not recorded"),
+    (1, "No varroa seen"),
+    (2, "1 - 2 varroa / 300 bees"),
+    (3, "3 - 6 varroa / 300 bees"),
+    (4, "7 - 15 varroa / 300 bees"),
+    (5, "More than 15 varroa / 300 bees"),
+]
 
 
 class ApiaryAddForm(forms.ModelForm):
@@ -95,6 +96,14 @@ class ColonyAddForm(forms.Form):
     notes = forms.CharField(widget=forms.Textarea, required=False)
     notes.widget.attrs.update(rows=3)
 
+class InspectionOptionsForm(forms.Form):
+    addReminder = forms.BooleanField(initial=False, required=False)
+    addTreatment = forms.BooleanField(initial=False, required=False)
+
+    # The js function is in basic.js. The id's are specified in the template. inspacetAdd.html
+    addReminder.widget.attrs.update(onchange="arrVisibility('id_addReminder', ['dLine1', 'dLine2', 'dLine3'])")
+    addTreatment.widget.attrs.update(onchange="arrVisibility('id_addTreatment', ['tLine1', 'tLine2', 'tRemoveDt'])")
+    
 
 class InspectionForm(forms.ModelForm):
     class Meta:
@@ -108,14 +117,11 @@ class InspectionForm(forms.ModelForm):
             "disease",
             "temper",
             "queen_seen",
-            "notes",
-            "addDiary",
+            "notes"
         ]
         widgets = {
             "notes": forms.Textarea(attrs={"rows": 3}),
-            "dt": AdminDateWidget,
-            "addDiary": forms.CheckboxInput(attrs={'onChange': "rowVisibility3('id_addDiary', 'dLine1', 'dLine2', 'dLine3');"}),
-
+            "dt": FengyuanChenDatePickerInput(attrs={'onchange': "TreatRemoveDt('id_dt')"}),
         }
 
     def __init__(self, *args, inColony, **kwargs):
@@ -202,6 +208,8 @@ class DiaryModelForm(forms.ModelForm):
         fields = ["subject", "details", "dueDt", "completed"]
         widgets = {
             "details": forms.Textarea(attrs={"rows": 3}),
+            "dueDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
+
         }
 
 
@@ -348,27 +356,77 @@ class AdminFeedbackModelForm(forms.ModelForm):
                   "devComment",
                   ]
 
+
 class TreatInInspectForm(forms.Form):
-    treatmentType = forms.ModelChoiceField(models.TreatmentType.objects.all())
-    preVarroa = forms.ChoiceField(choices=VARROA_CHOICES)
-    notes = forms.CharField(
-        widget=forms.Textarea, label="Description", required=False
+    """
+    This form is only used in the views.inspectAdd function
+    I could not use a model form as the treatmentType is required in the model. However this stops the
+    form being submitted even if the user does not want to add a treatment
+    """
+    treatmentType = forms.ModelChoiceField(models.TreatmentType.objects.all(), required=False)
+    # this adds an 'onchange' attribute to the field. Every time the field changes
+    # the form is submitted. This allows the remove Dt to be initialised
+    # treatmentType.widget.attrs.update(onchange="this.form.submit()")
+    treatmentType.widget.attrs.update(onchange="TreatRemoveDt('id_dt')")
+
+    removeDt = forms.DateField(label="Take treatment out:",
+                               input_formats=['%Y-%m-%d'],
+                               widget=FengyuanChenDatePickerInput(),
+                               required=False)
+    trNotes = forms.CharField(
+        widget=forms.Textarea, label="Notes", required=False
     )
-    notes.widget.attrs.update(rows=3)
-    removeDt = forms.DateField(initial=timezone.now() +
-                            datetime.timedelta(weeks=1), label="Due:")
+    trNotes.widget.attrs.update(rows=3)
 
-    widgets = {
-        "removeDt": AdminDateWidget,
-    }
+class NewTreatmentForm(forms.ModelForm):
+    class Meta:
+        model = models.Treatment
+        fields = ["treatmentType",
+                  "insertDt",
+                  "removeDt",
+                  "preVarroa",
+                  "trNotes",
+                  "completed"]
+        widgets = {
+            # this adds an 'onchange' attribute to the field. Every time the field changes
+            # the form is submitted. This allows the remove Dt to be initialised
+            # treatmentType.widget.attrs.update(onchange="this.form.submit()")
+            "treatmentType": forms.Select(attrs={'onchange': "TreatRemoveDt('id_insertDt')"}),
+            # Insert dt also uses the javascript function
+            "insertDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d'], 'onchange': "TreatRemoveDt('id_insertDt')"}),
+            "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
+            "trNotes": forms.Textarea(attrs={'rows': 3})
+        }
 
-    """
-    def clean(self):
-        cleaned_data = super().clean()
-        subject = cleaned_data.get("subject")
-        details = cleaned_data.get("details")
 
-        if details and not subject:
-            self.add_error(
-                'subject', 'Need to have a subject for the reminder')
-    """
+class ModTreatmentForm(forms.ModelForm):
+    class Meta:
+        model = models.Treatment
+        fields = ["treatmentType",
+                  "insertDt",
+                  "removeDt",
+                  "preVarroa",
+                  "postVarroa",
+                  "trNotes",
+                  "completed"]
+        widgets = { 
+            # this adds an 'onchange' attribute to the field. Every time the field changes
+            # the form is submitted. This allows the remove Dt to be initialised
+            "treatmentType": forms.Select(attrs={'onchange': "TreatRemoveDt('id_insertDt')"}),
+            "insertDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d'], 'onchange': "TreatRemoveDt('id_insertDt')"}),
+            "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),         
+            "trNotes": forms.Textarea(attrs={'rows': 3})
+        }
+
+
+class RemoveTreatmentForm(forms.ModelForm):
+    class Meta:
+        model = models.Treatment
+        fields = ["removeDt",
+                  "postVarroa",
+                  "trNotes",
+                  "completed"]
+        widgets = {
+            "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
+            "trNotes": forms.Textarea(attrs={'rows': 3})
+        }

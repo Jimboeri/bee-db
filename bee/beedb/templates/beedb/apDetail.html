@@ -13,49 +13,52 @@
 Apiary Details
 {% endblock %}
 
-
 {% block web-body %}
-<div class="bee_background">
 
-  <div id="ap-header"><H2>Apiary information</H2>
-    <div id="ap_detail" class="bd_content_block">
-      <div id="ap_det_table">
-        <table>
-          {% if usrInfo.isOwner %}
-          <div class="dropdown text-right">
-            <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-              Actions
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'beedb:apMod' ap.id %}">Update apiary details</a>
-              <a class="dropdown-item" href="{% url 'beedb:colAdd' ap.id  0 %}">Add colony</a>
-            </div>
-          </div> 
-          {% else %}
-            <tr><th>Beekeeper: </th><th>{{ usrInfo.procBeek.username }}</th></tr>
-          {% endif %}
-          <tr><th>Apiary Name: </th><th>{{ ap.apiaryID }}</th></tr>
-          <tr><td>Description: </td><td class = "wrap_cell">{{ ap.descr }}</td></tr>
-        </table>
-      </div>
-    </div>
-    <div id="ap_colonies" class="bd_content_block">
-      <H4>Colonies</H4>   
-        <table class="table">
-          {% for colony in ap.colony_set.all %}
-            {% if colony.status == "C" %}
-            <tr>
-              <td> <a class="text-warning" href="{% url 'beedb:colDetail' colony.id %}{{usrInfo.getParams}}">{{colony.colonyID}}</a> </td>
-              <td>{{colony.descr}}</td>
-            </tr>
-            {% endif %}
-          {% endfor %}
-        </table>      
-    </div>
+<div id="ap-header"><H2>Apiary information</H2>
+</div>
+<div id="ap_detail" class="bd_content_block">
+  <div id="ap_det_table">
+    <table>
+      {% if usrInfo.isOwner %}
+      <div class="dropdown text-right">
+        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+          Actions
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'beedb:apMod' ap.id %}">Update apiary details</a>
+          <a class="dropdown-item" href="{% url 'beedb:colAdd' ap.id  0 %}">Add colony</a>
+        </div>
+      </div> 
+      {% else %}
+        <tr><th>Beekeeper: </th><th>{{ usrInfo.procBeek.username }}</th></tr>
+      {% endif %}
+      <tr><th>Apiary Name: </th><th>{{ ap.apiaryID }}</th></tr>
+      <tr><td>Description: </td><td class = "wrap_cell">{{ ap.descr }}</td></tr>
+    </table>
   </div>
- 
-  {% if deadCol %}
-    <H5>Dead or absconded colonies in last 2 years</H5>
+</div>
+
+<div id="ap_colonies" class="bd_content_block">
+  <H4>Colonies</H4>   
+    <table class="table">
+      {% for colony in liveCol %}
+        <tr>
+          <td> <a class="text-warning" href="{% url 'beedb:colDetail' colony.colony.id %}{{usrInfo.getParams}}">{{colony.colony.colonyID}}</a> </td>
+          <td>{{colony.colony.descr}}</td>
+          {% if colony.badges %}
+            {% for badge in colony.badges %}
+              <td><span class = "badge badge-warning">{{badge}}</span></td>
+            {% endfor %}
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </table>      
+</div>
+
+{% if deadCol %}
+<div id="ap_colonies" class="bd_content_block">
+  <H5>Dead or absconded colonies in last 2 years</H5>
     <table class="table">
       {% for colony in deadCol %}
         <tr>
@@ -72,10 +75,11 @@ Apiary Details
 
       {% endfor %}
     </table>
-  {% endif %}
-  <div id="map"></div>
-  <a href="{% url 'beedb:index' %}{{usrInfo.getParams}}" class="btn btn-warning" role="button">Return to Apiaries</a>
-</div>
+  </div>
+{% endif %}
+<div id="map"></div>
+<a href="{% url 'beedb:index' %}{{usrInfo.getParams}}" class="btn btn-warning" role="button">Return to Apiaries</a>
+
 
 {% if ap.latitude and ap.longitude %}
 <script>

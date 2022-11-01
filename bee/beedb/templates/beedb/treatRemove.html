@@ -1,0 +1,97 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Treatment removal
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="tr-header"><h3>Treatment removal</h3></div>
+    <div id="tr_detail" class="content_block">
+      <div id="tr_det_table">
+        <form action="{% url 'beedb:treatComplete' treat.id %}" method="POST">
+          {% csrf_token %}
+          {{ form.non_field_errors}}
+          <table>
+            <tr>
+              <th>Apiary:</th>
+              <th><a href="{% url 'beedb:apDetail' treat.colony.apiary.id %}" class="text-info">{{ treat.colony.apiary.apiaryID }}</a></th>
+            </tr>
+            <tr>
+              <th>Colony:</th>
+              <th><a href="{% url 'beedb:colDetail' treat.colony.id %}" class="text-info">{{ treat.colony.colonyID }}</a></th>
+            </tr>
+            <tr id="tLine1">
+              <td>Treatment type</td>
+              <td>{{treat.treatmentType}}</td>
+            </tr>
+            <tr id="tLine2">
+              <td>{{form.trNotes.label_tag}}</td>
+              <td>{{form.trNotes}} {{ form.trNotes.errors  }}</td>
+            </tr>
+            <tr id="tRemoveLine"">
+              <td>{{form.removeDt.label_tag}}</td>
+              <td>{{form.removeDt}} {{ form.removeDt.errors  }}</td>
+            </tr>
+            <tr id="tpostVarroa"">
+              <td>{{form.postVarroa.label_tag}}</td>
+              <td>{{form.postVarroa}} {{ form.postVarroa.errors  }}</td>
+            </tr>
+            <tr id="tLine7"">
+              <td>{{form.completed.label_tag}}</td>
+              <td>{{form.completed}} {{ form.completed.errors  }}</td>
+            </tr>
+          </table>
+        <input type="submit" value="Submit">
+        <span id="ins_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:treatDetail' treat.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+async function chTrType()
+{
+  // First get the value of the treatmentType from the form select
+  var select = document.getElementById('id_treatmentType');
+  var value = select.options[select.selectedIndex].text;
+  //console.log(value);
+
+  // Next construct the URL for our API call
+  const webBase = "{{ webBase }}";
+  var params = {"name": value};
+  var url = new URL(webBase + "/beedb/api/treatmentType/viewByName/");
+  url.searchParams.append("name", select.options[select.selectedIndex].text);
+  //console.log(url);
+
+  // Make the API call
+  const response = await fetch(url);
+  const data = await response.json();
+  if (data.length > 0)
+  {
+    //console.log(data[0])
+    if (data[0]["requireRemoval"] == false) {
+      document.getElementById("tRemoveLine").style.display = "none";
+    }
+    // convert days in hive to milliseconds
+    addMs = data[0]["daysInHive"] * 24 * 60 * 60 * 1000;
+
+    // Get the insert date from tyhe form
+    const insDtTxt = document.getElementById("id_insertDt").value;
+    const insDt = new Date(insDtTxt);
+    //console.log(insDt);
+
+    // newT is new date in ms
+    newT = insDt.getTime() + addMs;
+    // newDt is today plus days in hive
+    nextDt = new Date(newT)
+    // create date in correct format
+    formDt = nextDt.getFullYear() + "-" + pad(nextDt.getMonth()+1) + "-" + pad(nextDt.getDate())
+    // update form field
+    document.getElementById("id_removeDt").value = formDt;
+  }
+}
+</script>
+
+{% endblock %}

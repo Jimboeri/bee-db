@@ -36,6 +36,8 @@ services:
       - traefik.http.routers.dj-monitor.entrypoints=websecure
       - traefik.http.routers.dj-monitor.tls.certresolver=myresolver
       - traefik.http.services.dj-monitor.loadbalancer.server.port=8000
+    environment:
+      BEEDB_WEB_BASE_URL: http://localhost:8005
 
   background:
     image: jimboeri/bee-db-background

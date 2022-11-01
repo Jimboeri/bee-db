@@ -11,13 +11,11 @@ Inspection Update
       <div id="ins_det_table">
         <form action="{% url 'beedb:inspectMod' ins.id %}" method="POST">
           {% csrf_token %}
-          {{ fItems.management_form }}
           {{ form.non_field_errors}}
           <table>
             <tr><th>Apiary : </th><th>{{ ins.colony.apiary.apiaryID }}</th></tr>
             <tr><th>Colony : </th><th>{{ ins.colony.colonyID }}</th></tr>
             {{ form.as_table }}
-            {{ diaryForm.as_table }}
           </table>
         <input type="submit" value="Submit">
         <span id="ins_cancel_button" class="cancel_button">

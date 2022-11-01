@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 
-from . import views, profile, adminViews
+from . import views, profile, adminViews, apiViews
 
 app_name = "beedb"
 urlpatterns = [
@@ -11,35 +11,51 @@ urlpatterns = [
     path("apiary/add/", views.apAdd, name="apAdd"),
     path("apiary/modify/<int:ap_ref>/", views.apMod, name="apMod"),
     path("colony/<int:col_ref>/", views.colDetail, name="colDetail"),
-    path("colony/add/<int:ap_ref>/<int:col_add_type>/", views.colAdd, name="colAdd"),
+    path("colony/add/<int:ap_ref>/<int:col_add_type>/",
+         views.colAdd, name="colAdd"),
     path("colony/modify/<int:col_ref>/", views.colMod, name="colMod"),
-    path("colony/moveChoose/<int:col_ref>/", views.colMoveChoose, name="colMoveChoose"),
+    path("colony/moveChoose/<int:col_ref>/",
+         views.colMoveChoose, name="colMoveChoose"),
     path(
         "colony/moveSelect/<int:col_ref>/<int:ap_ref>/",
         views.colMoveSelect,
         name="colMoveSelect",
     ),
-    path("colony/transfer/<int:col_ref>/", views.colTransfer, name="colTransfer"),
+    path("colony/transfer/<int:col_ref>/",
+         views.colTransfer, name="colTransfer"),
     path("colony/split/<int:col_ref>/", views.colSplit, name="colSplit"),
     path("colony/combine/<int:col_ref>/", views.colCombine, name="colCombine"),
-    path("colony/combine1/<int:col1_ref>/<int:col2_ref>/", views.colCombine1, name="colCombine1"),
-    path("colony/combine2/<int:col1_ref>/<int:col2_ref>/", views.colCombine2, name="colCombine2"),
+    path("colony/combine1/<int:col1_ref>/<int:col2_ref>/",
+         views.colCombine1, name="colCombine1"),
+    path("colony/combine2/<int:col1_ref>/<int:col2_ref>/",
+         views.colCombine2, name="colCombine2"),
     path("colony/dead/<int:col_ref>/", views.colDead, name="colDead"),
-    path("colony/adddiary/<int:col_ref>/", views.colDiaryAdd, name="colDiaryAdd"),
+    path("colony/adddiary/<int:col_ref>/",
+         views.colDiaryAdd, name="colDiaryAdd"),
     path("inspection/<int:ins_ref>/", views.inspectDetail, name="inspectDetail"),
-    path("inspection/modify/<int:ins_ref>/", views.inspectMod, name="inspectMod"),
+    path("inspection/modify/<int:ins_ref>/",
+         views.inspectMod, name="inspectMod"),
     path("inspection/add/<int:col_ref>/", views.inspectAdd, name="inspectAdd"),
     path("inspection/del/<int:ins_ref>/", views.inspectDel, name="inspectDel"),
     path("diary/<int:diary_ref>/", views.diaryDetail, name="diaryDetail"),
     path("diary/modify/<int:diary_ref>/", views.diaryMod, name="diaryMod"),
-    path("diary/complete/<int:diary_ref>/<int:col_ref>/", views.colDiaryComplete, name="colDiaryComplete"),
+    path("diary/complete/<int:diary_ref>/<int:col_ref>/",
+         views.colDiaryComplete, name="colDiaryComplete"),
+
+    # Varroa treatment URL's
+    path("treatment/<int:treat_ref>/", views.treatDetail, name="treatDetail"),
+    path("treatment/add/<int:col_ref>/",
+         views.treatmentAdd, name="treatmentAdd"),
+    path("treatment/modify/<int:treat_ref>/", views.treatMod, name="treatMod"),
+    path("treatment/complete/<int:treat_ref>/",
+         views.treatComplete, name="treatComplete"),
 
     path("profile/", profile.profileDetail, name="profileDetail"),
     path("profileMod/", profile.profileMod, name="profileMod"),
     path("passwordMod/", auth_views.PasswordChangeView.as_view(
-            template_name='beedb/profile/change_password.html',
-            success_url = '/beedb/'
-        ),
+        template_name='beedb/profile/change_password.html',
+        success_url='/beedb/'
+    ),
         name='change_password'
     ),
     path("inspectPrefDetail/", profile.inspectPrefDetail, name="inspectPrefDetail"),
@@ -57,7 +73,7 @@ urlpatterns = [
     path("fbView/<int:fb_ref>", views.userFeedbackView, name="userfbView"),
     path("fbMod/<int:fb_ref>", views.adminFeedbackMod, name="adminfbMod"),
 
-    #Admin section
+    # Admin section
     path("adminIndex/", adminViews.adminMenu, name="adminMenu"),
     path("adminBeekeepers/", adminViews.admBeekeepers, name="admBeekeepers"),
 
@@ -76,7 +92,7 @@ urlpatterns = [
             template_name="accounts/password_reset.html",
             email_template_name="accounts/email/password_reset_email.txt",
             subject_template_name="accounts/email/password_reset_subject.txt",
-            success_url= 'password_reset_done',
+            success_url='password_reset_done',
         ),
         name="password_reset",
     ),
@@ -104,5 +120,10 @@ urlpatterns = [
         name="password_reset_complete",
     ),
 
-]
 
+    # API URL's
+    path("api/treatmentType/", apiViews.treatmentType_list, name="api-treatementType-list"),
+    path("api/treatmentType/view/<int:treatType_ref>", apiViews.treatmentType_view, name="api-treatementType-view"),
+    path("api/treatmentType/viewByName/", apiViews.treatmentType_byName, name="api-treatementType-byName"),
+
+]
