@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'beedb.apps.BeedbConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'mailer',
 ]
 
 MIDDLEWARE = [

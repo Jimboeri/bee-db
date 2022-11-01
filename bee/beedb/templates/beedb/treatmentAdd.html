@@ -1,0 +1,85 @@
+{% extends "beedb/webbase.html" %}
+
+{% comment %}
+{% load static %}
+
+{% block javascript %} 
+<script src="{% static "beedb/treatment.js" %}"></script>
+{% endblock %}
+{% endcomment %}
+
+{% block title %}
+Add Varroa Treatment
+{% endblock %}
+
+{% block web-body %}
+<div id="treatment-header"><h3>Add a varroa treatment</h3>
+</div>
+<div id="treatment_detail" class="content_block">
+  <div id="treatment_det_table">
+    <form action="{% url 'beedb:treatmentAdd' col.id %}" method="POST" name="trForm">
+      {% csrf_token %}
+      
+      {{ form.non_field_errors}}
+      <table>
+        <tr>
+          <th>Apiary:</th>
+          <th><a href="{% url 'beedb:apDetail' col.apiary.id %}" class="text-info">{{ col.apiary.apiaryID }}</a></th>
+        </tr>
+        <tr>
+          <th>Colony:</th>
+          <th><a href="{% url 'beedb:colDetail' col.id %}" class="text-info">{{ col.colonyID }}</a></th>
+        </tr>
+        <tr id="tLine1">
+          <td>Treatment type</td>
+          <td>{{form.treatmentType}} {{ form.treatmentType.errors }}</td>
+        </tr>
+        <tr id="tLine2">
+          <td>Notes</td>
+          <td>{{form.trNotes}} {{ form.trNotes.errors  }}</td>
+        </tr>
+        <tr id="tDescr">
+          <td>Description</td>
+          <td id="tDescrTxt" class="wrap_cell text-muted"></td>
+        </tr>
+        <tr id="tInstr">
+          <td>Instructions</td>
+          <td id="tInstrTxt" class="wrap_cell text-muted"></td>
+        </tr>
+        <tr id="tLine3"">
+          <td>Treatment dt</td>
+          <td>{{form.insertDt}} (YYYY-MM-DD) {{ form.insertDt.errors  }}</td>
+        </tr>
+        <tr id="tRemoveDt"">
+          <td>Removal dt</td>
+          <td>{{form.removeDt}} (YYYY-MM-DD) {{ form.removeDt.errors  }}</td>
+        </tr>
+        <tr id="tLine5"">
+          <td>Varroa per 300 bees before treating</td>
+          <td>{{form.preVarroa}}{{ form.preVarroa.errors  }}</td>
+        </tr>
+      </table>
+      <input type="submit" value="Submit" id="submitButton">
+      <span id="ap_cancel_button" class="cancel_button">
+        <a href="{% url 'beedb:colDetail' col.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+      </span>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Initially hide the descr & instruction lines
+  console.log(document.getElementById("id_treatmentType").value)
+  if (document.getElementById("id_treatmentType").value == ""){
+    console.log("No t Type")
+    document.getElementById("tDescr").style.display = "none";
+    document.getElementById("tInstr").style.display = "none";
+   } else {
+    console.log("Treatment Type chosen")
+    document.getElementById("tDescr").style.display = "";
+    document.getElementById("tInstr").style.display = "";
+   }
+  
+</script>
+
+{% endblock %}

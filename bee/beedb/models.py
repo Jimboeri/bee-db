@@ -9,13 +9,13 @@ import logging
 
 # define some re-used choice options
 VARROA_CHOICES = [
-        (0, "Not recorded"),
-        (1, "No varroa seen"),
-        (2, "1 - 2 varroa / 300 bees"),
-        (3, "3 - 6 varroa / 300 bees"),
-        (4, "7 - 15 varroa / 300 bees"),
-        (5, "More than 15 varroa / 300 bees"),
-    ]
+    (0, "Not recorded"),
+    (1, "No varroa seen"),
+    (2, "1 - 2 varroa / 300 bees"),
+    (3, "3 - 6 varroa / 300 bees"),
+    (4, "7 - 15 varroa / 300 bees"),
+    (5, "More than 15 varroa / 300 bees"),
+]
 
 # Create your models here.
 
@@ -182,7 +182,7 @@ class Inspection(models.Model):
         (0, "Not recorded"),
         (1, "Calm bees"),
         (3, "Bees a bit defensive"),
-        (5, "Bees attach beekeeper"),
+        (5, "Bees attack beekeeper"),
     ]
     colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now,)
@@ -208,7 +208,9 @@ class Inspection(models.Model):
         help_text="How happy is the hive?", choices=TEMPER_CHOICES, default=0,
     )
     queen_seen = models.BooleanField(default=False)
-    addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
+    #addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
+    #addTreatment = models.BooleanField(
+    #    default=False, help_text="Add a reminder?")
     size = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -234,7 +236,7 @@ class Inspection(models.Model):
         if self.numbers > 0:
             nPoss = nPoss + 5
             nScore = nScore + 6 - self.numbers
-        
+
         if self.eggs > 0:
             nPoss = nPoss + 5
             nScore = nScore + 6 - self.eggs
@@ -257,8 +259,12 @@ class Inspection(models.Model):
             nPoss = nPoss + 3
             nScore = nScore + 4 - self.temper
 
-        logging.debug(f"Health score, Poss: {nPoss}, Score {nScore}, result {(nScore / nPoss) * 100}%")
+        #logging.debug(
+        #    f"Health score, Poss: {nPoss}, Score {nScore}, result {(nScore / nPoss) * 100}%")
         return((nScore / nPoss) * 100)
+
+    def __str__(self):
+        return(f"Date: {self.dt}, Colony: {self.colony.colonyID}, health: {self.healthScore():.1f}")
 
 
 class Transfer(models.Model):
@@ -408,23 +414,26 @@ class TreatmentType(models.Model):
 
 
 class Treatment(models.Model):
-    treatment = models.ForeignKey(TreatmentType, on_delete=models.CASCADE)
+    treatmentType = models.ForeignKey(TreatmentType, on_delete=models.CASCADE)
     colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
-    completed = models.BooleanField(default=False)
-    insertDt = models.DateTimeField(blank=True, null=True)
-    removeDt = models.DateTimeField(blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
+    completed = models.BooleanField(
+        "Treatment completed & removed", default=False)
+    insertDt = models.DateTimeField(
+        "Date treatment put in", default=timezone.now, blank=True, null=True)
+    removeDt = models.DateTimeField(
+        "Date treatment to be removed", blank=True, null=True)
+    trNotes = models.TextField(blank=True, null=True)
     inspection = models.ForeignKey(
         Inspection, on_delete=models.SET_NULL, null=True, blank=True)
-    preVarroa = models.IntegerField(
-        help_text="How much varroa is in the hive before treating?", choices=VARROA_CHOICES, default=0,
-    )
-    postVarroa = models.IntegerField(
-        help_text="How much varroa is in the hive after treating?", choices=VARROA_CHOICES, default=0,
-    )
+    preVarroa = models.IntegerField("Varroa count before treatment",
+                                    help_text="How much varroa is in the hive before treating?", choices=VARROA_CHOICES, default=0,
+                                    )
+    postVarroa = models.IntegerField("Varroa count after treatment",
+                                     help_text="How much varroa is in the hive after treating?", choices=VARROA_CHOICES, default=0,
+                                     )
 
     def __str__(self):
-        return(f"{self.treatment.name} in {colony.colonyID}")
+        return(f"{self.treatmentType.name} in {self.colony.colonyID}")
 
 
 class SizeChoice(models.Model):

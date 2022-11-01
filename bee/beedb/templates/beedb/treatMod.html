@@ -1,0 +1,83 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Treatment Update
+{% endblock %}
+
+{% block web-body %}
+<div id="ins-header"><h3>Update Treatment</h3>
+</div>
+<div id="treat_detail" class="content_block">
+  <div id="treat_det_table">
+    <form action="{% url 'beedb:treatMod' treat.id %}" method="POST">
+      {% csrf_token %}
+      {{ form.non_field_errors}}
+      <table>
+        <tr>
+          <th>Apiary:</th>
+          <th><a href="{% url 'beedb:apDetail' treat.colony.apiary.id %}" class="text-info">{{ treat.colony.apiary.apiaryID }}</a></th>
+        </tr>
+        <tr>
+          <th>Colony:</th>
+          <th><a href="{% url 'beedb:colDetail' treat.colony.id %}" class="text-info">{{ treat.colony.colonyID }}</a></th>
+        </tr>
+        <tr id="tLine1">
+          <td>Treatment type</td>
+          <td>{{form.treatmentType}} {{ form.treatmentType.errors }}</td>
+        </tr>
+        <tr id="tDescr">
+          <td>Description</td>
+          <td id="tDescrTxt" class="wrap_cell text-muted">{{ treat.treatmentType.description }}</td>
+        </tr>
+        <tr id="tInstr">
+          <td>Instructions</td>
+          <td id="tInstrTxt" class="wrap_cell text-muted">{{ treat.treatmentType.instructions }}</td>
+        </tr>
+        <tr id="tLine2">
+          <td>{{form.trNotes.label_tag}}</td>
+          <td>{{form.trNotes}} {{ form.trNotes.errors  }}</td>
+        </tr>
+        <tr id="tLine4"">
+          <td>{{form.insertDt.label_tag}}</td>
+          <td>{{form.insertDt}} {{ form.insertDt.errors  }}</td>
+        </tr>
+        <tr id="tRemoveDt"">
+          <td>{{form.removeDt.label_tag}}</td>
+          <td>{{form.removeDt}} {{ form.removeDt.errors  }}</td>
+        </tr>
+        <tr id="tLine6"">
+          <td>{{form.preVarroa.label_tag}}</td>
+          <td>{{form.preVarroa}} {{ form.preVarroa.errors  }}</td>
+        </tr>
+        <tr id="tpostVarroa"">
+          <td>{{form.postVarroa.label_tag}}</td>
+          <td>{{form.postVarroa}} {{ form.postVarroa.errors  }}</td>
+        </tr>
+        <tr id="tCompleted"">
+          <td>{{form.completed.label_tag}}</td>
+          <td>{{form.completed}} {{ form.completed.errors  }}</td>
+        </tr>
+      </table>
+    <input type="submit" value="Submit">
+    <span id="ins_cancel_button" class="cancel_button">
+      <a href="{% url 'beedb:treatDetail' treat.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+    </span>
+  </form>
+</div>
+
+
+<script>
+  // Initially hide the descr & instruction lines
+  console.log(document.getElementById("id_treatmentType").value)
+  if (document.getElementById("id_treatmentType").value == ""){
+    console.log("No t Type")
+    document.getElementById("tDescr").style.display = "none";
+    document.getElementById("tInstr").style.display = "none";
+   } else {
+    console.log("Treatment Type chosen")
+    document.getElementById("tDescr").style.display = "";
+    document.getElementById("tInstr").style.display = "";
+   }
+</script>
+
+{% endblock %}

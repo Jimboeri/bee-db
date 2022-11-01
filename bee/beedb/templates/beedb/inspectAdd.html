@@ -1,4 +1,9 @@
 {% extends "beedb/webbase.html" %}
+{% load static %}
+
+{% block javascript %} 
+<script src="{% static "beedb/treatment.js" %}"></script>
+{% endblock %}
 
 {% block title %}
 Add Inspection
@@ -61,9 +66,14 @@ Add Inspection
             <td>Notes:</td>
             <td>{{ form.notes }}</td>
           </tr>
+
+          {% comment %}
+          This next section is for reminders
+          {% endcomment %}
+
           <tr>
             <td>Add a reminder?</td>
-            <td>{{ form.addDiary }}</td>
+            <td>{{ optForm.addReminder }}</td>
           </tr>
           <tr>
             <td>{{ diaryForm.non_field_errors}}</td>
@@ -71,14 +81,47 @@ Add Inspection
           <tr id="dLine1">
             <td>Reminder subject</td>
             <td>{{diaryForm.subject}} {{ diaryForm.subject.errors }}</td>
-          </tr>
+          </tr>          
           <tr id="dLine2">
             <td>Details</td>
-            <td>{{diaryForm.details}} {{ diaryForm.subject.details }}</td>
+            <td>{{diaryForm.details}} {{ diaryForm.details.errors }}</td>
           </tr>
-          <tr id="dLine3"">
+          <tr id="dLine3">
             <td>Due</td>
-            <td>{{diaryForm.dueDt}} {{ diaryForm.subject.dueDt }}</td>
+            <td>{{diaryForm.dueDt}} {{ diaryForm.dueDt.errors }}</td>
+          </tr>
+          
+          {% comment %}
+          This next section is for treatments
+          {% endcomment %}
+
+          <tr>
+            <td>Add a varroa treatment?</td>
+            <td>{{ optForm.addTreatment }}</td>
+          </tr>          
+          <tr>
+            <td>{{ TreatForm.non_field_errors}}</td>
+          </tr>
+          
+          <tr id="tLine1">
+            <td>Treatment type</td>
+            <td>{{TreatForm.treatmentType}} {{ TreatForm.treatmentType.errors }}</td>
+          </tr>
+          <tr id="tDescr">
+            <td>Description</td>
+            <td id="tDescrTxt" class="wrap_cell text-muted"></td>
+          </tr>
+          <tr id="tInstr">
+            <td>Instructions</td>
+            <td id="tInstrTxt" class="wrap_cell text-muted"></td>
+          </tr>
+          <tr id="tLine2">
+            <td>Notes</td>
+            <td>{{TreatForm.trNotes}} {{ TreatForm.trNotes.errors  }}</td>
+          </tr>
+          <tr id="tRemoveDt">
+            <td>Removal dt</td>
+            <td>{{TreatForm.removeDt}} (YYYY-MM-DD) {{ TreatForm.removeDt.errors  }}</td>
           </tr>
         </table>
         <input type="submit" value="Submit">
@@ -93,8 +136,8 @@ Add Inspection
 
 <script>
   console.log("run on load");
-  const box = document.getElementById("id_addDiary");
-  if (box.checked) {
+  const rBox = document.getElementById("id_addReminder");
+  if (rBox.checked) {
     console.log("Diary checked");
       document.getElementById("dLine1").style.display = "";
       document.getElementById("dLine2").style.display = "";
@@ -104,6 +147,22 @@ Add Inspection
       document.getElementById("dLine1").style.display = "none";
       document.getElementById("dLine2").style.display = "none";
       document.getElementById("dLine3").style.display = "none";
+    }
+  const tBox = document.getElementById("id_addTreatment");
+  if (tBox.checked) {
+    console.log("Treatment checked");
+      document.getElementById("tLine1").style.display = "";
+      document.getElementById("tLine2").style.display = "";
+      document.getElementById("tDescr").style.display = "";
+      document.getElementById("tInstr").style.display = "";
+      document.getElementById("tRemoveDt").style.display = "";
+    } else {
+      console.log("Treatment NOT checked");
+      document.getElementById("tLine1").style.display = "none";
+      document.getElementById("tLine2").style.display = "none";
+      document.getElementById("tDescr").style.display = "none";
+      document.getElementById("tInstr").style.display = "none";
+      document.getElementById("tRemoveDt").style.display = "none";
     }
 </script>
 
