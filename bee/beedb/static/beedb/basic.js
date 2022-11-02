@@ -63,16 +63,21 @@ async function TreatRemoveDt(inDtID)
   if (data.length > 0)
   {
     console.log(data[0]["name"])
+    console.log(data[0])
     // ensure removal date is visible
     if (data[0]["requireRemoval"] == false) {
       document.getElementById("tRemoveDt").style.display = "none";
-      document.getElementById("tCompleted").style.display = "none";
+      if (document.getElementById("tCompleted") !== null){
+        document.getElementById("tCompleted").style.display = "none";
+      }
     } else {
       document.getElementById("tRemoveDt").style.display = " ";
-      document.getElementById("tCompleted").style.display = " ";
+      if (document.getElementById("tCompleted") !== null){
+        document.getElementById("tCompleted").style.display = " ";
+      }
     }
 
-    //console.log("Show descr & instr")
+    console.log("Show descr & instr")
     // make description & instruction visible and fill text
     document.getElementById("tDescr").style.display = "";
     document.getElementById("tInstr").style.display = "";
@@ -85,7 +90,7 @@ async function TreatRemoveDt(inDtID)
     // Get the insert date from the form
     const insDtTxt = document.getElementById(inDtID).value;
     const insDt = new Date(insDtTxt);
-    //console.log(insDt);
+    console.log(insDt);
 
     // newT is new date in ms
     newT = insDt.getTime() + addMs;
