@@ -53,6 +53,7 @@ async function TreatRemoveDt(inDtID)
   let hAr = window.location.href.split("beedb");
   var url = new URL(hAr[0] + "beedb/api/treatmentType/viewByName/");
   url.searchParams.append("name", select.options[select.selectedIndex].text);
+  console.log(url)
 
   // Make the API call
   const response = await fetch(url);
