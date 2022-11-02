@@ -51,7 +51,7 @@ async function TreatRemoveDt(inDtID)
   // get current url and split at beedb
 
   console.log(window.location.href)
-  let hAr = window.location.href.split("beedb");
+  let hAr = window.location.href.split("/beedb/");
   var url = new URL(hAr[0] + "beedb/api/treatmentType/viewByName/");
   url.searchParams.append("name", select.options[select.selectedIndex].text);
   console.log(url)
