@@ -4,8 +4,8 @@ services:
   bee-db:
     image: postgres:11
     environment:
-      POSTGRES_PASSWORD: whatever[baby]
-      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD:
+      POSTGRES_USER:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -37,7 +37,14 @@ services:
       - traefik.http.routers.dj-monitor.tls.certresolver=myresolver
       - traefik.http.services.dj-monitor.loadbalancer.server.port=8000
     environment:
-      BEEDB_WEB_BASE_URL: http://localhost:8005
+      BEEDB_WEB_BASE_URL:
+      POSTGRES_HOST:
+      POSTGRES_NAME:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+      POSTGRES_PORT:
+
+      DJANGO_SECRET_KEY:
 
   background:
     image: jimboeri/bee-db-background
@@ -53,7 +60,15 @@ services:
     environment:
       BEEDB_TEST_DAILY: T
       BEEDB_TESTING: Y
-      BEEDB_WEB_BASE_URL: http://localhost:8005
+      BEEDB_WEB_BASE_URL:
+      POSTGRES_HOST:
+      POSTGRES_NAME:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+      POSTGRES_PORT:
+
+      DJANGO_SECRET_KEY:
+    
     networks:
       - default
       #- traefik_default
