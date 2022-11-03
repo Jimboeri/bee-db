@@ -21,12 +21,13 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ow6stvx43)&emzkj%n=z5yy#m!q^f0v#b%p*(6&c07f7n+6afr'
+#SECRET_KEY = 'ow6stvx43)&emzkj%n=z5yy#m!q^f0v#b%p*(6&c07f7n+6afr'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".west.net.nz", "ernie", ".localhost"] 
+ALLOWED_HOSTS = [".west.net.nz", "ernie", ".localhost"]
 
 
 # Application definition
@@ -80,14 +81,14 @@ WSGI_APPLICATION = 'bee.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-'default': {
-'ENGINE': 'django.db.backends.postgresql_psycopg2',
-'NAME': 'postgres',
-'USER': 'postgres',
-'PASSWORD': 'whatever[baby]',
-'HOST': 'bee-db',
-'PORT': 5432,
-}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("POSTGRES_NAME", "postgres"),
+        'USER': os.environ.get("POSTGRES_USER", "postgres"),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+        'HOST': os.environ.get("POSTGRES_HOST", "db"),
+        'PORT': os.environ.get("POSTGRES_PORT", 5432),
+    }
 }
 
 
@@ -156,4 +157,3 @@ DEFAULT_FROM_EMAIL = "auto@west.net.nz"
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CSRF_TRUSTED_ORIGINS = ["https://*.west.net.nz", "http://localhost"]
-

@@ -3,3 +3,4 @@ db-dump
 postgres-data.tar.bz2
 *.pyc
 docker-compose.yml
+.env
