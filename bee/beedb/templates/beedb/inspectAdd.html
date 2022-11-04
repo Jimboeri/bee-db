@@ -75,18 +75,18 @@ Add Inspection
             <td>Add a reminder?</td>
             <td>{{ optForm.addReminder }}</td>
           </tr>
-          <tr>
+          <tr class="reminder">
             <td>{{ diaryForm.non_field_errors}}</td>
           </tr>
-          <tr id="dLine1">
+          <tr id="dLine1" class="reminder">
             <td>Reminder subject</td>
             <td>{{diaryForm.subject}} {{ diaryForm.subject.errors }}</td>
           </tr>          
-          <tr id="dLine2">
+          <tr id="dLine2" class="reminder">
             <td>Details</td>
             <td>{{diaryForm.details}} {{ diaryForm.details.errors }}</td>
           </tr>
-          <tr id="dLine3">
+          <tr id="dLine3" class="reminder">
             <td>Due</td>
             <td>{{diaryForm.dueDt}} {{ diaryForm.dueDt.errors }}</td>
           </tr>
@@ -99,27 +99,27 @@ Add Inspection
             <td>Add a varroa treatment?</td>
             <td>{{ optForm.addTreatment }}</td>
           </tr>          
-          <tr>
+          <tr class="treatment">
             <td>{{ TreatForm.non_field_errors}}</td>
           </tr>
           
-          <tr id="tLine1">
+          <tr id="tLine1" class="treatment">
             <td>Treatment type</td>
             <td>{{TreatForm.treatmentType}} {{ TreatForm.treatmentType.errors }}</td>
           </tr>
-          <tr id="tDescr">
+          <tr id="tDescr" class="treatment treatmentType">
             <td>Description</td>
             <td id="tDescrTxt" class="wrap_cell text-muted"></td>
           </tr>
-          <tr id="tInstr">
+          <tr id="tInstr" class="treatment treatmentType">
             <td>Instructions</td>
             <td id="tInstrTxt" class="wrap_cell text-muted"></td>
           </tr>
-          <tr id="tLine2">
+          <tr id="tLine2" class="treatment">
             <td>Notes</td>
             <td>{{TreatForm.trNotes}} {{ TreatForm.trNotes.errors  }}</td>
           </tr>
-          <tr id="tRemoveDt">
+          <tr id="tRemoveDt" class="treatment">
             <td>Removal dt</td>
             <td>{{TreatForm.removeDt}} (YYYY-MM-DD) {{ TreatForm.removeDt.errors  }}</td>
           </tr>
@@ -149,21 +149,15 @@ Add Inspection
       document.getElementById("dLine3").style.display = "none";
     }
   const tBox = document.getElementById("id_addTreatment");
+  const treatmentLines = document.getElementsByClassName("treatment");
+  const lDisp = "none"
   if (tBox.checked) {
     console.log("Treatment checked");
-      document.getElementById("tLine1").style.display = "";
-      document.getElementById("tLine2").style.display = "";
-      document.getElementById("tDescr").style.display = "";
-      document.getElementById("tInstr").style.display = "";
-      document.getElementById("tRemoveDt").style.display = "";
-    } else {
-      console.log("Treatment NOT checked");
-      document.getElementById("tLine1").style.display = "none";
-      document.getElementById("tLine2").style.display = "none";
-      document.getElementById("tDescr").style.display = "none";
-      document.getElementById("tInstr").style.display = "none";
-      document.getElementById("tRemoveDt").style.display = "none";
+    lDisp = "";
     }
+    for (let i = 0; i < treatmentLines.length; i++) {
+        treatmentLines[i].style.display = lDisp;
+    } 
 </script>
 
 {% endblock %}
