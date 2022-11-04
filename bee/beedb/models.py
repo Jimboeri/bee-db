@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 import logging
+import datetime
 
 # define some re-used choice options
 VARROA_CHOICES = [
@@ -327,7 +328,7 @@ class Diary(models.Model):
     createdDt = models.DateTimeField(
         null=True, blank=True, default=timezone.now)
     startDt = models.DateTimeField(null=True, blank=True)
-    dueDt = models.DateTimeField("Date to complete by")
+    dueDt = models.DateTimeField("Date to complete by", default=timezone.now() + datetime.timedelta(weeks=1))
     notifyDt = models.DateTimeField(null=True, blank=True)
     subject = models.CharField(max_length=100, null=True, blank=True)
     details = models.TextField(blank=True, null=True)
