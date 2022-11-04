@@ -101,8 +101,8 @@ class InspectionOptionsForm(forms.Form):
     addTreatment = forms.BooleanField(initial=False, required=False)
 
     # The js function is in basic.js. The id's are specified in the template. inspacetAdd.html
-    addReminder.widget.attrs.update(onchange="arrVisibility('id_addReminder', ['dLine1', 'dLine2', 'dLine3'])")
-    addTreatment.widget.attrs.update(onchange="arrVisibility('id_addTreatment', ['tLine1', 'tLine2', 'tRemoveDt'])")
+    addReminder.widget.attrs.update(onchange="classVisibility('id_addReminder', 'reminder')")
+    addTreatment.widget.attrs.update(onchange="classVisibility('id_addTreatment', 'treatment')")
     
 
 class InspectionForm(forms.ModelForm):

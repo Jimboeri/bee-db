@@ -1,35 +1,23 @@
-function rowVisibility3(boxId, rowId1, rowId2, rowId3) {
-    const box = document.getElementById(boxId);
-    if (box.checked) {
-        document.getElementById(rowId1).style.display = "";
-        document.getElementById(rowId2).style.display = "";
-        document.getElementById(rowId3).style.display = "";
-    } else {
-        document.getElementById(rowId1).style.display = "none";
-        document.getElementById(rowId2).style.display = "none";
-        document.getElementById(rowId3).style.display = "none";
-    }
-}
-
-function arrVisibility(boxId, rowArr) {
-    const box = document.getElementById(boxId);
-    let i = 0;
-    if (box.checked) {
-        for (i = 0; i < rowArr.length; i++) {
-            //console.log("Show item " + rowArr[i]);
-            document.getElementById(rowArr[i]).style.display = "";
-            //document.getElementById(rowArr[i]).hidden = false;
-        }
-    } else {
-        for (i = 0; i < rowArr.length; i++) {
-            //console.log("hide item " + rowArr[i]);
-            document.getElementById(rowArr[i]).style.display =  "none";
-            //document.getElementById(rowArr[i]).hidden = true;
-        }
-    }
+// ################################################################################
+function classVisibility(boxId, classID) {
+  // First get the check box element
+  const box = document.getElementById(boxId);
+  // Now get all lines with the class name
+  const tLines = document.getElementsByClassName(classID);
+  // defaults to no display
+  let lDisp = "none";
+  if (box.checked) {
+    // if the box is check, display the lines
+    lDisp = "";
+  }
+  // Iterate through list and set the lines to the relevant display option
+  for (let i = 0; i < tLines.length; i++) {
+    tLines[i].style.display = lDisp;
+} 
 }
 
 
+// ################################################################################
 function pad(x)
 {
     if (x < 10) return "0" + x;
@@ -41,20 +29,20 @@ async function TreatRemoveDtAA()
   console.log("Hi Jim")
 }
 
+// ################################################################################
 async function TreatRemoveDt(inDtID)
 {
   
   // First get the value of the treatmentType from the form select
   var select = document.getElementById('id_treatmentType');
+  const tTypeLines = document.getElementsByClassName("treatmentType");
 
   // Next construct the URL for our API call
   // get current url and split at beedb
 
-  console.log(window.location.href)
   let hAr = window.location.href.split("/beedb/");
   var url = new URL(hAr[0] + "/beedb/api/treatmentType/viewByName/");
   url.searchParams.append("name", select.options[select.selectedIndex].text);
-  console.log(url)
 
   // Make the API call
   const response = await fetch(url);
@@ -63,7 +51,6 @@ async function TreatRemoveDt(inDtID)
   if (data.length > 0)
   {
     console.log(data[0]["name"])
-    console.log(data[0])
     // ensure removal date is visible
     if (data[0]["requireRemoval"] == false) {
       document.getElementById("tRemoveDt").style.display = "none";
@@ -71,9 +58,9 @@ async function TreatRemoveDt(inDtID)
         document.getElementById("tCompleted").style.display = "none";
       }
     } else {
-      document.getElementById("tRemoveDt").style.display = " ";
+      document.getElementById("tRemoveDt").style.display = "";
       if (document.getElementById("tCompleted") !== null){
-        document.getElementById("tCompleted").style.display = " ";
+        document.getElementById("tCompleted").style.display = "";
       }
     }
 
@@ -101,7 +88,11 @@ async function TreatRemoveDt(inDtID)
     // update form field
     document.getElementById("id_removeDt").value = formDt;
   } else {
-    document.getElementById("tDescr").style.display = "none";
-    document.getElementById("tInstr").style.display = "none";
+    console.log("No API response")
+    for (let i = 0; i < tTypeLines.length; i++) {
+      tTypeLines[i].style.display = "none";
+    }
+    document.getElementById("tDescrTxt").innerHTML = "";
+    document.getElementById("tInstrTxt").innerHTML = "";
   }
 }
