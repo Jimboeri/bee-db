@@ -38,10 +38,9 @@ async function TreatRemoveDt(inDtID)
   const tTypeLines = document.getElementsByClassName("treatmentType");
 
   // Next construct the URL for our API call
-  // get current url and split at beedb
+ 
 
-  let hAr = window.location.href.split("/beedb/");
-  var url = new URL(hAr[0] + "/beedb/api/treatmentType/viewByName/");
+  var url = new URL(window.location.protocol + "//" + window.location.host + "/beedb/api/treatmentType/viewByName/");
   url.searchParams.append("name", select.options[select.selectedIndex].text);
 
   // Make the API call
@@ -50,7 +49,7 @@ async function TreatRemoveDt(inDtID)
 
   if (data.length > 0)
   {
-    console.log(data[0]["name"])
+    //console.log(data[0]["name"])
     // ensure removal date is visible
     if (data[0]["requireRemoval"] == false) {
       document.getElementById("tRemoveDt").style.display = "none";
@@ -64,7 +63,7 @@ async function TreatRemoveDt(inDtID)
       }
     }
 
-    console.log("Show descr & instr")
+    //console.log("Show descr & instr")
     // make description & instruction visible and fill text
     document.getElementById("tDescr").style.display = "";
     document.getElementById("tInstr").style.display = "";
@@ -77,7 +76,7 @@ async function TreatRemoveDt(inDtID)
     // Get the insert date from the form
     const insDtTxt = document.getElementById(inDtID).value;
     const insDt = new Date(insDtTxt);
-    console.log(insDt);
+    //console.log(insDt);
 
     // newT is new date in ms
     newT = insDt.getTime() + addMs;
