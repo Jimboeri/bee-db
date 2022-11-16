@@ -28,11 +28,12 @@
     color: maroon;
   }  
 
+  /*
   .bd_table {
     border-collapse: collapse;
     width: 100%;
   }
-
+*/
   .inset {
     padding-left: 15px;
   }
@@ -54,28 +55,35 @@
     float: right;
   }
   
+  /*
   .card-header {
       font-weight: bold;
       color: black;
       font-size: 1.2em;
   }
-  
+ 
   .bg-secondary {
     background-color: orange;
   }
-  
 
+  .bd_line {
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+  }
+   */
+   
+  .active, .bd_collapsible:hover {
+    background-color: rgb(121, 88, 19);
+  }
+  
   #map { height: 600px; }
 
   /* -------------------------------------
       HEADER, FOOTER, MAIN
   ------------------------------------- */
-/*  
-  .bd_content-block {
-    padding-bottom: 10px;
-    padding-top: 10px;
-  }
- */ 
+
   .bd_footer {
     clear: both;
     Margin-top: 10px;

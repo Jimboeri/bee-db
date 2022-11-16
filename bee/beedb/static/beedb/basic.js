@@ -95,3 +95,20 @@ async function TreatRemoveDt(inDtID)
     document.getElementById("tInstrTxt").innerHTML = "";
   }
 }
+
+function submitform(colID)
+{
+  colField = document.getElementById("id_colID");
+  colField.value = colID;
+
+  document.selectForm.submit();
+}
+
+function showHide(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}

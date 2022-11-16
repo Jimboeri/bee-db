@@ -1,0 +1,133 @@
+{% extends "beedb/webbase.html" %}
+<!-- This template huses W3.CSS, boot strap depeciated here -->
+{% block title %}
+Colony report
+{% endblock %}
+
+{% block web-body %}
+<div class="bd_bee_background">
+  <h3>Colony report</h3>
+  {{ col.colonyID }}
+  {% for event in events %}
+    <div class="w3-row-padding w3-margin">
+      <div class="w3-col l1 m2 s3" >{{ event.dt|date:"D d/m/y" }}</div>
+      {% if event.type == "I" %}
+        <div class="w3-col l1 m2 s3"><a href="{% url 'beedb:inspectDetail' event.obj.id %}{{usrInfo.getParams}}" class="text-warning">Inspection</a></div>
+        <div class="w3-col l5 m4 s4">{{ event.obj.notes }}</div>
+        {% if event.obj.numbers or event.obj.eggs or event.obj.varroa or event.obj.weight or event.obj.disease or event.obj.temper %}
+          <div class="w3-rest w3-hide-small w3-hide-medium">
+            <div class="w3-row">
+              <div class="w3-half">Bee numbers: {{ event.obj.numChoiceDisplay }}</div>
+              <div class="w3-half">Eggs: {{ event.obj.eggChoiceDisplay }}</div>
+            </div>
+            <div class="w3-row">
+              <div class="w3-half">Varroa: {{ event.obj.varroaChoiceDisplay }}</div>
+              <div class="w3-half">Weight: {{ event.obj.weightChoiceDisplay }}</div>
+            </div>
+            <div class="w3-row">
+              <div class="w3-half">Disease: {{ event.obj.diseaseChoiceDisplay }}</div>
+              <div class="w3-half">Temper: {{ event.obj.temperChoiceDisplay }}</div>
+            </div>
+          </div>
+        {% endif %}
+      {% elif event.type == "T" %}
+        <div class="w3-col l1 m2 s3"><a href="{% url 'beedb:treatDetail' event.obj.id %}{{usrInfo.getParams}}" class="text-warning">Treatment</a></div>
+        <div class="w3-col l5 m4 s4">
+          {{ event.obj.treatmentType.name }}<br>
+          Notes: {{ event.obj.trNotes }}
+        </div>
+        <div class="w3-rest w3-hide-small w3-hide-medium">
+          {% if event.obj.treatmentType.requireRemoval %}
+            <div class="w3-row">
+              <div class="w3-half">Treatment finished: {{event.obj.completed}}</div>
+              <div class="w3-half">Removal dt: {{event.obj.removeDt|date:"d/m/y"}}</div>
+            </div>
+          {% endif %}
+          {% if event.obj.preVarroa or event.obj.postVarroa %}
+            <div class="w3-row">
+              <div class="w3-half">Varroa before: {{event.obj.preVarroaChoiceDisplay}}</div>
+              <div class="w3-half">Varroa after: {{event.obj.postVarroaChoiceDisplay}}</div>
+            </div>
+          {% endif %}
+        </div>
+      {% elif event.type == "A" %}
+        {% if event.obj.transaction_cd == 1 %}
+          <div class="w3-col l1 m2 s3">Sell / Gift</div>
+          <div class="w3-col l5 m4 s5">{{event.obj.detail}}
+            {% if event.obj.transfer.notes%}
+              <br>Notes: {{event.obj.transfer.notes}}
+            {% endif %}
+          </div>
+          <div class="w3-rest w3-hide-small w3-hide-medium">
+            <div class="w3-row">
+              <div class="w3-half">To: {{event.obj.transfer.beek_name}}</div>
+              <div class="w3-half">Reg: {{event.obj.transfer.beek_registration}}</div>
+            </div>
+            <div class="w3-row">
+              <div class="w3-half">Email: {{event.obj.transfer.beek_email}}</div>
+              <div class="w3-half">Phone: {{event.obj.transfer.beek_phone}}</div>
+            </div>
+            <div class="w3-row">
+              Cost: ${{event.obj.transfer.cost}}
+            </div>
+            {% if event.obj.transfer.beek_address%}
+              <div class="w3-row">
+                Address:<br>
+                {{event.obj.transfer.beek_address}}
+              </div>
+            {% endif %}
+          </div>
+        {% elif event.obj.transaction_cd == 2 %}
+          <div class="w3-col l1 m2 s3">Split</div>
+          <div class="w3-col l5 m4 s5">{{event.obj.detail}}</div>
+          <div class="w3-rest w3-hide-small w3-hide-medium">{{event.obj.transfer.notes}}</div>
+
+        {% elif event.obj.transaction_cd == 3 %}
+          <div class="w3-col l1 m2 s3">Collect swarm</div>
+          <div class="w3-col l5 m4 s5">{{event.obj.detail}}</div>
+          <div class="w3-rest w3-hide-small w3-hide-medium">{{event.obj.transfer.notes}}</div>
+
+        {% elif event.obj.transaction_cd == 4 %}
+          <div class="w3-col l1 m2 s3">Purchase / acquire</div>
+          <div class="w3-col l5 m4 s5">{{event.obj.detail}}
+            {% if event.obj.transfer.notes%}
+              <br>Notes: {{event.obj.transfer.notes}}
+            {% endif %}
+          </div>
+          <div class="w3-rest w3-hide-small w3-hide-medium">
+            <div class="w3-row">
+              <div class="w3-half">From: {{event.obj.transfer.beek_name}}</div>
+              <div class="w3-half">Reg: {{event.obj.transfer.beek_registration}}</div>
+            </div>
+            <div class="w3-row">
+              <div class="w3-half">Email: {{event.obj.transfer.beek_email}}</div>
+              <div class="w3-half">Phone: {{event.obj.transfer.beek_phone}}</div>
+            </div>
+            <div class="w3-row">
+              Cost: ${{event.obj.transfer.cost}}
+            </div>
+            {% if event.obj.transfer.beek_address%}
+              <div class="w3-row">
+                Address:<br>
+                {{event.obj.transfer.beek_address}}
+              </div>
+            {% endif %}
+          </div>
+        {% elif event.obj.transaction_cd == 5 %}
+          <div class="w3-col l1 m2 s3">Initial setup</div>
+          <div class="w3-col l5 m4 s5">{{event.obj.detail}}</div>
+          <div class="w3-rest w3-hide-small w3-hide-medium">{{event.obj.transfer.notes}}</div>
+
+        {% elif event.obj.transaction_cd == 6 %}
+          <div class="w3-col l1 m2 s3">Combine</div>
+          <div class="w3-rest">{{event.obj.detail}}</div>
+          
+        {% elif event.obj.transaction_cd == 7 %}
+          <div class="w3-col l1 m2 s3">Move</div>
+          <div class="w3-rest">{{event.obj.detail}}</div>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

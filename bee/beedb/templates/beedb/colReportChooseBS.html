@@ -1,0 +1,28 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Colony report choice
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <h2>Select a time frame for the report and then a colony to report on</h2>
+  <form action="{% url 'beedb:colReportChoose' %}{{usrInfo.getParams}}" method="POST" name="selectForm">
+    {% csrf_token %}
+    {{ form.non_field_errors}}
+    {{ form }}
+    {% for ap in apList %}
+      <div>
+        <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#apID{{ap.apiary.id}}">Show {{ ap.apiary.apiaryID }} colonies</button><br>
+        <div id="apID{{ap.apiary.id}}" class="collapse">
+            {% for col in ap.colonies %}
+              <a href="javascript: submitform({{col.id}})" class="list-group-item list-group-item-action list-group-item-warning">{{col.colonyID}}</a>
+            {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </form>
+</div>
+
+
+{% endblock %}

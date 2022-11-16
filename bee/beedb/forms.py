@@ -96,6 +96,7 @@ class ColonyAddForm(forms.Form):
     notes = forms.CharField(widget=forms.Textarea, required=False)
     notes.widget.attrs.update(rows=3)
 
+
 class InspectionOptionsForm(forms.Form):
     addReminder = forms.BooleanField(initial=False, required=False)
     addTreatment = forms.BooleanField(initial=False, required=False)
@@ -430,3 +431,17 @@ class RemoveTreatmentForm(forms.ModelForm):
             "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
             "trNotes": forms.Textarea(attrs={'rows': 3})
         }
+
+
+class ColonyReportForm(forms.Form):
+    DURATION_CHOICES = [
+        (1, "1 Month"),
+        (2, "6 Months"),
+        (3, "1 Year"),
+        (4, "5 Years"),
+        (5, "All information"),
+    ]
+
+    duration = forms.ChoiceField(choices=DURATION_CHOICES)
+    colID = forms.IntegerField(widget=forms.HiddenInput(), required = False)
+
