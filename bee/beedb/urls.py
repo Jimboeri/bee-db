@@ -66,6 +66,8 @@ urlpatterns = [
     # Displays reports
     path("reports/", views.reports, name="reports"),
     path("purch/", views.purchSales, name="purchSales"),
+    path("colReportChoose/", views.colReportChoose, name="colReportChoose"),
+    path("colReport/<int:col_ref>/<int:duration>", views.colReport, name="colReport"),
 
     # Feedback section
     path("fbIndex/", views.feedbackIndex, name="fbIndex"),

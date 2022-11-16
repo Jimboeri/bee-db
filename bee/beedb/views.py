@@ -33,7 +33,10 @@ from .forms import (
     NewTreatmentForm,
     ModTreatmentForm,
     RemoveTreatmentForm,
+    ColonyReportForm,
 )
+
+from . import forms
 
 from .utils import sizeChoices, usrCheck
 
@@ -184,7 +187,7 @@ def colAdd(request, ap_ref, col_add_type):
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
-        if col_add_type == 1:
+        if col_add_type == 1:                   # SWARM
             nf = SwarmForm(request.POST)
             if nf.is_valid():
                 col = Colony(
@@ -209,9 +212,10 @@ def colAdd(request, ap_ref, col_add_type):
                     apiary=col.apiary,
                 )
                 audit.detail = f"Swarm caught at {tr.location}"
+                audit.transfer = tr
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
-        elif col_add_type == 2:
+        elif col_add_type == 2:                 # Purchase
             nf = PurchaseForm(request.POST)
             if nf.is_valid():
                 col = Colony(
@@ -240,6 +244,7 @@ def colAdd(request, ap_ref, col_add_type):
                     apiary=col.apiary,
                 )
                 audit.detail = f"Colony purchased from {tr.beek_name}"
+                audit.transfer = tr
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         elif col_add_type == 3:
@@ -259,12 +264,13 @@ def colAdd(request, ap_ref, col_add_type):
                 tr.save()
                 audit = Audit(
                     dt=timezone.now(),
-                    transaction_cd=4,
+                    transaction_cd=5,
                     beek=request.user,
                     colony=col,
                     apiary=col.apiary,
                 )
                 audit.detail = "New colony entered "
+                audit.transfer = tr
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         else:
@@ -352,9 +358,15 @@ def colMoveSelect(request, col_ref, ap_ref):
     ap = get_object_or_404(Apiary, pk=ap_ref)
 
     if request.method == "POST":
+        audit = Audit(beek=request.user, transaction_cd = 7)
+        audit.colony = col
+        audit.apiary = ap
+        audit.detail = f"Colony {col.colonyID} moved FROM {col.apiary.apiaryID} TO {ap.apiaryID}"
+        audit.save()
         col.apiary = ap
         col.lastAction = timezone.now()
         col.save()
+
         return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
 
     context = {"col": col, "ap": ap}
@@ -591,9 +603,11 @@ def colSplit(request, col_ref):
                 transaction_cd=2,
                 beek=request.user,
                 colony=newCol,
+                colony1 = col,
                 apiary=col.apiary,
             )
             audit.detail = f"Colony {newCol.colonyID} split from {col.colonyID} "
+            audit.transfer = tr
             audit.save()
 
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id]))
@@ -753,9 +767,10 @@ def reports(request):
     """
     View that displays available reports.
     """
+    context = {"reportactive": "Y"}
+    return render(request, "beedb/reports.html", context)
 
-    return render(request, "beedb/reports.html")
-
+@login_required
 def purchSales(request):
     aList = request.user.apiary_set.all()
     #print(f"Number of apiaries is {len(aList)}")
@@ -773,8 +788,90 @@ def purchSales(request):
     disp = False
     if pList or sList:
         disp = True
-    context = {"pList": pList, "sList": sList, "disp": disp}
+    context = {"pList": pList, "sList": sList, "disp": disp, "reportactive": "Y"}
     return render(request, "beedb/purchSales.html", context)
+
+@login_required
+def colReportChoose(request):
+    """ This function allows users to create a report by colony
+
+    More data here in the future
+    """
+    usrInfo = usrCheck(request)
+    apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
+
+    aps = []
+    for ap in apList:
+        cols = []
+        currCols = ap.colony_set.filter(status="C")
+        otherCols = ap.colony_set.exclude(status="C").filter(lastAction__gte=(timezone.now() - datetime.timedelta(weeks=27)))
+        for cc in currCols:
+            cols.append(cc)
+        for oc in otherCols:
+            cols.append(oc)
+        aps.append({"apiary": ap, "colonies": cols})
+    
+    if request.method == "POST":
+        # print("Post message received")
+        rf = forms.ColonyReportForm(request.POST)
+        if rf.is_valid():
+            print(rf.cleaned_data)
+            logging.debug(f"Form keys = {rf.cleaned_data}")
+
+            return HttpResponseRedirect(reverse("beedb:colReport", args=[rf.cleaned_data["colID"], rf.cleaned_data["duration"]]))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        rf = forms.ColonyReportForm()
+
+    context = {"apList": aps, "reportactive": "Y", 'usrInfo': usrInfo, "form": rf}
+    return render(request, "beedb/colReportChoose.html", context)
+
+@login_required
+def colReport(request, col_ref, duration):
+    """ This function allows users to create a report by colony
+
+    More data here in the future
+    """
+    def sortFunc(inp):
+        """Used to sort the events array"""
+        return(inp["dt"])
+
+
+    usrInfo = usrCheck(request)
+    col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
+
+    if duration == 1:
+        startDt = timezone.now() - datetime.timedelta(days=30)
+    elif duration == 2:
+        startDt = timezone.now() - datetime.timedelta(weeks=27)
+    elif duration == 3:
+        startDt = timezone.now() - datetime.timedelta(weeks=52)
+    elif duration == 4:
+        startDt = timezone.now() - datetime.timedelta(weeks=260)
+    else:
+        startDt = timezone.now() - datetime.timedelta(weeks=1000)
+
+    pastTreatments = col.treatment_set.filter(insertDt__gte=startDt)
+    pastInspections = col.inspection_set.filter(dt__gte=startDt)
+    pastAudits = col.audit_set.filter(dt__gte=startDt)
+    otherAudits = Audit.objects.filter(colony1=col).filter(dt__gte=startDt)
+
+    events = []
+    for tr in pastTreatments:
+        events.append({"type": "T", "dt":tr.insertDt, "obj": tr })
+    for ins in pastInspections:
+        events.append({"type": "I", "dt":ins.dt, "obj": ins })
+    for aud in pastAudits:
+        events.append({"type": "A", "dt":aud.dt, "obj": aud })
+    for aud in otherAudits:
+        events.append({"type": "A", "dt":aud.dt, "obj": aud })
+
+    events.sort(reverse = True, key=sortFunc)
+
+    context = {"col": col, "reportactive": "Y", 'usrInfo': usrInfo, "events": events}
+    return render(request, "beedb/colReport.html", context)
 
 
 def login(request):

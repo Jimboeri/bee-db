@@ -1,12 +1,11 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
 import datetime
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-
 import logging
-import datetime
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils import timezone
 
 # define some re-used choice options
 VARROA_CHOICES = [
@@ -18,25 +17,56 @@ VARROA_CHOICES = [
     (5, "More than 15 varroa / 300 bees"),
 ]
 
+EGG_CHOICES = [
+    (0, "Not recorded"),
+    (1, "Lots of eggs & larvae, good brood pattern"),
+    (2, "Lots of eggs & larvae, but spotty brood"),
+    (3, "Small - reasonable eggs & larvae"),
+    (4, "A few larvae, no eggs seen"),
+    (5, "None"),
+]
+
+DISEASE_CHOICES = [
+    (0, "Not recorded"),
+    (1, "No disease present"),
+    (3, "Some disease"),
+    (5, "Heavy disease infection"),
+]
+
+TEMPER_CHOICES = [
+    (0, "Not recorded"),
+    (1, "Calm bees"),
+    (3, "Bees a bit defensive"),
+    (5, "Bees attack beekeeper"),
+]
+
+STATUS_CHOICES = [
+        ("C", "Current"),
+        ("D", "Dead"),
+        ("A", "Absconded"),
+        ("S", "Sold/given"),
+        ("M", "Combined"),
+    ]
 # Create your models here.
 
 
 class Apiary(models.Model):
-    """
-    """
+    """ """
 
-    #beekold1 = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
+    # beekold1 = models.ForeignKey(Beek, on_delete=models.SET_NULL, null=True, blank=True)
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=5, default=0)
     longitude = models.DecimalField(max_digits=10, decimal_places=5, default=0)
     ownerResident = models.CharField(
-        "Name of owner / occupier", max_length=200, blank=True, null=True)
+        "Name of owner / occupier", max_length=200, blank=True, null=True
+    )
     residentPhone = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     location = models.TextField(
-        blank=True, null=True, help_text="Where the hives are located")
+        blank=True, null=True, help_text="Where the hives are located"
+    )
     hazards = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -64,19 +94,24 @@ class Profile(models.Model):
         on_delete=models.SET_NULL,
     )
     inspectPeriodSummer = models.IntegerField(
-        "Days between inspections in summer", default=14)
+        "Days between inspections in summer", default=14
+    )
     inspectPeriodAutumn = models.IntegerField(
-        "Days between inspections in autumn/fall", default=14)
+        "Days between inspections in autumn/fall", default=14
+    )
     inspectPeriodWinter = models.IntegerField(
-        "Days between inspections in winter", default=60)
+        "Days between inspections in winter", default=60
+    )
     inspectPeriodSpring = models.IntegerField(
-        "Days between inspections in spring", default=7)
+        "Days between inspections in spring", default=7
+    )
     inspectHealthIndex = models.BooleanField(default=True)
     inspectManualIndex = models.BooleanField(default=False)
     inspectDiaryAdd = models.BooleanField(default=True)
 
     commsWeeklySummary = models.BooleanField(
-        "Do you want weekly summary emails?", default=False)
+        "Do you want weekly summary emails?", default=False
+    )
     commsInspectionReminder = models.BooleanField(default=False)
     commsLstWeeklyEmail = models.DateTimeField(null=True, blank=True)
 
@@ -86,18 +121,11 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def createProfile(sender, **kwargs):
-    if kwargs.get('created', False):
-        Profile.objects.get_or_create(user=kwargs.get('instance'))
+    if kwargs.get("created", False):
+        Profile.objects.get_or_create(user=kwargs.get("instance"))
 
 
 class Colony(models.Model):
-    STATUS_CHOICES = [
-        ("C", "Current"),
-        ("D", "Dead"),
-        ("A", "Absconded"),
-        ("S", "Sold/given"),
-        ("M", "Combined"),
-    ]
 
     SIZE_CHOICES = [
         (1, "Micro - 3 - mini frames"),
@@ -117,10 +145,8 @@ class Colony(models.Model):
         choices=STATUS_CHOICES,
         default="C",
     )
-    status_dt = models.DateTimeField(
-        null=True, blank=True, default=timezone.now)
-    lastAction = models.DateTimeField(
-        null=True, blank=True, default=timezone.now)
+    status_dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    lastAction = models.DateTimeField(null=True, blank=True, default=timezone.now)
     queenRight = models.BooleanField(default=True)
     size = models.IntegerField(
         default=3,
@@ -137,26 +163,22 @@ class Colony(models.Model):
     def lastInspection(self):
         lstInsp = self.inspection_set.order_by("-dt")[:1]
         if len(lstInsp) > 0:
-            return(lstInsp[0])
+            return lstInsp[0]
         else:
             print("No inspections available")
             return
+    
+    def statusDisplay(self):
+        for e in STATUS_CHOICES:
+            if e[0] == self.status:
+                return e[1]
+        return "?"
 
 
 class Inspection(models.Model):
     """
     Model for colony inspections
     """
-
-    # These choices are overwritten from a DB table, but are necessary for validation
-    EGG_CHOICES = [
-        (0, "Not recorded"),
-        (1, "Lots of eggs & larvae, good brood pattern"),
-        (2, "Lots of eggs & larvae, but spotty brood"),
-        (3, "Small - reasonable eggs & larvae"),
-        (4, "A few larvae, no eggs seen"),
-        (5, "None"),
-    ]
 
     # These choices are overwritten from a DB table, but are necessary for validation
     WEIGHT_CHOICES = [
@@ -167,26 +189,20 @@ class Inspection(models.Model):
         (4, "Not recorded"),
         (5, "No stores"),
     ]
-    DISEASE_CHOICES = [
-        (0, "Not recorded"),
-        (1, "No disease present"),
-        (3, "Some disease"),
-        (5, "Heavy disease infection"),
-    ]
+
     QUEEN_CHOICES = [
         (0, "Not recorded"),
         (1, "This season queen"),
         (2, "Last season queen"),
         (3, "2 years or older queen"),
     ]
-    TEMPER_CHOICES = [
-        (0, "Not recorded"),
-        (1, "Calm bees"),
-        (3, "Bees a bit defensive"),
-        (5, "Bees attack beekeeper"),
-    ]
+
     colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
-    dt = models.DateTimeField(null=True, blank=True, default=timezone.now,)
+    dt = models.DateTimeField(
+        null=True,
+        blank=True,
+        default=timezone.now,
+    )
     notes = models.TextField(blank=True, null=True)
     numbers = models.IntegerField(
         default=0,
@@ -197,20 +213,26 @@ class Inspection(models.Model):
         default=0,
     )
     varroa = models.IntegerField(
-        help_text="How much varroa is in the hive?", choices=VARROA_CHOICES, default=0,
+        help_text="How much varroa is in the hive?",
+        choices=VARROA_CHOICES,
+        default=0,
     )
     weight = models.IntegerField(
         default=0,
     )
     disease = models.IntegerField(
-        help_text="How healthy is the hive?", choices=DISEASE_CHOICES, default=0,
+        help_text="How healthy is the hive?",
+        choices=DISEASE_CHOICES,
+        default=0,
     )
     temper = models.IntegerField(
-        help_text="How happy is the hive?", choices=TEMPER_CHOICES, default=0,
+        help_text="How happy is the hive?",
+        choices=TEMPER_CHOICES,
+        default=0,
     )
     queen_seen = models.BooleanField(default=False)
-    #addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
-    #addTreatment = models.BooleanField(
+    # addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
+    # addTreatment = models.BooleanField(
     #    default=False, help_text="Add a reminder?")
     size = models.IntegerField(blank=True, null=True)
 
@@ -218,18 +240,48 @@ class Inspection(models.Model):
         ordering = ["-dt"]
 
     def numChoiceDisplay(self):
-        Numbs = SizeChoice.objects.filter(size=self.size).filter(
-            type__iexact='Number').filter(value=self.numbers)
+        Numbs = (
+            SizeChoice.objects.filter(size=self.size)
+            .filter(type__iexact="Number")
+            .filter(value=self.numbers)
+        )
         if Numbs:
-            return(Numbs[0].text)
-        return(" ")
+            return Numbs[0].text
+        return " "
 
     def weightChoiceDisplay(self):
-        Numbs = SizeChoice.objects.filter(size=self.size).filter(
-            type__iexact='Weight').filter(value=self.weight)
+        Numbs = (
+            SizeChoice.objects.filter(size=self.size)
+            .filter(type__iexact="Weight")
+            .filter(value=self.weight)
+        )
         if Numbs:
-            return(Numbs[0].text)
-        return(" ")
+            return Numbs[0].text
+        return " "
+
+    def varroaChoiceDisplay(self):
+        for v in VARROA_CHOICES:
+            if v[0] == self.varroa:
+                return v[1]
+        return "?"
+
+    def eggChoiceDisplay(self):
+        for e in EGG_CHOICES:
+            if e[0] == self.eggs:
+                return e[1]
+        return "?"
+
+    def diseaseChoiceDisplay(self):
+        for e in DISEASE_CHOICES:
+            if e[0] == self.disease:
+                return e[1]
+        return "?"
+
+    def temperChoiceDisplay(self):
+        for e in TEMPER_CHOICES:
+            if e[0] == self.temper:
+                return e[1]
+        return "?"
 
     def healthScore(self):
         nPoss = 0
@@ -244,7 +296,7 @@ class Inspection(models.Model):
 
         if self.varroa > 0:
             nPoss = nPoss + 10
-            nScore = nScore + 11 - self.varroa*2
+            nScore = nScore + 11 - self.varroa * 2
         else:
             nPoss = nPoss + 1
 
@@ -260,40 +312,43 @@ class Inspection(models.Model):
             nPoss = nPoss + 3
             nScore = nScore + 4 - self.temper
 
-        #logging.debug(
+        # logging.debug(
         #    f"Health score, Poss: {nPoss}, Score {nScore}, result {(nScore / nPoss) * 100}%")
-        return((nScore / nPoss) * 100)
+        return (nScore / nPoss) * 100
 
     def __str__(self):
-        return(f"Date: {self.dt}, Colony: {self.colony.colonyID}, health: {self.healthScore():.1f}")
+        return f"Date: {self.dt}, Colony: {self.colony.colonyID}, health: {self.healthScore():.1f}"
 
 
 class Transfer(models.Model):
-    colony = models.ForeignKey(
-        Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
     # queen = .....
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     outgoing = models.BooleanField(
-        default=True, help_text="True if colony going to another beekeeper")
+        default=True, help_text="True if colony going to another beekeeper"
+    )
     transaction = models.IntegerField(
-        default=0, help_text="1 - Sold/given, 2 - Bought/received, 3 - Swarm, 4 - New entry, 5 - Split")
+        default=0,
+        help_text="1 - Sold/given, 2 - Bought/received, 3 - Swarm, 4 - New entry, 5 - Split",
+    )
     beek_name = models.CharField(max_length=50, blank=True, null=True)
     beek_registration = models.CharField(max_length=50, blank=True, null=True)
     beek_email = models.EmailField(max_length=50, blank=True, null=True)
     beek_phone = models.CharField(max_length=50, blank=True, null=True)
     beek_address = models.TextField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
-    cost = models.DecimalField(
-        max_digits=8, decimal_places=2, blank=True, null=True)
+    cost = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     location = models.CharField(max_length=200, blank=True, null=True)
     size = models.IntegerField(
-        default=0, help_text="1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)")
+        default=0,
+        help_text="1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)",
+    )
 
     class Meta:
         ordering = ["-dt"]
 
     def __str__(self):
-        return(f"Colony: {self.colony.colonyID}")
+        return f"Colony: {self.colony.colonyID}"
 
 
 class Audit(models.Model):
@@ -306,29 +361,35 @@ class Audit(models.Model):
     4 - Purchase / acquire colony
     5 - Initial colony creation
     6 - Combine colonies
+    7 - Move colony to new apiary
     """
+
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
-    apiary = models.ForeignKey(
-        Apiary, on_delete=models.SET_NULL, null=True, blank=True)
-    colony = models.ForeignKey(
-        Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
     colony1 = models.ForeignKey(
-        Colony, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
-    transaction_cd = models.IntegerField(default=0,)
+        Colony, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    transaction_cd = models.IntegerField(
+        default=0,
+    )
     detail = models.TextField(blank=True, null=True)
+    transfer = models.ForeignKey(Transfer, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Date: {self.dt}, beek: {self.beek.username}, Col: {self.colony.colonyID}, Tr code: {self.transaction_cd} "
 
 
 class Diary(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
-    apiary = models.ForeignKey(
-        Apiary, on_delete=models.SET_NULL, null=True, blank=True)
-    colony = models.ForeignKey(
-        Colony, on_delete=models.SET_NULL, null=True, blank=True)
-    createdDt = models.DateTimeField(
-        null=True, blank=True, default=timezone.now)
+    apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    createdDt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     startDt = models.DateTimeField(null=True, blank=True)
-    dueDt = models.DateTimeField("Date to complete by", default=timezone.now() + datetime.timedelta(weeks=1))
+    dueDt = models.DateTimeField(
+        "Date to complete by", default=timezone.now() + datetime.timedelta(weeks=1)
+    )
     notifyDt = models.DateTimeField(null=True, blank=True)
     subject = models.CharField(max_length=100, null=True, blank=True)
     details = models.TextField(blank=True, null=True)
@@ -345,11 +406,10 @@ class Config(models.Model):
     key = models.CharField(max_length=500)
     configDt = models.DateTimeField(null=True, blank=True)
     configValue = models.FloatField(null=True, blank=True)
-    lastUpdate = models.DateTimeField(
-        null=True, blank=True, default=timezone.now)
+    lastUpdate = models.DateTimeField(null=True, blank=True, default=timezone.now)
 
     def __str__(self):
-        return(f"{self.key}")
+        return f"{self.key}"
 
 
 class Message(models.Model):
@@ -358,7 +418,9 @@ class Message(models.Model):
     body = models.TextField(blank=True, null=True)
     html = models.TextField(blank=True, null=True)
     processed = models.BooleanField(default=False)
-    createdDt = models.DateTimeField(default=timezone.now,)
+    createdDt = models.DateTimeField(
+        default=timezone.now,
+    )
     processedDt = models.DateTimeField(null=True, blank=True)
 
 
@@ -366,6 +428,7 @@ class Feedback(models.Model):
     """
     Table to store feedback, bug reports etc
     """
+
     FEEDBACK_CHOICES = [
         ("F", "General feedback"),
         ("B", "Bug report (error)"),
@@ -379,28 +442,41 @@ class Feedback(models.Model):
     ]
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100, help_text="A short description")
-    detail = models.TextField(blank=True, null=True,
-                              help_text="The detail of your feedback")
+    detail = models.TextField(
+        blank=True, null=True, help_text="The detail of your feedback"
+    )
     feedbackType = models.CharField(
-        max_length=1, help_text="What sort of feedback is this?", choices=FEEDBACK_CHOICES, default="F",)
-    status = models.CharField(max_length=1, blank=True,
-                              null=True, default="N", choices=STATUS_CHOICES, )
+        max_length=1,
+        help_text="What sort of feedback is this?",
+        choices=FEEDBACK_CHOICES,
+        default="F",
+    )
+    status = models.CharField(
+        max_length=1,
+        blank=True,
+        null=True,
+        default="N",
+        choices=STATUS_CHOICES,
+    )
     # status codes:
     #       N - New
     #       A - Archived (won't be seen)
     devComment = models.TextField(blank=True, null=True)
-    createdDt = models.DateTimeField(default=timezone.now,)
+    createdDt = models.DateTimeField(
+        default=timezone.now,
+    )
     lstStatusDt = models.DateTimeField(null=True, blank=True)
     lstCommentDt = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return(f"{self.subject} (from {self.beek.username})")
+        return f"{self.subject} (from {self.beek.username})"
 
 
 class TreatmentType(models.Model):
     """
     Table to store types of treatments
     """
+
     name = models.CharField(max_length=100)
     manufacturer = models.CharField(max_length=100)
     organic = models.BooleanField(default=False)
@@ -411,30 +487,50 @@ class TreatmentType(models.Model):
     instructions = models.TextField()
 
     def __str__(self):
-        return(f"{self.name}")
+        return f"{self.name}"
 
 
 class Treatment(models.Model):
     treatmentType = models.ForeignKey(TreatmentType, on_delete=models.CASCADE)
     colony = models.ForeignKey(Colony, on_delete=models.CASCADE)
-    completed = models.BooleanField(
-        "Treatment completed & removed", default=False)
+    completed = models.BooleanField("Treatment completed & removed", default=False)
     insertDt = models.DateTimeField(
-        "Date treatment put in", default=timezone.now, blank=True, null=True)
+        "Date treatment put in", default=timezone.now, blank=True, null=True
+    )
     removeDt = models.DateTimeField(
-        "Date treatment to be removed", blank=True, null=True)
+        "Date treatment to be removed", blank=True, null=True
+    )
     trNotes = models.TextField(blank=True, null=True)
     inspection = models.ForeignKey(
-        Inspection, on_delete=models.SET_NULL, null=True, blank=True)
-    preVarroa = models.IntegerField("Varroa count before treatment",
-                                    help_text="How much varroa is in the hive before treating?", choices=VARROA_CHOICES, default=0,
-                                    )
-    postVarroa = models.IntegerField("Varroa count after treatment",
-                                     help_text="How much varroa is in the hive after treating?", choices=VARROA_CHOICES, default=0,
-                                     )
+        Inspection, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    preVarroa = models.IntegerField(
+        "Varroa count before treatment",
+        help_text="How much varroa is in the hive before treating?",
+        choices=VARROA_CHOICES,
+        default=0,
+    )
+    postVarroa = models.IntegerField(
+        "Varroa count after treatment",
+        help_text="How much varroa is in the hive after treating?",
+        choices=VARROA_CHOICES,
+        default=0,
+    )
+
+    def preVarroaChoiceDisplay(self):
+        for v in VARROA_CHOICES:
+            if v[0] == self.preVarroa:
+                return v[1]
+        return "?"
+
+    def postVarroaChoiceDisplay(self):
+        for v in VARROA_CHOICES:
+            if v[0] == self.postVarroa:
+                return v[1]
+        return "?"
 
     def __str__(self):
-        return(f"{self.treatmentType.name} in {self.colony.colonyID}")
+        return f"{self.treatmentType.name} in {self.colony.colonyID}"
 
 
 class SizeChoice(models.Model):
@@ -447,4 +543,4 @@ class SizeChoice(models.Model):
         ordering = ["type", "size", "value"]
 
     def __str__(self):
-        return(f"Size: {self.size}, type: {self.type}, value: {self.value}, text: {self.text}")
+        return f"Size: {self.size}, type: {self.type}, value: {self.value}, text: {self.text}"
