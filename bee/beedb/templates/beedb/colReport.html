@@ -1,5 +1,5 @@
 {% extends "beedb/webbase.html" %}
-<!-- This template huses W3.CSS, boot strap depeciated here -->
+<!-- This template uses W3.CSS, boot strap depeciated here -->
 {% block title %}
 Colony report
 {% endblock %}
@@ -121,10 +121,15 @@ Colony report
         {% elif event.obj.transaction_cd == 6 %}
           <div class="w3-col l1 m2 s3">Combine</div>
           <div class="w3-rest">{{event.obj.detail}}</div>
-          
+
         {% elif event.obj.transaction_cd == 7 %}
           <div class="w3-col l1 m2 s3">Move</div>
           <div class="w3-rest">{{event.obj.detail}}</div>
+        
+        {% elif event.obj.transaction_cd == 8 %}
+          <div class="w3-col l1 m2 s3">Dead / absconded</div>
+          <div class="w3-rest">{{event.obj.detail}}</div>
+
         {% endif %}
       {% endif %}
     </div>

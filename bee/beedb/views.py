@@ -378,11 +378,22 @@ def colDead(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
     if request.method == "POST":
         # print("Post message received")
-        nf = ColonyDeadForm(request.POST, instance=col)
+        nf = forms.ColonyDeadForm(request.POST, instance=col)
         if nf.is_valid():
             col.status_dt = timezone.now()
             col.lastAction = timezone.now()
             col.save()
+            audit = Audit(
+                dt=timezone.now(),
+                transaction_cd=8,
+                beek=request.user,
+                colony=col,
+        )
+            if col.status == "D":
+                audit.detail = f"Colony {col.colonyID} has died. Notes: {col.notes}"
+            else:
+                audit.detail = f"Colony {col.colonyID} appears to have absconded. Notes: {col.notes}"
+            audit.save()
 
             return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
     # if a GET (or any other method) we'll create a blank form

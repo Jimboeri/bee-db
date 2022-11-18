@@ -362,6 +362,7 @@ class Audit(models.Model):
     5 - Initial colony creation
     6 - Combine colonies
     7 - Move colony to new apiary
+    8 - Colony dead
     """
 
     dt = models.DateTimeField(null=True, blank=True, default=timezone.now)

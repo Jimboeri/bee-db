@@ -1,5 +1,5 @@
 {% extends "beedb/webbase.html" %}
-
+<!-- uses W3.CSS -->
 {% block title %}
 Feedback
 {% endblock %}
@@ -8,10 +8,12 @@ Feedback
 <div class="bd_bee_background">
   <div id="feedback">
     {% if fbList %}
-      <div class="list-group">
-        <div class="list-group">
-          {% for fb in fbList%}
-            <a href="{% url 'beedb:userfbView' fb.id %}" class="list-group-item list-group-item-action list-group-item-warning">
+      <!-- <div class="list-group"> -->
+      <ul class="w3-ul w3-card-4 w3-amber w3-round-large">
+        {% for fb in fbList%}
+          <li class="w3-margin">
+            <!-- <a href="{% url 'beedb:userfbView' fb.id %}" class="list-group-item list-group-item-action list-group-item-warning"> -->
+              <a href="{% url 'beedb:userfbView' fb.id %}">
               {{fb.subject}}<br>
               {% if user.is_staff %}
               <div class="inset">Submitted by: {{ fb.beek.username }}</div>
@@ -30,9 +32,9 @@ Feedback
                 {% endif %}
               </div>
             </a>
-          {% endfor %}
-        </div>
-      </div>
+          </li>
+        {% endfor %}
+      </ul>
     {% else %}
       <p>No feedback yet</p>
     {% endif %}

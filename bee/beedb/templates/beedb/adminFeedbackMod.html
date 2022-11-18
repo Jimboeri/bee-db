@@ -1,5 +1,5 @@
 {% extends "beedb/webbase.html" %}
-
+<!-- No bootstrap here -->
 {% block title %}
 Feedback modification
 {% endblock %}
@@ -9,7 +9,7 @@ Feedback modification
   <div id="fb-header">
     <h3>Feedback update</h3>
   </div>
-  <div id="fb_detail" class="content_block">
+  <div id="fb_detail" class="bd_content_block">
     <div id="fb_det_table">
       <form action="{% url 'beedb:adminfbMod' fb.id %}" method="POST">
         {% csrf_token %}
