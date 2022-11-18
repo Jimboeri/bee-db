@@ -442,6 +442,6 @@ class ColonyReportForm(forms.Form):
         (5, "All information"),
     ]
 
-    duration = forms.ChoiceField(choices=DURATION_CHOICES)
+    duration = forms.ChoiceField(choices=DURATION_CHOICES, initial=3)
     colID = forms.IntegerField(widget=forms.HiddenInput(), required = False)
 
