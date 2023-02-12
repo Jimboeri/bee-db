@@ -51,6 +51,38 @@ class ApiaryAddForm(forms.ModelForm):
             "hazards": forms.Textarea(attrs={"rows": 3}),
         }
 
+"""
+class ApiaryModForm(forms.Form):
+    apiaryID =forms.CharField(max_length=50, label="Apiary name:")
+    descr = forms.CharField(widget=forms.Textarea,
+                            label="Description", required=False)
+    descr.widget.attrs.update(rows=3)
+    latitude = forms.DecimalField(label="Latitude")
+    longitude = forms.DecimalField(label="Longitude")
+    ownerResident = forms.CharField(max_length=200, label="Name of owner / occupier")
+    descr.widget.attrs.update(rows=3)
+    residentPhone = forms.CharField(max_length=50)
+    address = forms.CharField(widget=forms.Textarea)
+    address.widget.attrs.update(rows=3)
+    location = forms.CharField(widget=forms.Textarea, label="Where the hives are located"
+    )
+    location.widget.attrs.update(rows=3)
+    hazards = forms.CharField(widget=forms.Textarea)
+    hazards.widget.attrs.update(rows=3)
+"""
+
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = models.Image
+        fields = [
+            "title",
+            "img"
+        ]
+
+class PhotoForm2(forms.Form):
+    title = forms.CharField(max_length=100)
+    img = forms.ImageField()
+
 
 class ColonyModelForm(forms.ModelForm):
     class Meta:
@@ -378,6 +410,7 @@ class TreatInInspectForm(forms.Form):
         widget=forms.Textarea, label="Notes", required=False
     )
     trNotes.widget.attrs.update(rows=3)
+
 
 class NewTreatmentForm(forms.ModelForm):
     class Meta:

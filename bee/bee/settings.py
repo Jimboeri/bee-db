@@ -155,3 +155,6 @@ DEFAULT_FROM_EMAIL = "auto@west.net.nz"
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CSRF_TRUSTED_ORIGINS = ["https://*.west.net.nz", "http://localhost"]
+
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"

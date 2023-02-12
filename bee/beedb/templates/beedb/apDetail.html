@@ -28,6 +28,7 @@ Apiary Details
         <div class="dropdown-menu">
           <a class="dropdown-item" href="{% url 'beedb:apMod' ap.id %}">Update apiary details</a>
           <a class="dropdown-item" href="{% url 'beedb:colAdd' ap.id  0 %}">Add colony</a>
+          <a class="dropdown-item" href="{% url 'beedb:apPhotoAdd' ap.id %}">Add photo</a>
         </div>
       </div> 
       {% else %}

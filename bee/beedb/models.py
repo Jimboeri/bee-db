@@ -41,12 +41,12 @@ TEMPER_CHOICES = [
 ]
 
 STATUS_CHOICES = [
-        ("C", "Current"),
-        ("D", "Dead"),
-        ("A", "Absconded"),
-        ("S", "Sold/given"),
-        ("M", "Combined"),
-    ]
+    ("C", "Current"),
+    ("D", "Dead"),
+    ("A", "Absconded"),
+    ("S", "Sold/given"),
+    ("M", "Combined"),
+]
 # Create your models here.
 
 
@@ -57,8 +57,8 @@ class Apiary(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=5, default=0)
-    longitude = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    latitude = models.DecimalField(max_digits=12, decimal_places=7, default=0)
+    longitude = models.DecimalField(max_digits=12, decimal_places=7, default=0)
     ownerResident = models.CharField(
         "Name of owner / occupier", max_length=200, blank=True, null=True
     )
@@ -167,7 +167,7 @@ class Colony(models.Model):
         else:
             print("No inspections available")
             return
-    
+
     def statusDisplay(self):
         for e in STATUS_CHOICES:
             if e[0] == self.status:
@@ -376,7 +376,9 @@ class Audit(models.Model):
         default=0,
     )
     detail = models.TextField(blank=True, null=True)
-    transfer = models.ForeignKey(Transfer, on_delete=models.SET_NULL, null=True, blank=True)
+    transfer = models.ForeignKey(
+        Transfer, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self):
         return f"Date: {self.dt}, beek: {self.beek.username}, Col: {self.colony.colonyID}, Tr code: {self.transaction_cd} "
@@ -545,3 +547,21 @@ class SizeChoice(models.Model):
 
     def __str__(self):
         return f"Size: {self.size}, type: {self.type}, value: {self.value}, text: {self.text}"
+
+
+class Image(models.Model):
+    title = models.CharField(max_length=100)
+    img = models.ImageField(upload_to="images/")
+    beek = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
+    colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
+    inspection = models.ForeignKey(
+        Inspection, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    uploadDt = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ["-uploadDt"]
+
+    def __str__(self):
+        return f"Title: {self.title}, uploaded {self.uploadDt}"

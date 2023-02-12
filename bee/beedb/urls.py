@@ -7,9 +7,14 @@ from . import views, profile, adminViews, apiViews
 app_name = "beedb"
 urlpatterns = [
     path("", views.index, name="index"),
+
+    # Apiary views
     path("apiary/<int:ap_ref>/", views.apDetail, name="apDetail"),
     path("apiary/add/", views.apAdd, name="apAdd"),
     path("apiary/modify/<int:ap_ref>/", views.apMod, name="apMod"),
+    path("apiary/photoAdd/<int:ap_ref>/", views.apPhotoAdd, name="apPhotoAdd"),
+
+    # Colony views
     path("colony/<int:col_ref>/", views.colDetail, name="colDetail"),
     path("colony/add/<int:ap_ref>/<int:col_add_type>/",
          views.colAdd, name="colAdd"),

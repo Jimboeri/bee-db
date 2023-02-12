@@ -11,8 +11,9 @@ from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django import forms
+from django.conf import settings
 
-from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback, Treatment, TreatmentType
+from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback, Treatment, TreatmentType, Image
 
 from .forms import (
     ApiaryAddForm,
@@ -112,6 +113,7 @@ def apDetail(request, ap_ref):
     ap = get_object_or_404(Apiary, pk=ap_ref)
     if ap.beek != usrInfo["procBeek"]:
         return render(request, "beedb/not_authorised.html")
+
     context = {"ap": ap}
     deadCol = []
     liveCol = []
@@ -178,6 +180,33 @@ def apMod(request, ap_ref):
 
     context = {"form": nf, "ap": ap}
     return render(request, "beedb/apMod.html", context)
+
+
+@login_required
+def apPhotoAdd(request, ap_ref):
+
+    ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
+
+    if request.method == "POST":
+        # print("Post message received")
+        pf = forms.PhotoForm2(request.POST, request.FILES)
+
+        if pf.is_valid():
+            title = pf.cleaned_data.get("title")
+            img = pf.cleaned_data.get("img")
+            obj = Image.objects.create(title = title, img = img)
+            obj.save()
+
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+        # if a GET (or any other method) we'll create a blank form
+    else:
+        pf = forms.PhotoForm2()
+
+    context = {"form": pf, "apiary": ap}
+    return render(request, "beedb/apPhotoAdd.html", context)
+
 
 
 @login_required
