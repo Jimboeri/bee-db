@@ -13,18 +13,18 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django import forms
 from django.conf import settings
 
-from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback, Treatment, TreatmentType, Image
+from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback, Treatment, TreatmentType, Picture
 
 from .forms import (
-    ApiaryAddForm,
-    ColonyAddForm,
-    ColonyDeadForm,
-    InspectionForm,
-    InspectionOptionsForm,
-    TransferForm,
-    SwarmForm,
-    PurchaseForm,
-    ColonyModelForm,
+    #ApiaryAddForm,
+    #ColonyAddForm,
+    #ColonyDeadForm,
+    #InspectionForm,
+    #InspectionOptionsForm,
+    #TransferForm,
+    #SwarmForm,
+    #PurchaseForm,
+    #ColonyModelForm,
     DiaryModelForm,
     DiaryForm,
     CustomUserCreationForm,
@@ -45,6 +45,8 @@ import datetime
 import logging
 import os
 from geopy.distance import distance
+
+from PIL import Image
 
 eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
@@ -143,7 +145,7 @@ def apAdd(request):
         return render(request, "beedb/not_authorised.html")
 
     if request.method == "POST":
-        nf = ApiaryAddForm(request.POST)
+        nf = forms.ApiaryAddForm(request.POST)
         if nf.is_valid():
             print("Valid BK 1")
             ap = Apiary(
@@ -155,7 +157,7 @@ def apAdd(request):
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = ApiaryAddForm()
+        nf = forms.ApiaryAddForm()
 
     context = {"form": nf}
     return render(request, "beedb/apAdd.html", context)
@@ -169,14 +171,14 @@ def apMod(request, ap_ref):
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
-        nf = ApiaryAddForm(request.POST, instance=ap)
+        nf = forms.ApiaryAddForm(request.POST, instance=ap)
         if nf.is_valid():
             ap.save()
 
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         # if a GET (or any other method) we'll create a blank form
     else:
-        nf = ApiaryAddForm(instance=ap)
+        nf = forms.ApiaryAddForm(instance=ap)
 
     context = {"form": nf, "ap": ap}
     return render(request, "beedb/apMod.html", context)
@@ -195,7 +197,10 @@ def apPhotoAdd(request, ap_ref):
         if pf.is_valid():
             title = pf.cleaned_data.get("title")
             img = pf.cleaned_data.get("img")
-            obj = Image.objects.create(title = title, img = img)
+            obj = Picture.objects.create(title = title)
+            obj.beek = ap.beek
+            obj.apiary = ap
+            obj.img = img
             obj.save()
 
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
@@ -206,8 +211,6 @@ def apPhotoAdd(request, ap_ref):
     context = {"form": pf, "apiary": ap}
     return render(request, "beedb/apPhotoAdd.html", context)
 
-
-
 @login_required
 def colAdd(request, ap_ref, col_add_type):
     ap = get_object_or_404(Apiary, pk=ap_ref)
@@ -216,7 +219,7 @@ def colAdd(request, ap_ref, col_add_type):
     if request.method == "POST":
         # print("Post message received")
         if col_add_type == 1:                   # SWARM
-            nf = SwarmForm(request.POST)
+            nf = forms.SwarmForm(request.POST)
             if nf.is_valid():
                 col = Colony(
                     apiary=ap,
@@ -244,7 +247,7 @@ def colAdd(request, ap_ref, col_add_type):
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         elif col_add_type == 2:                 # Purchase
-            nf = PurchaseForm(request.POST)
+            nf = forms.PurchaseForm(request.POST)
             if nf.is_valid():
                 col = Colony(
                     apiary=ap,
@@ -276,7 +279,7 @@ def colAdd(request, ap_ref, col_add_type):
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         elif col_add_type == 3:
-            nf = ColonyAddForm(request.POST)
+            nf = forms.ColonyAddForm(request.POST)
             if nf.is_valid():
                 col = Colony(
                     apiary=ap,
@@ -302,7 +305,7 @@ def colAdd(request, ap_ref, col_add_type):
                 audit.save()
                 return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
         else:
-            nf = ColonyAddForm(request.POST)
+            nf = forms.ColonyAddForm(request.POST)
             if nf.is_valid():
                 col = Colony(
                     colonyID=nf.cleaned_data["colonyID"], descr=nf.cleaned_data["descr"]
@@ -315,11 +318,11 @@ def colAdd(request, ap_ref, col_add_type):
         # if a GET (or any other method) we'll create a blank form
     else:
         if col_add_type == 1:
-            nf = SwarmForm()
+            nf = forms.SwarmForm()
         elif col_add_type == 2:
-            nf = PurchaseForm()
+            nf = forms.PurchaseForm()
         else:
-            nf = ColonyAddForm() 
+            nf = forms.ColonyAddForm() 
 
     context = {"form": nf, "ap": ap, "col_add_type": col_add_type}
     return render(request, "beedb/colAdd.html", context)
@@ -353,7 +356,7 @@ def colMod(request, col_ref):
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
-        nf = ColonyModelForm(request.POST, instance=col)
+        nf = forms.ColonyModelForm(request.POST, instance=col)
         if nf.is_valid():
             col.lastAction = timezone.now()
             col.save()
@@ -361,7 +364,7 @@ def colMod(request, col_ref):
             return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = ColonyModelForm(instance=col)
+        nf = forms.ColonyModelForm(instance=col)
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colMod.html", context)
@@ -421,7 +424,7 @@ def colDead(request, col_ref):
             return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = ColonyDeadForm(instance=col)
+        nf = forms.ColonyDeadForm(instance=col)
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colDead.html", context)
@@ -485,7 +488,7 @@ def inspectMod(request, ins_ref):
             return HttpResponseRedirect(reverse("beedb:inspectDetail", args=[ins.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = InspectionForm(instance=ins, inColony = ins.colony)
+        nf = forms.InspectionForm(instance=ins, inColony = ins.colony)
         
     context = {"form": nf, "ins": ins}
     return render(request, "beedb/inspectMod.html", context)
@@ -498,10 +501,10 @@ def inspectAdd(request, col_ref):
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         logging.debug('Processing inspection')
-        nf = InspectionForm(request.POST, inColony = col)
+        nf = forms.InspectionForm(request.POST, inColony = col)
         df = DiaryModelForm(request.POST)
         tf = TreatInInspectForm(request.POST)
-        optForm = InspectionOptionsForm(request.POST)
+        optForm = forms.InspectionOptionsForm(request.POST)
 
         optForm.is_valid()
 
@@ -558,8 +561,8 @@ def inspectAdd(request, col_ref):
                 )
     # if a GET (or any other method) we'll create a blank form
     else:
-        optForm = InspectionOptionsForm()
-        nf = InspectionForm(inColony = col)
+        optForm = forms.InspectionOptionsForm()
+        nf = forms.InspectionForm(inColony = col)
         #logging.info(sizeChoices(col.size, "Number"))
         df = DiaryModelForm()
         tf = TreatInInspectForm(request.POST)
@@ -585,7 +588,7 @@ def colTransfer(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
     if request.method == "POST":
         # print("Post message received")
-        nf = TransferForm(request.POST)
+        nf = forms.TransferForm(request.POST)
         if nf.is_valid():
             transRec = nf.save(commit=False)
             transRec.colony = col
@@ -602,7 +605,7 @@ def colTransfer(request, col_ref):
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = TransferForm()
+        nf = forms.TransferForm()
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colTransfer.html", context)
@@ -613,7 +616,7 @@ def colSplit(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
     if request.method == "POST":
         # print("Post message received")
-        nf = ColonyAddForm(request.POST)
+        nf = forms.ColonyAddForm(request.POST)
         if nf.is_valid():
             newCol = Colony(
                 apiary=col.apiary,
@@ -642,7 +645,7 @@ def colSplit(request, col_ref):
             return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id]))
     # if a GET (or any other method) we'll create a blank form
     else:
-        nf = ColonyAddForm()
+        nf = forms.ColonyAddForm()
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colSplit.html", context)

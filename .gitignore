@@ -4,3 +4,4 @@ postgres-data.tar.bz2
 *.pyc
 docker-compose.yml
 .env
+bee/media/images/*
