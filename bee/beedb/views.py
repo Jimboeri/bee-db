@@ -181,7 +181,6 @@ def apMod(request, ap_ref):
     context = {"form": nf, "ap": ap}
     return render(request, "beedb/apMod.html", context)
 
-
 @login_required
 def apPhotoAdd(request, ap_ref):
 
@@ -325,7 +324,6 @@ def colAdd(request, ap_ref, col_add_type):
     context = {"form": nf, "ap": ap, "col_add_type": col_add_type}
     return render(request, "beedb/colAdd.html", context)
 
-
 @login_required
 def colDetail(request, col_ref):
     usrInfo = usrCheck(request)
@@ -348,7 +346,6 @@ def colDetail(request, col_ref):
 
     return render(request, "beedb/colDetail.html", context)
 
-
 @login_required
 def colMod(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
@@ -369,7 +366,6 @@ def colMod(request, col_ref):
     context = {"form": nf, "col": col}
     return render(request, "beedb/colMod.html", context)
 
-
 @login_required
 def colMoveChoose(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
@@ -379,7 +375,6 @@ def colMoveChoose(request, col_ref):
 
     context = {"col": col, "apList": apList}
     return render(request, "beedb/colMoveChoose.html", context)
-
 
 @login_required
 def colMoveSelect(request, col_ref, ap_ref):
@@ -400,7 +395,6 @@ def colMoveSelect(request, col_ref, ap_ref):
 
     context = {"col": col, "ap": ap}
     return render(request, "beedb/colMoveSelect.html", context)
-
 
 @login_required
 def colDead(request, col_ref):
@@ -476,7 +470,6 @@ def inspectDetail(request, ins_ref):
     context['usrInfo'] = usrInfo
     return render(request, "beedb/inspectDetail.html", context)
 
-
 @login_required
 def inspectMod(request, ins_ref):
 
@@ -485,7 +478,7 @@ def inspectMod(request, ins_ref):
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
         # print("Post message received")
-        nf = InspectionForm(request.POST, instance=ins, inColony = ins.colony)
+        nf = forms.InspectionForm(request.POST, instance=ins, inColony = ins.colony)
         if nf.is_valid():
             ins.save()
 
@@ -496,7 +489,6 @@ def inspectMod(request, ins_ref):
         
     context = {"form": nf, "ins": ins}
     return render(request, "beedb/inspectMod.html", context)
-
 
 @login_required
 def inspectAdd(request, col_ref):
@@ -574,7 +566,6 @@ def inspectAdd(request, col_ref):
     context = {"form": nf, "col": col, "diaryForm": df, "TreatForm": tf, "optForm":optForm}
     return render(request, "beedb/inspectAdd.html", context)
 
-
 @login_required
 def inspectDel(request, ins_ref):
     ins = get_object_or_404(Inspection, pk=ins_ref)
@@ -587,7 +578,6 @@ def inspectDel(request, ins_ref):
     else:
         context = {"ins": ins}
     return render(request, "beedb/inspectDelete.html", context)
-
 
 @login_required
 def colTransfer(request, col_ref):
@@ -616,7 +606,6 @@ def colTransfer(request, col_ref):
 
     context = {"form": nf, "col": col}
     return render(request, "beedb/colTransfer.html", context)
-
 
 @login_required
 def colSplit(request, col_ref):
@@ -801,7 +790,6 @@ def treatComplete(request, treat_ref):
     context = {"form": tf, "treat": treat}
     return render(request, "beedb/treatRemove.html", context)
    
-
 @login_required
 def reports(request):
     """
