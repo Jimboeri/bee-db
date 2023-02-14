@@ -73,7 +73,7 @@ class ApiaryModForm(forms.Form):
 
 class PhotoForm(forms.ModelForm):
     class Meta:
-        model = models.Image
+        model = models.Picture
         fields = [
             "title",
             "img"
