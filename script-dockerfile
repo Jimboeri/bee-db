@@ -4,6 +4,10 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir code
 WORKDIR /code
 COPY background-requirements.txt /code/
-RUN apt-get update && apt-get -y upgrade && apt-get -y install libpq-dev gcc
+RUN apt-get update && apt-get -y upgrade && apt-get -y install libpq-dev gcc cmake \
+    curl \
+    ghostscript \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 RUN pip install -r background-requirements.txt
 WORKDIR /code/bee/beedb
