@@ -145,12 +145,12 @@ STATIC_URL = '/static/'
 LOGIN_URL = "/beedb/login"
 
 # Email parameters
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = "465"
-EMAIL_HOST_USER = "auto@west.net.nz"
-EMAIL_HOST_PASSWORD = "jbmxqbvykpohrtmo"
+EMAIL_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+EMAIL_PORT = os.environ.get("SMTP_PORT", 465)
+EMAIL_HOST_USER = os.environ.get("SMTP_USER", "auto@west.net.nz")
+EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASSWORD")
 EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = "auto@west.net.nz"
+DEFAULT_FROM_EMAIL = os.environ.get("SMTP_FROM", "auto@west.net.nz")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
