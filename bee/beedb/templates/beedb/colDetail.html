@@ -24,6 +24,7 @@ Colony Details
                     <a class="dropdown-item" href="{% url 'beedb:colDiaryAdd' col.id %}">Add reminder</a>
                     <a class="dropdown-item" href="{% url 'beedb:treatmentAdd' col.id %}">Add treatment</a>
                     <a class="dropdown-item" href="{% url 'beedb:colMod' col.id %}">Edit colony details</a>
+                    <a class="dropdown-item" href="{% url 'beedb:colPhotoAdd' col.id %}">Add photo</a>
                     <a class="dropdown-item" href="{% url 'beedb:colMoveChoose' col.id %}">Move colony</a>
                     <a class="dropdown-item" href="{% url 'beedb:colSplit' col.id %}">Split colony</a>
                     <a class="dropdown-item" href="{% url 'beedb:colCombine' col.id %}">Combine colonies</a>
@@ -130,6 +131,25 @@ Colony Details
       </table>
     </div>
     {% endif %}
+
+    {% if col.picture_set.all %}
+    <div>
+      {% for picture in col.picture_set.all %}
+        <div class="responsive">
+          <div class="gallery">
+            {% if picture.width_field < 600 %}
+              <img src="{{ picture.img.url}}" alt="{{ picture.title }}" width="{{picture.width_field}}" height="auto">
+            {% else %}
+              <img src="{{ picture.img.url}}" alt="{{ picture.title }}" width="600" height="auto">
+            {% endif %}
+            <div class="desc">{{picture.title}}</div>
+          </div>
+        </div>
+      {% endfor %}
+      <div class="clearfix"></div>
+    </div>
+  {% endif %}
+
 
   </div>
 
