@@ -19,6 +19,7 @@ urlpatterns = [
     path("colony/add/<int:ap_ref>/<int:col_add_type>/",
          views.colAdd, name="colAdd"),
     path("colony/modify/<int:col_ref>/", views.colMod, name="colMod"),
+    path("colony/photoAdd/<int:col_ref>", views.colPhotoAdd, name="colPhotoAdd"),
     path("colony/moveChoose/<int:col_ref>/",
          views.colMoveChoose, name="colMoveChoose"),
     path(

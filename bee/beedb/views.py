@@ -372,6 +372,34 @@ def colMod(request, col_ref):
     context = {"form": nf, "col": col}
     return render(request, "beedb/colMod.html", context)
 
+@login_required
+def colPhotoAdd(request, col_ref):
+
+    col = get_object_or_404(Colony, pk=col_ref)
+    if col.apiary.beek != request.user:
+        return render(request, "beedb/not_authorised.html")
+
+    if request.method == "POST":
+        # print("Post message received")
+        pf = forms.PhotoForm2(request.POST, request.FILES)
+
+        if pf.is_valid():
+            title = pf.cleaned_data.get("title")
+            img = pf.cleaned_data.get("img")
+            obj = Picture.objects.create(title = title)
+            obj.beek = col.apiary.beek
+            obj.apiary = col.apiary
+            obj.colony = col
+            obj.img = img
+            obj.save()
+
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+        # if a GET (or any other method) we'll create a blank form
+    else:
+        pf = forms.PhotoForm2()
+
+    context = {"form": pf, "colony": col}
+    return render(request, "beedb/colPhotoAdd.html", context)
 
 @login_required
 def colMoveChoose(request, col_ref):
