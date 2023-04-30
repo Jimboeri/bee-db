@@ -14,7 +14,7 @@ import logging
 
 #from email.mime.text import MIMEText
 
-#import apprise
+import apprise
 
 # need this to access django models and templates
 sys.path.append("/code/bee")
@@ -27,10 +27,10 @@ from beedb.models import (
     Apiary,
     Profile,
     Colony,
-    Inspection,
-    Transfer,
-    Audit,
-    Diary,
+    #Inspection,
+    #Transfer,
+    #Audit,
+    #Diary,
     Config,
     Message,
     SizeChoice,
@@ -113,25 +113,29 @@ def sendMessage(msg):
     Function that takes a message and sends it out by whatever channel the user defines
     """
     beek = Profile.objects.filter(user=msg.beek)[0]
-    """
-    smtp_host = "smtp.gmail.com"
-    smtp_port = "465"
-    smtp_user = "auto@west.net.nz"
-    smtp_password = "jbmxqbvykpohrtmo"
-    smtp_from = "auto@west.net.nz"
+    
+    smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+    smtp_port = os.environ.get("SMTP_PORT", 465)
+    smtp_user = os.environ.get("SMTP_USER", "auto@west.net.nz")
+    smtp_password = os.environ.get("SMTP_PASSWORD")
+    smtp_from = os.environ.get("SMTP_FROM", "auto@west.net.nz")
     smtp_from_name = "Bee database system"
 
     lUser = smtp_user.split("@")
     cUsr = lUser[0]
     cDomain = lUser[1]
 
+    logging.debug(f"User - {cUsr}, password - {settings.EMAIL_HOST_PASSWORD}")
+
     #print(f"Beek name is {beek.user.username}")
     apobj = apprise.Apprise()
-    url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
+    #url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
+    url = f"mailtos://{cUsr}:{settings.EMAIL_HOST_PASSWORD}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
+
     print(f"URL is {url}")
     apobj.add(url)
     if not apobj.notify(
-            body = msg.body,
+            body = msg.html,
             title = msg.subject,
         ):
         print(f"Email not sent URL is {url}")
@@ -140,14 +144,14 @@ def sendMessage(msg):
         msg.processed = True
         msg.processedDt = timezone.now()
         msg.save()
-    """
-    print("About to use send_mail")
-    send_mail(subject=msg.subject, message=msg.body, from_email=settings.DEFAULT_FROM_EMAIL,
-              recipient_list=[msg.beek.email], html_message=msg.html)
-    print("send_mail finished")
-    msg.processed = True
-    msg.processedDt = timezone.now()
-    msg.save()
+    
+    #logging.info("About to use send_mail")
+    #send_mail(subject=msg.subject, message=msg.body, from_email=settings.DEFAULT_FROM_EMAIL,
+    #          recipient_list=[msg.beek.email], html_message=msg.html)
+    #logging.info("send_mail finished")
+    #msg.processed = True
+    #msg.processedDt = timezone.now()
+    #msg.save()
 
     return
 

@@ -549,9 +549,24 @@ class SizeChoice(models.Model):
         return f"Size: {self.size}, type: {self.type}, value: {self.value}, text: {self.text}"
 
 
-class Image(models.Model):
+def user_directory(instance, filename):
+    if instance.inspection:
+        return(f"images/{instance.inspection.colony.apiary.beek.id}/{instance.inspection.colony.apiary.id}/{instance.inspection.colony.id}/{instance.inspection.id}/{filename}")
+
+    if instance.colony:
+        return(f"images/{instance.colony.apiary.beek.id}/{instance.colony.apiary.id}/{instance.colony.id}/{filename}")
+
+    if instance.apiary:
+        return(f"images/{instance.apiary.beek.id}/{instance.apiary.id}/{filename}")
+
+    if instance.beek:
+        return(f"images/{instance.beek.id}/{filename}")
+
+    return(f"images/{filename}")
+
+class Picture(models.Model):
     title = models.CharField(max_length=100)
-    img = models.ImageField(upload_to="images/")
+    img = models.ImageField(upload_to=user_directory)
     beek = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     apiary = models.ForeignKey(Apiary, on_delete=models.SET_NULL, null=True, blank=True)
     colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)

@@ -57,6 +57,24 @@ Apiary Details
     </table>      
 </div>
 
+{% if ap.picture_set.all %}
+  <div>
+    {% for picture in ap.picture_set.all %}
+      <div class="responsive">
+        <div class="gallery">
+          {% if picture.width_field < 600 %}
+            <img src="{{ picture.img.url}}" alt="{{ picture.title }}" width="{{picture.width_field}}" height="auto">
+          {% else %}
+            <img src="{{ picture.img.url}}" alt="{{ picture.title }}" width="600" height="auto">
+          {% endif %}
+          <div class="desc">{{picture.title}}</div>
+        </div>
+      </div>
+    {% endfor %}
+    <div class="clearfix"></div>
+  </div>
+{% endif %}
+
 {% if deadCol %}
 <div id="ap_colonies" class="bd_content_block">
   <H5>Dead or absconded colonies in last 2 years</H5>
@@ -78,6 +96,8 @@ Apiary Details
     </table>
   </div>
 {% endif %}
+
+
 <div id="map"></div>
 <a href="{% url 'beedb:index' %}{{usrInfo.getParams}}" class="btn btn-warning" role="button">Return to Apiaries</a>
 
