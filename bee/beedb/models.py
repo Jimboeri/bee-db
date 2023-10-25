@@ -224,7 +224,7 @@ class Inspection(models.Model):
         help_text="How healthy is the hive?",
         choices=DISEASE_CHOICES,
         default=0,
-    )
+    ) 
     temper = models.IntegerField(
         help_text="How happy is the hive?",
         choices=TEMPER_CHOICES,

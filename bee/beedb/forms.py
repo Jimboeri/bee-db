@@ -166,7 +166,7 @@ class InspectionForm(forms.ModelForm):
             self.fields['numbers'] = forms.ChoiceField(choices=sizeChoices(
                 self.colony.size, "Number"), help_text="How many bees in the hive (seams of bees)?",)
             self.fields['weight'] = forms.ChoiceField(choices=sizeChoices(
-                self.colony.size, "Weight"), help_text="How heavy is the hive?",)
+                self.colony.size, "Weight"), help_text="How heavy is the hive?",) 
 
         except Exception as e:
             logging.debug(f"Initialisation error is {e}")

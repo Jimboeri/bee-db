@@ -89,7 +89,7 @@ urlpatterns = [
     path("login/", views.login, name="login"),
     path("signup/", views.signup, name="signup"),
     path(
-        "activate/(<uidb64>[0-9A-Za-z_\-]+)/(<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/",
+        "activate/(<uidb64>[0-9A-Za-z_]+)/(<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/",
         views.activate_account,
         name="activate",
     ),
@@ -113,7 +113,7 @@ urlpatterns = [
         name="password_reset_done",
     ),
     path(
-        "password-confirm/(<uidb64>[0-9A-Za-z_\-]+)/(<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/",
+        "password-confirm/(<uidb64>[0-9A-Za-z_]+)/(<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/",
         auth_views.PasswordResetConfirmView.as_view(
             template_name="accounts/password_reset_confirm.html",
             success_url="password_reset_complete",
@@ -121,7 +121,7 @@ urlpatterns = [
         name="password_reset_confirm",
     ),
     path(
-        "password-confirm/(<uidb64>[0-9A-Za-z_\-]+)/(<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/password_reset_complete",
+        "password-confirm/(<uidb64>[0-9A-Za-z_]+)/(<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/password_reset_complete",
         auth_views.PasswordResetCompleteView.as_view(
             template_name="accounts/password_reset_complete.html"
         ),

@@ -12,7 +12,7 @@ services:
     networks:
       - default
       #- traefik_default
-    restart: always
+    #restart: always
 
   web:
     image: jimboeri/bee-db-web
@@ -30,7 +30,7 @@ services:
     networks:
       - default
       #- traefik_default
-    restart: always
+    #restart: always
     labels:
       - traefik.enable=true
       - traefik.http.routers.dj-monitor.rule=Host(`beetest.west.net.nz`)

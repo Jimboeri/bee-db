@@ -12,7 +12,7 @@ def sizeChoices(inSize, inType):
     for ch in choices:
         lChoice.append((ch.value, ch.text))
     logging.info(f"Choice is {lChoice}")
-    return(lChoice)
+    return(lChoice) 
 
 def usrCheck(request):
     """
