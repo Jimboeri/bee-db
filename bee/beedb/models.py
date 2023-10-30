@@ -165,7 +165,7 @@ class Colony(models.Model):
         if len(lstInsp) > 0:
             return lstInsp[0]
         else:
-            print("No inspections available")
+            #print("No inspections available")
             return
 
     def statusDisplay(self):
