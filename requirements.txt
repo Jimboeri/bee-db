@@ -7,3 +7,4 @@ djangorestframework
 django-mailer
 pillow
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+sqlparse>=0.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
