@@ -5,3 +5,5 @@ apprise
 geopy
 django-mailer
 djangorestframework
+coverage
+django-coverage

@@ -234,7 +234,7 @@ class Inspection(models.Model):
     # addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
     # addTreatment = models.BooleanField(
     #    default=False, help_text="Add a reminder?")
-    size = models.IntegerField(blank=True, null=True)
+    size = models.IntegerField(blank=True, null=True,)
 
     class Meta:
         ordering = ["-dt"]
