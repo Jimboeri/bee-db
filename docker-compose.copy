@@ -2,12 +2,20 @@ version: '3'
 
 services:
   bee-db:
-    image: postgres:11
+<<<<<<< HEAD
+    image: postgres:16
+=======
+    image: postgres:latest
+>>>>>>> refs/remotes/origin/master
     environment:
       POSTGRES_PASSWORD:
       POSTGRES_USER:
     volumes:
+<<<<<<< HEAD
+      - postgres-data-16:/var/lib/postgresql/data
+=======
       - postgres-data:/var/lib/postgresql/data
+>>>>>>> refs/remotes/origin/master
       - ./db-backup:/backup
     networks:
       - default
@@ -90,4 +98,4 @@ networks:
   default:
 
 volumes:
-  postgres-data:
+  postgres-data-16:

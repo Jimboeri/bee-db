@@ -132,13 +132,13 @@ def sendMessage(msg):
     #url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
     url = f"mailtos://{cUsr}:{settings.EMAIL_HOST_PASSWORD}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
 
-    print(f"URL is {url}")
+    #print(f"URL is {url}")
     apobj.add(url)
     if not apobj.notify(
             body = msg.html,
             title = msg.subject,
         ):
-        print(f"Email not sent URL is {url}")
+        logging.warning(f"WARNING - Email not sent URL is {url}")
     else:
     
         msg.processed = True
