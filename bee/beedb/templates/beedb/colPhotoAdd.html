@@ -1,0 +1,28 @@
+{% extends "beedb/webbase.html" %}
+
+{% block title %}
+Colony Add Photo
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <div id="col-header"><h3>Add a photo</h3></div>
+    <div id="col_detail" class="bd_content_block">
+      <div id="col-transfer_table">
+        <form action="{% url 'beedb:colPhotoAdd' colony.id %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.non_field_errors}}
+          <table>
+            <tr><th>Colony : </th><th>{{ colony.colonyID }}</th></tr>
+            {{ form.as_table }}
+          </table>
+        <input type="submit" value="Submit">
+        <span id="col_cancel_button" class="cancel_button">
+          <a href="{% url 'beedb:colDetail' colony.id %}" class="btn btn-link btn-outline-warning" role="button">Cancel</a>
+        </span>
+      </form>
+    </div>
+  </div>
+ 
+</div>
+{% endblock %}
