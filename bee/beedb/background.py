@@ -1,31 +1,30 @@
 
-import re
-import django
+# import re
+import django # type: ignore
 import sys
 import os
-from django.conf import settings
+from django.conf import settings # type: ignore
 import json
 import datetime
 import time
-from django.utils import timezone
-from django import template
-from django.core.mail import send_mail
+from django.utils import timezone # type: ignore
+from django import template # type: ignore
 import logging
 
 #from email.mime.text import MIMEText
 
-import apprise
+import apprise # type: ignore
 
 # need this to access django models and templates
 sys.path.append("/code/bee")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bee.settings")
 django.setup()
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User  # type: ignore # noqa: E402
 #import mailer
-from beedb.models import (
+from beedb.models import (  # noqa: E402
     Apiary,
-    Profile,
+    # Profile,
     Colony,
     #Inspection,
     #Transfer,
@@ -112,12 +111,12 @@ def sendMessage(msg):
     """
     Function that takes a message and sends it out by whatever channel the user defines
     """
-    beek = Profile.objects.filter(user=msg.beek)[0]
+    # beek = Profile.objects.filter(user=msg.beek)[0]
     
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-    smtp_port = os.environ.get("SMTP_PORT", 465)
+    # smtp_port = os.environ.get("SMTP_PORT", 465)
     smtp_user = os.environ.get("SMTP_USER", "auto@west.net.nz")
-    smtp_password = os.environ.get("SMTP_PASSWORD")
+    # smtp_password = os.environ.get("SMTP_PASSWORD")
     smtp_from = os.environ.get("SMTP_FROM", "auto@west.net.nz")
     smtp_from_name = "Bee database system"
 
@@ -216,7 +215,7 @@ def currentInspectionCycle(beek):
 
 # ******************************************************************
 def sendEmail(inDict, inTemplate, inBeek):
-    t = template.loader.get_template(inTemplate)
+    t = template.loader.get_template(inTemplate) # type: ignore
     emailMessage = Message(beek=inBeek)
     emailMessage.html = t.render(inDict)
     emailMessage.subject = "Weekly summary from Bee-db"
@@ -229,7 +228,7 @@ def procWeeklyReminders():
     beeks = User.objects.all()
 
     for beek in beeks:
-        if beek.profile.commsWeeklySummary:
+        if beek.profile.commsWeeklySummary: # type: ignore
             print(f"Processing weekly summary for {beek.username}")
             apiaryDets = []
             apiaries = Apiary.objects.filter(beek=beek)
@@ -247,17 +246,17 @@ def procWeeklyReminders():
                         colDet = {"element": colony}
                         # get last inspection
                         #i1 = colony.lastInspection()
-                        insp = colony.inspection_set.order_by("-dt")[:1]
+                        insp = colony.inspection_set.order_by("-dt")[:1] # type: ignore
                         if len(insp) > 0:
                             print(f"Colony: {colony.colonyID}, last inspection dt : {insp[0].dt}")
                             colDet["lstInspection"] = insp[0]
                             if (timezone.now() - insp[0].dt) / datetime.timedelta(days=1) > currentInspectionCycle(beek):
                                 print("Inspection is late")
-                                colDet["lateInspectionWarning"] = "True"
+                                colDet["lateInspectionWarning"] = "True" # type: ignore
                         else:
-                            colDet["inspectionWarning"] = "This colony has no recorded inspections"
+                            colDet["inspectionWarning"] = "This colony has no recorded inspections" # type: ignore
 
-                        reminders = colony.diary_set.order_by("dueDt").filter(completed=False)
+                        reminders = colony.diary_set.order_by("dueDt").filter(completed=False) # type: ignore
                         print(f"{len(reminders)} reminders found")
                         colDet["reminders"] = reminders
 
@@ -293,9 +292,9 @@ def sys_background():
 
     # initialise timers
     checkTimer = timezone.now()
-    statusTimer = timezone.now()
-    startTime = timezone.now()
-    startedTime = timezone.now()
+    # statusTimer = timezone.now()
+    # startTime = timezone.now()
+    # startedTime = timezone.now()
 
     logging.info("About to start loop")
 
@@ -326,9 +325,9 @@ def sys_background():
             #print("Passed weekday check")
             print(
                 f"Time check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour[0].configValue}")
-            if timezone.now().hour >= cfgWeeklyReminderHour[0].configValue:
+            if timezone.now().hour >= cfgWeeklyReminderHour[0].configValue: # type: ignore
                 print("After the magic hour")
-                if timezone.now().date() != cfgWeeklyReminderWeekday[0].configDt.date():
+                if timezone.now().date() != cfgWeeklyReminderWeekday[0].configDt.date(): # type: ignore
                     procWeeklyReminders()
                     cfgWeeklyReminderWeekday[0].configDt = timezone.now()
                     cfgWeeklyReminderWeekday[0].save()
