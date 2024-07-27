@@ -2,41 +2,52 @@ version: '3'
 
 services:
   bee-db:
+<<<<<<< HEAD
     image: postgres:16
+=======
+    image: postgres:latest
+>>>>>>> refs/remotes/origin/master
     environment:
       POSTGRES_PASSWORD:
       POSTGRES_USER:
     volumes:
+<<<<<<< HEAD
       - postgres-data-16:/var/lib/postgresql/data
+=======
+      - postgres-data:/var/lib/postgresql/data
+>>>>>>> refs/remotes/origin/master
       - ./db-backup:/backup
     networks:
       - default
       #- traefik_default
-    #restart: always
+    restart: always
 
   web:
     image: jimboeri/bee-db-web
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8005
     #command: gunicorn bee.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
-    ports:
-      - "8005:8000"
-    #expose:
-    #  - "8000"
+    #ports:
+    #  - "8005:8000"
+    expose:
+      - "8000"
     depends_on:
       - bee-db
     networks:
       - default
-      #- traefik_default
-    #restart: always
+      - traefik_default
+    restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.dj-monitor.rule=Host(`beetest.west.net.nz`)
-      - traefik.http.routers.dj-monitor.entrypoints=websecure
-      - traefik.http.routers.dj-monitor.tls.certresolver=myresolver
-      - traefik.http.services.dj-monitor.loadbalancer.server.port=8000
+      - traefik.http.routers.bee-web.rule=Host(`beedb.west.net.nz`)
+      - traefik.http.routers.bee-web.entrypoints=websecure
+      - traefik.http.routers.bee-web.tls.certresolver=myresolver
+      - traefik.http.routers.bee-web.tls=true
+      - traefik.http.services.bee-web.loadbalancer.server.port=8005
+      - traefik.docker.network=traefik_default
+      - traefik.port=443
     environment:
       BEEDB_WEB_BASE_URL:
       POSTGRES_HOST:
@@ -82,10 +93,9 @@ services:
       #- traefik_default
 
 networks:
-  #traefik_default:
-  #  external: True
+  traefik_default:
+    external: True
   default:
 
 volumes:
-  postgres-data:
   postgres-data-16:
