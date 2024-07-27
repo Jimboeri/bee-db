@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0044_alter_feedback_status'),
+        ("beedb", "0044_alter_feedback_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='feedback',
-            name='status',
-            field=models.CharField(blank=True, choices=[('N', 'New feedback'), ('I', 'Issue raised'), ('A', 'Archived')], default='N', max_length=1, null=True),
+            model_name="feedback",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("N", "New feedback"),
+                    ("I", "Issue raised"),
+                    ("A", "Archived"),
+                ],
+                default="N",
+                max_length=1,
+                null=True,
+            ),
         ),
     ]

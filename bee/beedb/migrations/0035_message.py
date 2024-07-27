@@ -7,23 +7,36 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('beedb', '0034_auto_20210815_1113'),
+        ("beedb", "0034_auto_20210815_1113"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=100)),
-                ('body', models.TextField(blank=True, null=True)),
-                ('processed', models.BooleanField(default=False)),
-                ('createdDt', models.DateTimeField(default=django.utils.timezone.now)),
-                ('processedDt', models.DateTimeField(blank=True, null=True)),
-                ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subject", models.CharField(max_length=100)),
+                ("body", models.TextField(blank=True, null=True)),
+                ("processed", models.BooleanField(default=False)),
+                ("createdDt", models.DateTimeField(default=django.utils.timezone.now)),
+                ("processedDt", models.DateTimeField(blank=True, null=True)),
+                (
+                    "beek",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

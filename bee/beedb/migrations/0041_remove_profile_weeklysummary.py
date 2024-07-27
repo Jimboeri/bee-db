@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0040_auto_20220212_1534'),
+        ("beedb", "0040_auto_20220212_1534"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='profile',
-            name='weeklySummary',
+            model_name="profile",
+            name="weeklySummary",
         ),
     ]

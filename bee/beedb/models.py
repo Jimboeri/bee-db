@@ -1,5 +1,4 @@
 import datetime
-import logging
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -126,7 +125,6 @@ def createProfile(sender, **kwargs):
 
 
 class Colony(models.Model):
-
     SIZE_CHOICES = [
         (1, "Micro - 3 - mini frames"),
         (2, "Little - queen castle or nuc"),
@@ -551,18 +549,19 @@ class SizeChoice(models.Model):
 
 def user_directory(instance, filename):
     if instance.inspection:
-        return(f"images/{instance.inspection.colony.apiary.beek.id}/{instance.inspection.colony.apiary.id}/{instance.inspection.colony.id}/{instance.inspection.id}/{filename}")
+        return f"images/{instance.inspection.colony.apiary.beek.id}/{instance.inspection.colony.apiary.id}/{instance.inspection.colony.id}/{instance.inspection.id}/{filename}"
 
     if instance.colony:
-        return(f"images/{instance.colony.apiary.beek.id}/{instance.colony.apiary.id}/{instance.colony.id}/{filename}")
+        return f"images/{instance.colony.apiary.beek.id}/{instance.colony.apiary.id}/{instance.colony.id}/{filename}"
 
     if instance.apiary:
-        return(f"images/{instance.apiary.beek.id}/{instance.apiary.id}/{filename}")
+        return f"images/{instance.apiary.beek.id}/{instance.apiary.id}/{filename}"
 
     if instance.beek:
-        return(f"images/{instance.beek.id}/{filename}")
+        return f"images/{instance.beek.id}/{filename}"
 
-    return(f"images/{filename}")
+    return f"images/{filename}"
+
 
 class Picture(models.Model):
     title = models.CharField(max_length=100)

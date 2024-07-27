@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0015_apiary_beeknew'),
+        ("beedb", "0015_apiary_beeknew"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='apiary',
-            old_name='beek',
-            new_name='beekold',
+            model_name="apiary",
+            old_name="beek",
+            new_name="beekold",
         ),
     ]

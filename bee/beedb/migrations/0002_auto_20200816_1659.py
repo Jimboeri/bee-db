@@ -4,23 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0001_initial'),
+        ("beedb", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='apiary',
-            options={'ordering': ['apiaryID']},
+            name="apiary",
+            options={"ordering": ["apiaryID"]},
         ),
         migrations.RemoveField(
-            model_name='profile',
-            name='reportType',
+            model_name="profile",
+            name="reportType",
         ),
         migrations.AddField(
-            model_name='profile',
-            name='bkRegistration',
+            model_name="profile",
+            name="bkRegistration",
             field=models.CharField(blank=True, max_length=10, null=True),
         ),
     ]

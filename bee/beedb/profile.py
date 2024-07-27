@@ -1,18 +1,14 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-#from django.contrib.auth.forms import UserCreationForm
-#from django.contrib.auth.tokens import default_token_generator
-#from django.contrib import auth, messages
-#from django.views import generic
-from django.urls import reverse
-from django.utils import timezone
-#from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django import forms
 
-from .models import Apiary
+# from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.tokens import default_token_generator
+# from django.contrib import auth, messages
+# from django.views import generic
+from django.urls import reverse
+# from django.utils.encoding import force_bytes, force_text
+
 
 from .forms import (
     ProfileForm,
@@ -20,7 +16,6 @@ from .forms import (
     CommsPreferenceModelForm,
 )
 
-import datetime
 
 # Create your views here.
 
@@ -32,13 +27,12 @@ def profileDetail(request):
     print(f"Beek ref {request.user.profile.bkRegistration}")
 
     context = {"profileactive": "Y", "beek": request.user}
-    #context["jim"] = "Hello Jim"
+    # context["jim"] = "Hello Jim"
     return render(request, "beedb/profile/profile.html", context)
 
 
 @login_required
 def profileMod(request):
-
     if request.method == "POST":
         # print("Post message received")
         nf = ProfileForm(request.POST)
@@ -53,27 +47,28 @@ def profileMod(request):
             request.user.profile.save()
             return HttpResponseRedirect(reverse("beedb:profileDetail"))
     else:
-        nf = ProfileForm(initial={
-            "firstName": request.user.first_name,
-            "surName": request.user.last_name,
-            "phoneNumber": request.user.profile.phoneNumber,
-            "bkRegistration": request.user.profile.bkRegistration,
-            "address": request.user.profile.address,
-            "email": request.user.email,
-        })
+        nf = ProfileForm(
+            initial={
+                "firstName": request.user.first_name,
+                "surName": request.user.last_name,
+                "phoneNumber": request.user.profile.phoneNumber,
+                "bkRegistration": request.user.profile.bkRegistration,
+                "address": request.user.profile.address,
+                "email": request.user.email,
+            }
+        )
     context = {"form": nf}
     return render(request, "beedb/profile/profileMod.html", context)
 
+
 @login_required
 def inspectPrefDetail(request):
-
     context = {"profileactive": "Y", "beek": request.user}
     return render(request, "beedb/profile/inspectPref.html", context)
 
 
 @login_required
 def inspectPrefMod(request):
-    
     if request.method == "POST":
         # print("Post message received")
         nf = InspectPreferenceModelForm(request.POST, instance=request.user.profile)
@@ -88,16 +83,15 @@ def inspectPrefMod(request):
     context = {"form": nf}
     return render(request, "beedb/profile/inspectPrefMod.html", context)
 
+
 @login_required
 def commsPrefDetail(request):
-
     context = {"profileactive": "Y", "beek": request.user}
     return render(request, "beedb/profile/commsPref.html", context)
 
 
 @login_required
 def commsPrefMod(request):
-    
     if request.method == "POST":
         # print("Post message received")
         nf = CommsPreferenceModelForm(request.POST, instance=request.user.profile)

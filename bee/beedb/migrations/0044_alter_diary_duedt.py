@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0043_merge_20220215_1310'),
+        ("beedb", "0043_merge_20220215_1310"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='diary',
-            name='dueDt',
-            field=models.DateTimeField(verbose_name='Date to complete by'),
+            model_name="diary",
+            name="dueDt",
+            field=models.DateTimeField(verbose_name="Date to complete by"),
         ),
     ]

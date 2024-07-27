@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0035_message'),
+        ("beedb", "0035_message"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='message',
-            name='html',
+            model_name="message",
+            name="html",
             field=models.TextField(blank=True, null=True),
         ),
     ]

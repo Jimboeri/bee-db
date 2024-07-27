@@ -5,15 +5,20 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0036_message_html'),
+        ("beedb", "0036_message_html"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='audit',
-            name='colony1',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='beedb.colony'),
+            model_name="audit",
+            name="colony1",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="beedb.colony",
+            ),
         ),
     ]

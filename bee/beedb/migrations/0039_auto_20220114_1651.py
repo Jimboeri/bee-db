@@ -4,55 +4,54 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0038_auto_20211205_1554'),
+        ("beedb", "0038_auto_20211205_1554"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='colony',
-            name='size',
+            model_name="colony",
+            name="size",
             field=models.IntegerField(default=3),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectDiaryAdd',
+            model_name="profile",
+            name="inspectDiaryAdd",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectHealthIndex',
+            model_name="profile",
+            name="inspectHealthIndex",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectManualIndex',
+            model_name="profile",
+            name="inspectManualIndex",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectPeriodAutumn',
+            model_name="profile",
+            name="inspectPeriodAutumn",
             field=models.IntegerField(default=14),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectPeriodSpring',
+            model_name="profile",
+            name="inspectPeriodSpring",
             field=models.IntegerField(default=7),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectPeriodSummer',
+            model_name="profile",
+            name="inspectPeriodSummer",
             field=models.IntegerField(default=14),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='inspectPeriodWinter',
+            model_name="profile",
+            name="inspectPeriodWinter",
             field=models.IntegerField(default=60),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='weeklySummary',
-            field=models.CharField(default=' ', max_length=1),
+            model_name="profile",
+            name="weeklySummary",
+            field=models.CharField(default=" ", max_length=1),
         ),
     ]

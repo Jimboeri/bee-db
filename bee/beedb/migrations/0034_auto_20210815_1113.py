@@ -5,20 +5,23 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0033_auto_20210815_1051'),
+        ("beedb", "0033_auto_20210815_1051"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='colony',
-            name='lastAction',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True),
+            model_name="colony",
+            name="lastAction",
+            field=models.DateTimeField(
+                blank=True, default=django.utils.timezone.now, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='colony',
-            name='status_dt',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True),
+            model_name="colony",
+            name="status_dt",
+            field=models.DateTimeField(
+                blank=True, default=django.utils.timezone.now, null=True
+            ),
         ),
     ]
