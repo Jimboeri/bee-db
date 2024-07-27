@@ -4,35 +4,56 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0058_merge_20221016_1039'),
+        ("beedb", "0058_merge_20221016_1039"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='treatment',
-            name='postVarroa',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'No varroa seen'), (2, '1 - 2 varroa / 300 bees'), (3, '3 - 6 varroa / 300 bees'), (4, '7 - 15 varroa / 300 bees'), (5, 'More than 15 varroa / 300 bees')], default=0, help_text='How much varroa is in the hive after treating?'),
+            model_name="treatment",
+            name="postVarroa",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "No varroa seen"),
+                    (2, "1 - 2 varroa / 300 bees"),
+                    (3, "3 - 6 varroa / 300 bees"),
+                    (4, "7 - 15 varroa / 300 bees"),
+                    (5, "More than 15 varroa / 300 bees"),
+                ],
+                default=0,
+                help_text="How much varroa is in the hive after treating?",
+            ),
         ),
         migrations.AddField(
-            model_name='treatment',
-            name='preVarroa',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'No varroa seen'), (2, '1 - 2 varroa / 300 bees'), (3, '3 - 6 varroa / 300 bees'), (4, '7 - 15 varroa / 300 bees'), (5, 'More than 15 varroa / 300 bees')], default=0, help_text='How much varroa is in the hive before treating?'),
+            model_name="treatment",
+            name="preVarroa",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "No varroa seen"),
+                    (2, "1 - 2 varroa / 300 bees"),
+                    (3, "3 - 6 varroa / 300 bees"),
+                    (4, "7 - 15 varroa / 300 bees"),
+                    (5, "More than 15 varroa / 300 bees"),
+                ],
+                default=0,
+                help_text="How much varroa is in the hive before treating?",
+            ),
         ),
         migrations.AlterField(
-            model_name='treatment',
-            name='notes',
+            model_name="treatment",
+            name="notes",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='treatmenttype',
-            name='daysInHive',
+            model_name="treatmenttype",
+            name="daysInHive",
             field=models.IntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='treatmenttype',
-            name='url',
+            model_name="treatmenttype",
+            name="url",
             field=models.URLField(blank=True, null=True),
         ),
     ]

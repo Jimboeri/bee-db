@@ -4,23 +4,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0061_alter_treatment_completed_alter_treatment_insertdt'),
+        ("beedb", "0061_alter_treatment_completed_alter_treatment_insertdt"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='inspection',
-            name='addDiary',
+            model_name="inspection",
+            name="addDiary",
         ),
         migrations.RemoveField(
-            model_name='inspection',
-            name='addTreatment',
+            model_name="inspection",
+            name="addTreatment",
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='temper',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Calm bees'), (3, 'Bees a bit defensive'), (5, 'Bees attack beekeeper')], default=0, help_text='How happy is the hive?'),
+            model_name="inspection",
+            name="temper",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Calm bees"),
+                    (3, "Bees a bit defensive"),
+                    (5, "Bees attack beekeeper"),
+                ],
+                default=0,
+                help_text="How happy is the hive?",
+            ),
         ),
     ]

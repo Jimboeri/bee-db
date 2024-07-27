@@ -4,24 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0052_alter_sizechoice_options'),
+        ("beedb", "0052_alter_sizechoice_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='sizechoice',
-            options={'ordering': ['type', 'size', 'value']},
+            name="sizechoice",
+            options={"ordering": ["type", "size", "value"]},
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='numbers',
-            field=models.IntegerField(default=0, help_text='How many bees in the hive (seams of bees)?'),
+            model_name="inspection",
+            name="numbers",
+            field=models.IntegerField(
+                default=0, help_text="How many bees in the hive (seams of bees)?"
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='weight',
-            field=models.IntegerField(default=0, help_text='How heavy is the hive?'),
+            model_name="inspection",
+            name="weight",
+            field=models.IntegerField(default=0, help_text="How heavy is the hive?"),
         ),
     ]

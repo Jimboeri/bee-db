@@ -5,20 +5,32 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0030_auto_20210613_1115'),
+        ("beedb", "0030_auto_20210613_1115"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Config',
+            name="Config",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(max_length=500)),
-                ('configDt', models.DateTimeField(blank=True, null=True)),
-                ('configValue', models.FloatField(blank=True, null=True)),
-                ('lastUpdate', models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("key", models.CharField(max_length=500)),
+                ("configDt", models.DateTimeField(blank=True, null=True)),
+                ("configValue", models.FloatField(blank=True, null=True)),
+                (
+                    "lastUpdate",
+                    models.DateTimeField(
+                        blank=True, default=django.utils.timezone.now, null=True
+                    ),
+                ),
             ],
         ),
     ]

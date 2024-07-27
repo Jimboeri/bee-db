@@ -4,20 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0055_inspection_size'),
+        ("beedb", "0055_inspection_size"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='inspection',
-            name='numbers',
-            field=models.IntegerField(default=0, help_text='How many bees in the hive (seams of bees)?'),
+            model_name="inspection",
+            name="numbers",
+            field=models.IntegerField(
+                default=0, help_text="How many bees in the hive (seams of bees)?"
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='size',
+            model_name="inspection",
+            name="size",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

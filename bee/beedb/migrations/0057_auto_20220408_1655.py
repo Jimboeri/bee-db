@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0056_auto_20220408_1336'),
+        ("beedb", "0056_auto_20220408_1336"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='inspection',
-            name='numbers',
+            model_name="inspection",
+            name="numbers",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='weight',
+            model_name="inspection",
+            name="weight",
             field=models.IntegerField(default=0),
         ),
     ]

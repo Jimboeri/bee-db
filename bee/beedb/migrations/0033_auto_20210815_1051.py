@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0032_colony_notes'),
+        ("beedb", "0032_colony_notes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='colony',
-            name='lastAction',
+            model_name="colony",
+            name="lastAction",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='colony',
-            name='status_dt',
+            model_name="colony",
+            name="status_dt",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

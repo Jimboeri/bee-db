@@ -1,36 +1,35 @@
-
-import re
-import django
+# import re
+import django  # type: ignore
 import sys
 import os
-from django.conf import settings
+from django.conf import settings  # type: ignore
 import json
 import datetime
 import time
-from django.utils import timezone
-from django import template
-from django.core.mail import send_mail
+from django.utils import timezone  # type: ignore
+from django import template  # type: ignore
 import logging
 
-#from email.mime.text import MIMEText
+# from email.mime.text import MIMEText
 
-import apprise
+import apprise  # type: ignore
 
 # need this to access django models and templates
 sys.path.append("/code/bee")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bee.settings")
 django.setup()
 
-from django.contrib.auth.models import User
-#import mailer
-from beedb.models import (
+from django.contrib.auth.models import User  # type: ignore # noqa: E402
+
+# import mailer
+from beedb.models import (  # noqa: E402
     Apiary,
-    Profile,
+    # Profile,
     Colony,
-    #Inspection,
-    #Transfer,
-    #Audit,
-    #Diary,
+    # Inspection,
+    # Transfer,
+    # Audit,
+    # Diary,
     Config,
     Message,
     SizeChoice,
@@ -38,7 +37,7 @@ from beedb.models import (
 )
 
 # all config parameters are set as environment variables, best practice in docker environment
-#eMqtt_client_id = os.getenv("AKLC_MQTT_CLIENT_ID", "mqtt_monitor")
+# eMqtt_client_id = os.getenv("AKLC_MQTT_CLIENT_ID", "mqtt_monitor")
 
 eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
@@ -53,6 +52,7 @@ def testPr(tStr):
         print(tStr)
     return
 
+
 # ******************************************************************
 def check_config():
     """
@@ -63,7 +63,7 @@ def check_config():
     if created:
         logging.info("Config entry lstDaily created")
         cfg.configDt = timezone.now()
-        cfg.configValue = 8                 # lets do 8:00 am
+        cfg.configValue = 8  # lets do 8:00 am
         cfg.lastUpdate = timezone.now()
     cfg.save()
 
@@ -72,7 +72,7 @@ def check_config():
     if created:
         logging.info("Config entry lstWeekly created")
         cfg.configDt = timezone.now()
-        cfg.configValue = 8                 # lets do 8:00 am
+        cfg.configValue = 8  # lets do 8:00 am
         cfg.lastUpdate = timezone.now()
     cfg.save()
 
@@ -81,28 +81,27 @@ def check_config():
     if created:
         logging.info("Config entry commsWeeklyDay created")
         cfg.configDt = timezone.now()
-        cfg.configValue = 4                 # Mon = 0, Fri = 4, Sun = 6
+        cfg.configValue = 4  # Mon = 0, Fri = 4, Sun = 6
         cfg.lastUpdate = timezone.now()
     cfg.save()
-
 
 
 # ******************************************************************
 def loadSizeChoices():
     """Loads model data from JSON file"""
 
-    with open('sizeChoice.json') as f:
+    with open("sizeChoice.json") as f:
         data = json.load(f)
         for t in data:
-            logging.debug(t['Type'])
-            for rec in t['Records']:
-                #logging.debug(rec['Value'])
+            logging.debug(t["Type"])
+            for rec in t["Records"]:
+                # logging.debug(rec['Value'])
                 sizeChoice, created = SizeChoice.objects.get_or_create(
-                    size=rec['Size'],
-                    type=t['Type'],
-                    value =rec['Value'],    
+                    size=rec["Size"],
+                    type=t["Type"],
+                    value=rec["Value"],
                 )
-                sizeChoice.text =rec['Text']
+                sizeChoice.text = rec["Text"]
                 sizeChoice.save()
             logging.debug("-----")
 
@@ -112,12 +111,12 @@ def sendMessage(msg):
     """
     Function that takes a message and sends it out by whatever channel the user defines
     """
-    beek = Profile.objects.filter(user=msg.beek)[0]
-    
+    # beek = Profile.objects.filter(user=msg.beek)[0]
+
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-    smtp_port = os.environ.get("SMTP_PORT", 465)
+    # smtp_port = os.environ.get("SMTP_PORT", 465)
     smtp_user = os.environ.get("SMTP_USER", "auto@west.net.nz")
-    smtp_password = os.environ.get("SMTP_PASSWORD")
+    # smtp_password = os.environ.get("SMTP_PASSWORD")
     smtp_from = os.environ.get("SMTP_FROM", "auto@west.net.nz")
     smtp_from_name = "Bee database system"
 
@@ -127,33 +126,33 @@ def sendMessage(msg):
 
     logging.debug(f"User - {cUsr}, password - {settings.EMAIL_HOST_PASSWORD}")
 
-    #print(f"Beek name is {beek.user.username}")
+    # print(f"Beek name is {beek.user.username}")
     apobj = apprise.Apprise()
-    #url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
+    # url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
     url = f"mailtos://{cUsr}:{settings.EMAIL_HOST_PASSWORD}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
 
-    #print(f"URL is {url}")
+    # print(f"URL is {url}")
     apobj.add(url)
     if not apobj.notify(
-            body = msg.html,
-            title = msg.subject,
-        ):
+        body=msg.html,
+        title=msg.subject,
+    ):
         logging.warning(f"WARNING - Email not sent URL is {url}")
     else:
-    
         msg.processed = True
         msg.processedDt = timezone.now()
         msg.save()
-    
-    #logging.info("About to use send_mail")
-    #send_mail(subject=msg.subject, message=msg.body, from_email=settings.DEFAULT_FROM_EMAIL,
+
+    # logging.info("About to use send_mail")
+    # send_mail(subject=msg.subject, message=msg.body, from_email=settings.DEFAULT_FROM_EMAIL,
     #          recipient_list=[msg.beek.email], html_message=msg.html)
-    #logging.info("send_mail finished")
-    #msg.processed = True
-    #msg.processedDt = timezone.now()
-    #msg.save()
+    # logging.info("send_mail finished")
+    # msg.processed = True
+    # msg.processedDt = timezone.now()
+    # msg.save()
 
     return
+
 
 # ******************************************************************
 def seasonCheck(latitude, inDt):
@@ -163,35 +162,35 @@ def seasonCheck(latitude, inDt):
     3 - Autumn
     4 - Winter
     """
-    if inDt.month < 3 or (inDt.month == 3 and inDt.day < 22) :  # before March 21
-        if latitude > 0:    # Northern hemisphere
-            return(4)
+    if inDt.month < 3 or (inDt.month == 3 and inDt.day < 22):  # before March 21
+        if latitude > 0:  # Northern hemisphere
+            return 4
         else:
-            return(2)
-    
-    if inDt.month < 6 or (inDt.month == 6 and inDt.day < 22) :  # before June 21
-        if latitude > 0:    # Northern hemisphere
-            return(1)
-        else:
-            return(3)
+            return 2
 
-    if inDt.month < 9 or (inDt.month == 9 and inDt.day < 22) :  # before Sept 21
-        if latitude > 0:    # Northern hemisphere
-            return(2)
+    if inDt.month < 6 or (inDt.month == 6 and inDt.day < 22):  # before June 21
+        if latitude > 0:  # Northern hemisphere
+            return 1
         else:
-            return(4)
+            return 3
 
-    if inDt.month < 12 or (inDt.month == 12 and inDt.day < 22) :  # before Dec 21
-        if latitude > 0:    # Northern hemisphere
-            return(3)
+    if inDt.month < 9 or (inDt.month == 9 and inDt.day < 22):  # before Sept 21
+        if latitude > 0:  # Northern hemisphere
+            return 2
         else:
-            return(1)
+            return 4
+
+    if inDt.month < 12 or (inDt.month == 12 and inDt.day < 22):  # before Dec 21
+        if latitude > 0:  # Northern hemisphere
+            return 3
+        else:
+            return 1
 
     # Any thing left is after Dec 21
-    if latitude > 0:    # Northern hemisphere
-        return(4)
+    if latitude > 0:  # Northern hemisphere
+        return 4
     else:
-        return(2)
+        return 2
 
 
 # ******************************************************************
@@ -203,25 +202,26 @@ def currentInspectionCycle(beek):
     if len(apList) > 0:
         season = seasonCheck(apList[0].latitude, timezone.now())
     else:
-        season = 1              # Make spring the default
-    if season == 1:             # Spring
-        return(beek.profile.inspectPeriodSpring)
+        season = 1  # Make spring the default
+    if season == 1:  # Spring
+        return beek.profile.inspectPeriodSpring
     elif season == 2:
-        return(beek.profile.inspectPeriodSummer)
+        return beek.profile.inspectPeriodSummer
     elif season == 3:
-        return(beek.profile.inspectPeriodAutumn)
+        return beek.profile.inspectPeriodAutumn
     else:
-        return(beek.profile.inspectPeriodWinter)
+        return beek.profile.inspectPeriodWinter
 
 
 # ******************************************************************
 def sendEmail(inDict, inTemplate, inBeek):
-    t = template.loader.get_template(inTemplate)
+    t = template.loader.get_template(inTemplate)  # type: ignore
     emailMessage = Message(beek=inBeek)
     emailMessage.html = t.render(inDict)
     emailMessage.subject = "Weekly summary from Bee-db"
     emailMessage.save()
     return
+
 
 # ******************************************************************
 def procWeeklyReminders():
@@ -229,53 +229,64 @@ def procWeeklyReminders():
     beeks = User.objects.all()
 
     for beek in beeks:
-        if beek.profile.commsWeeklySummary:
+        if beek.profile.commsWeeklySummary:  # type: ignore
             print(f"Processing weekly summary for {beek.username}")
             apiaryDets = []
             apiaries = Apiary.objects.filter(beek=beek)
             for ap in apiaries:
                 print(f"Processing apiary: {ap.apiaryID}")
-                apDet = {"apID": ap.apiaryID,
-                         "element": ap}
-                colonies = Colony.objects.filter(apiary = ap)
+                apDet = {"apID": ap.apiaryID, "element": ap}
+                colonies = Colony.objects.filter(apiary=ap)
                 liveApiary = False
                 colonyDets = []
                 for colony in colonies:
                     print(f"Processing colony: {colony.colonyID}")
-                    if colony.status == "C":        # only send details on current colonies
+                    if colony.status == "C":  # only send details on current colonies
                         liveApiary = True
                         colDet = {"element": colony}
                         # get last inspection
-                        #i1 = colony.lastInspection()
-                        insp = colony.inspection_set.order_by("-dt")[:1]
+                        # i1 = colony.lastInspection()
+                        insp = colony.inspection_set.order_by("-dt")[:1]  # type: ignore
                         if len(insp) > 0:
-                            print(f"Colony: {colony.colonyID}, last inspection dt : {insp[0].dt}")
+                            print(
+                                f"Colony: {colony.colonyID}, last inspection dt : {insp[0].dt}"
+                            )
                             colDet["lstInspection"] = insp[0]
-                            if (timezone.now() - insp[0].dt) / datetime.timedelta(days=1) > currentInspectionCycle(beek):
+                            if (timezone.now() - insp[0].dt) / datetime.timedelta(
+                                days=1
+                            ) > currentInspectionCycle(beek):
                                 print("Inspection is late")
-                                colDet["lateInspectionWarning"] = "True"
+                                colDet["lateInspectionWarning"] = "True"  # type: ignore
                         else:
-                            colDet["inspectionWarning"] = "This colony has no recorded inspections"
+                            colDet["inspectionWarning"] = (
+                                "This colony has no recorded inspections"  # type: ignore
+                            )
 
-                        reminders = colony.diary_set.order_by("dueDt").filter(completed=False)
+                        reminders = colony.diary_set.order_by("dueDt").filter(
+                            completed=False
+                        )  # type: ignore
                         print(f"{len(reminders)} reminders found")
                         colDet["reminders"] = reminders
 
                         colonyDets.append(colDet)
 
                 apDet["colonies"] = colonyDets
-                if liveApiary:          # Onle send info if there are live colonies
+                if liveApiary:  # Onle send info if there are live colonies
                     apiaryDets.append(apDet)
             print(apiaryDets)
             if len(apiaryDets) > 0:
-                context = {"apList": apiaryDets, "beek": beek, "web_base_url": eWeb_Base_URL}
+                context = {
+                    "apList": apiaryDets,
+                    "beek": beek,
+                    "web_base_url": eWeb_Base_URL,
+                }
                 sendEmail(context, "beedb/email/weekly_summary.html", beek)
     return
 
+
 # ******************************************************************
 def sys_background():
-    """ The main program that cecks for back ground tasks
-    """
+    """The main program that cecks for back ground tasks"""
 
     global scriptID
 
@@ -287,15 +298,15 @@ def sys_background():
 
     # lets ensure the needed config parameters are available
     check_config()
-    
+
     # Do initial table load
     loadSizeChoices()
 
     # initialise timers
     checkTimer = timezone.now()
-    statusTimer = timezone.now()
-    startTime = timezone.now()
-    startedTime = timezone.now()
+    # statusTimer = timezone.now()
+    # startTime = timezone.now()
+    # startedTime = timezone.now()
 
     logging.info("About to start loop")
 
@@ -314,21 +325,21 @@ def sys_background():
             testPr("Time check")
 
             # Check for weekly email summaries
-            cfgWeeklyReminderWeekday = Config.objects.filter(
-                key="commsWeeklyDay")
+            cfgWeeklyReminderWeekday = Config.objects.filter(key="commsWeeklyDay")
             cfgWeeklyReminderHour = Config.objects.filter(key="lstWeekly")
             if len(cfgWeeklyReminderWeekday) == 0 or len(cfgWeeklyReminderHour) == 0:
                 continue
-            #print(f"Weekly proc day check, now(): {timezone.now().weekday()}, config: {cfgWeeklyReminderWeekday[0].configValue}")
+            # print(f"Weekly proc day check, now(): {timezone.now().weekday()}, config: {cfgWeeklyReminderWeekday[0].configValue}")
             if timezone.now().weekday() != cfgWeeklyReminderWeekday[0].configValue:
                 continue
 
-            #print("Passed weekday check")
+            # print("Passed weekday check")
             print(
-                f"Time check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour[0].configValue}")
-            if timezone.now().hour >= cfgWeeklyReminderHour[0].configValue:
+                f"Time check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour[0].configValue}"
+            )
+            if timezone.now().hour >= cfgWeeklyReminderHour[0].configValue:  # type: ignore
                 print("After the magic hour")
-                if timezone.now().date() != cfgWeeklyReminderWeekday[0].configDt.date():
+                if timezone.now().date() != cfgWeeklyReminderWeekday[0].configDt.date():  # type: ignore
                     procWeeklyReminders()
                     cfgWeeklyReminderWeekday[0].configDt = timezone.now()
                     cfgWeeklyReminderWeekday[0].save()

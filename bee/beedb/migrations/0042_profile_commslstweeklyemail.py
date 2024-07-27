@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0041_remove_profile_weeklysummary'),
+        ("beedb", "0041_remove_profile_weeklysummary"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='commsLstWeeklyEmail',
+            model_name="profile",
+            name="commsLstWeeklyEmail",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

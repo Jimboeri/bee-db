@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0043_auto_20220321_1723'),
+        ("beedb", "0043_auto_20220321_1723"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='feedback',
-            name='status',
-            field=models.CharField(blank=True, default='N', max_length=1, null=True),
+            model_name="feedback",
+            name="status",
+            field=models.CharField(blank=True, default="N", max_length=1, null=True),
         ),
     ]

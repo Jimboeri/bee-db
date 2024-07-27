@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0054_auto_20220403_1100'),
+        ("beedb", "0054_auto_20220403_1100"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='inspection',
-            name='size',
+            model_name="inspection",
+            name="size",
             field=models.IntegerField(default=1),
             preserve_default=False,
         ),

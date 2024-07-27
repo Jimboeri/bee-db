@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0010_auto_20201205_1241'),
+        ("beedb", "0010_auto_20201205_1241"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='colony',
-            name='status',
-            field=models.CharField(choices=[('C', 'Current'), ('D', 'Dead'), ('A', 'Absconded')], default='C', help_text='Current status of hive)', max_length=1),
+            model_name="colony",
+            name="status",
+            field=models.CharField(
+                choices=[("C", "Current"), ("D", "Dead"), ("A", "Absconded")],
+                default="C",
+                help_text="Current status of hive)",
+                max_length=1,
+            ),
         ),
     ]

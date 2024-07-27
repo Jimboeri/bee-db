@@ -6,32 +6,54 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('beedb', '0011_colony_status'),
+        ("beedb", "0011_colony_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='address',
+            model_name="profile",
+            name="address",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='lastApiary',
-            field=models.ForeignKey(blank=True, help_text='The last apiary selected from the index page', null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.apiary'),
+            model_name="profile",
+            name="lastApiary",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="The last apiary selected from the index page",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="beedb.apiary",
+            ),
         ),
         migrations.CreateModel(
-            name='Beek',
+            name="Beek",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bkRegistration', models.CharField(blank=True, max_length=10, null=True)),
-                ('address', models.TextField(blank=True, null=True)),
-                ('name', models.CharField(max_length=100)),
-                ('email', models.EmailField(blank=True, max_length=254, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "bkRegistration",
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
+                ("address", models.TextField(blank=True, null=True)),
+                ("name", models.CharField(max_length=100)),
+                ("email", models.EmailField(blank=True, max_length=254, null=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

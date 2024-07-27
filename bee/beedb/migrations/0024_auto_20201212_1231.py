@@ -7,38 +7,77 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('beedb', '0023_auto_20201210_1659'),
+        ("beedb", "0023_auto_20201210_1659"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transfer',
-            name='location',
+            model_name="transfer",
+            name="location",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='transfer',
-            name='size',
-            field=models.IntegerField(default=0, help_text='1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)'),
+            model_name="transfer",
+            name="size",
+            field=models.IntegerField(
+                default=0,
+                help_text="1 - Small (0 - 3 frames), 2 - Medium (4 - 8 frames), 3 - Regular(9 - 20 frames), 4 Large (>20 frames)",
+            ),
         ),
         migrations.AlterField(
-            model_name='transfer',
-            name='transaction',
-            field=models.IntegerField(default=0, help_text='1 - Sold/given, 2 - Bought/received, 3 - Swarm'),
+            model_name="transfer",
+            name="transaction",
+            field=models.IntegerField(
+                default=0, help_text="1 - Sold/given, 2 - Bought/received, 3 - Swarm"
+            ),
         ),
         migrations.CreateModel(
-            name='Audit',
+            name="Audit",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dt', models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)),
-                ('transaction_cd', models.IntegerField(default=0)),
-                ('detail', models.TextField(blank=True, null=True)),
-                ('apiary', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.apiary')),
-                ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('colony', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.colony')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "dt",
+                    models.DateTimeField(
+                        blank=True, default=django.utils.timezone.now, null=True
+                    ),
+                ),
+                ("transaction_cd", models.IntegerField(default=0)),
+                ("detail", models.TextField(blank=True, null=True)),
+                (
+                    "apiary",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="beedb.apiary",
+                    ),
+                ),
+                (
+                    "beek",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "colony",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="beedb.colony",
+                    ),
+                ),
             ],
         ),
     ]

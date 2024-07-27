@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0025_auto_20201213_1055'),
+        ("beedb", "0025_auto_20201213_1055"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='diary',
-            name='completed',
+            model_name="diary",
+            name="completed",
             field=models.BooleanField(default=False),
         ),
     ]
