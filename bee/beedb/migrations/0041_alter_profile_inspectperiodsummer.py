@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0040_merge_20220123_1752'),
+        ("beedb", "0040_merge_20220123_1752"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='inspectPeriodSummer',
-            field=models.IntegerField(default=14, verbose_name='Days between inspections in summer'),
+            model_name="profile",
+            name="inspectPeriodSummer",
+            field=models.IntegerField(
+                default=14, verbose_name="Days between inspections in summer"
+            ),
         ),
     ]

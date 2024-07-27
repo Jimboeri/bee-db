@@ -5,15 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0065_remove_treatment_notes_alter_treatment_postvarroa_and_more'),
+        ("beedb", "0065_remove_treatment_notes_alter_treatment_postvarroa_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='diary',
-            name='dueDt',
-            field=models.DateTimeField(default=datetime.datetime(2022, 11, 11, 23, 8, 0, 867447, tzinfo=datetime.timezone.utc), verbose_name='Date to complete by'),
+            model_name="diary",
+            name="dueDt",
+            field=models.DateTimeField(
+                default=datetime.datetime(
+                    2022, 11, 11, 23, 8, 0, 867447, tzinfo=datetime.timezone.utc
+                ),
+                verbose_name="Date to complete by",
+            ),
         ),
     ]

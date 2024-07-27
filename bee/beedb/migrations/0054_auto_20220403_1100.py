@@ -4,20 +4,41 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0053_auto_20220402_1814'),
+        ("beedb", "0053_auto_20220402_1814"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='inspection',
-            name='numbers',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Not recorded'), (2, 'Not recorded'), (3, 'Not recorded'), (4, 'Not recorded'), (5, 'Not enough')], default=0, help_text='How many bees in the hive (seams of bees)?'),
+            model_name="inspection",
+            name="numbers",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Not recorded"),
+                    (2, "Not recorded"),
+                    (3, "Not recorded"),
+                    (4, "Not recorded"),
+                    (5, "Not enough"),
+                ],
+                default=0,
+                help_text="How many bees in the hive (seams of bees)?",
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='weight',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Not recorded'), (2, 'Not recorded'), (3, 'Not recorded'), (4, 'Not recorded'), (5, 'No stores')], default=0, help_text='How heavy is the hive?'),
+            model_name="inspection",
+            name="weight",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Not recorded"),
+                    (2, "Not recorded"),
+                    (3, "Not recorded"),
+                    (4, "Not recorded"),
+                    (5, "No stores"),
+                ],
+                default=0,
+                help_text="How heavy is the hive?",
+            ),
         ),
     ]

@@ -1,15 +1,12 @@
 from django import forms
 from django.utils import timezone
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.conf import settings
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
-from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
+from django.contrib.admin.widgets import AdminDateWidget
 
 from .utils import sizeChoices
 from .widgets import FengyuanChenDatePickerInput
@@ -51,6 +48,7 @@ class ApiaryAddForm(forms.ModelForm):
             "hazards": forms.Textarea(attrs={"rows": 3}),
         }
 
+
 """
 class ApiaryModForm(forms.Form):
     apiaryID =forms.CharField(max_length=50, label="Apiary name:")
@@ -71,13 +69,12 @@ class ApiaryModForm(forms.Form):
     hazards.widget.attrs.update(rows=3)
 """
 
+
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = models.Picture
-        fields = [
-            "title",
-            "img"
-        ]
+        fields = ["title", "img"]
+
 
 class PhotoForm2(forms.Form):
     title = forms.CharField(max_length=100)
@@ -98,7 +95,6 @@ class ColonyModelForm(forms.ModelForm):
 
 
 class ColonyDeadForm(forms.ModelForm):
-
     class Meta:
         FORM_CHOICES = [
             ("D", "Dead"),
@@ -116,8 +112,7 @@ class ColonyDeadForm(forms.ModelForm):
 
 class ColonyAddForm(forms.Form):
     colonyName = forms.CharField(max_length=50, label="Colony name:")
-    descr = forms.CharField(widget=forms.Textarea,
-                            label="Description", required=False)
+    descr = forms.CharField(widget=forms.Textarea, label="Description", required=False)
     descr.widget.attrs.update(rows=3)
     size = forms.IntegerField(
         initial=3,
@@ -134,9 +129,13 @@ class InspectionOptionsForm(forms.Form):
     addTreatment = forms.BooleanField(initial=False, required=False)
 
     # The js function is in basic.js. The id's are specified in the template. inspacetAdd.html
-    addReminder.widget.attrs.update(onchange="classVisibility('id_addReminder', 'reminder')")
-    addTreatment.widget.attrs.update(onchange="classVisibility('id_addTreatment', 'treatment')")
-    
+    addReminder.widget.attrs.update(
+        onchange="classVisibility('id_addReminder', 'reminder')"
+    )
+    addTreatment.widget.attrs.update(
+        onchange="classVisibility('id_addTreatment', 'treatment')"
+    )
+
 
 class InspectionForm(forms.ModelForm):
     class Meta:
@@ -150,11 +149,13 @@ class InspectionForm(forms.ModelForm):
             "disease",
             "temper",
             "queen_seen",
-            "notes"
+            "notes",
         ]
         widgets = {
             "notes": forms.Textarea(attrs={"rows": 3}),
-            "dt": FengyuanChenDatePickerInput(attrs={'onchange': "TreatRemoveDt('id_dt')"}),
+            "dt": FengyuanChenDatePickerInput(
+                attrs={"onchange": "TreatRemoveDt('id_dt')"}
+            ),
         }
 
     def __init__(self, *args, inColony, **kwargs):
@@ -162,11 +163,15 @@ class InspectionForm(forms.ModelForm):
             self.colony = inColony
             super(InspectionForm, self).__init__(*args, **kwargs)
             logging.info(f"colony is {self.colony.colonyID}")
-            #self.fields['numbers'].choices=sizeChoices(self.colony.size, "Number")
-            self.fields['numbers'] = forms.ChoiceField(choices=sizeChoices(
-                self.colony.size, "Number"), help_text="How many bees in the hive (seams of bees)?",)
-            self.fields['weight'] = forms.ChoiceField(choices=sizeChoices(
-                self.colony.size, "Weight"), help_text="How heavy is the hive?",)
+            # self.fields['numbers'].choices=sizeChoices(self.colony.size, "Number")
+            self.fields["numbers"] = forms.ChoiceField(
+                choices=sizeChoices(self.colony.size, "Number"),
+                help_text="How many bees in the hive (seams of bees)?",
+            )
+            self.fields["weight"] = forms.ChoiceField(
+                choices=sizeChoices(self.colony.size, "Weight"),
+                help_text="How heavy is the hive?",
+            )
 
         except Exception as e:
             logging.debug(f"Initialisation error is {e}")
@@ -210,16 +215,13 @@ class SwarmForm(forms.Form):
 
 class PurchaseForm(forms.Form):
     colonyName = forms.CharField(max_length=50, label="Colony name:")
-    descr = forms.CharField(widget=forms.Textarea,
-                            label="Description", required=False)
+    descr = forms.CharField(widget=forms.Textarea, label="Description", required=False)
     descr.widget.attrs.update(rows=3)
     beekName = forms.CharField(max_length=100, label="Selling beekeepers name")
     beekReg = forms.CharField(max_length=100, label="Beekeepers registration")
     beekEmail = forms.EmailField(max_length=100, label="Beekeepers email")
-    beekPhone = forms.CharField(
-        max_length=100, label="Beekeepers phone number")
-    beekAddress = forms.CharField(
-        widget=forms.Textarea, label="Beekeepers address")
+    beekPhone = forms.CharField(max_length=100, label="Beekeepers phone number")
+    beekAddress = forms.CharField(widget=forms.Textarea, label="Beekeepers address")
     beekAddress.widget.attrs.update(rows=3)
     dt = forms.DateField(initial=timezone.now)
     size = forms.IntegerField(
@@ -241,8 +243,7 @@ class DiaryModelForm(forms.ModelForm):
         fields = ["subject", "details", "dueDt", "completed"]
         widgets = {
             "details": forms.Textarea(attrs={"rows": 3}),
-            "dueDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
-
+            "dueDt": FengyuanChenDatePickerInput(attrs={"input_formats": ["%Y-%m-%d"]}),
         }
 
 
@@ -252,8 +253,9 @@ class DiaryForm(forms.Form):
         widget=forms.Textarea, label="Description", required=False
     )
     details.widget.attrs.update(rows=3)
-    dueDt = forms.DateField(initial=timezone.now() +
-                            datetime.timedelta(weeks=1), label="Due:")
+    dueDt = forms.DateField(
+        initial=timezone.now() + datetime.timedelta(weeks=1), label="Due:"
+    )
 
     widgets = {
         "dueDt": AdminDateWidget,
@@ -265,18 +267,14 @@ class DiaryForm(forms.Form):
         details = cleaned_data.get("details")
 
         if details and not subject:
-            self.add_error(
-                'subject', 'Need to have a subject for the reminder')
+            self.add_error("subject", "Need to have a subject for the reminder")
 
 
 class CustomUserCreationForm(forms.Form):
-
-    #username = forms.CharField(label="Enter Username", min_length=4, max_length=150)
+    # username = forms.CharField(label="Enter Username", min_length=4, max_length=150)
     email = forms.EmailField(label="Enter email")
-    password1 = forms.CharField(
-        label="Enter password", widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label="Confirm password", widget=forms.PasswordInput)
+    password1 = forms.CharField(label="Enter password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Confirm password", widget=forms.PasswordInput)
 
     # def clean_username(self):
     #    username = self.cleaned_data["username"].lower()
@@ -302,8 +300,7 @@ class CustomUserCreationForm(forms.Form):
         return password2
 
     def save(self, request):
-        eWeb_Base_URL = os.getenv(
-            "BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
+        eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
         user = User.objects.create_user(
             # self.cleaned_data["username"],
             self.cleaned_data["email"],
@@ -315,28 +312,24 @@ class CustomUserCreationForm(forms.Form):
 
         context = {
             # 'from_email': settings.DEFAULT_FROM_EMAIL,
-            'request': request,
-            'protocol': request.scheme,
-            'username': self.cleaned_data.get('email'),
-            'domain': request.META['HTTP_HOST'],
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': default_token_generator.make_token(user),
-            'email': user.email,
-            'base_url': eWeb_Base_URL,
+            "request": request,
+            "protocol": request.scheme,
+            "username": self.cleaned_data.get("email"),
+            "domain": request.META["HTTP_HOST"],
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "token": default_token_generator.make_token(user),
+            "email": user.email,
+            "base_url": eWeb_Base_URL,
         }
 
-        subject = render_to_string(
-            'accounts/email/activation_subject.txt', context)
-        email = render_to_string(
-            'accounts/email/activation_email.txt', context)
-        html_msg = render_to_string(
-            'accounts/email/activation_email.html', context)
+        subject = render_to_string("accounts/email/activation_subject.txt", context)
+        email = render_to_string("accounts/email/activation_email.txt", context)
+        html_msg = render_to_string("accounts/email/activation_email.html", context)
 
-        msg = models.Message(beek=user, subject=subject,
-                             body=email, html=html_msg)
+        msg = models.Message(beek=user, subject=subject, body=email, html=html_msg)
         msg.save()
 
-        #send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
+        # send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
 
         return user
 
@@ -345,49 +338,53 @@ class ProfileForm(forms.Form):
     firstName = forms.CharField(max_length=50, label="First name:")
     surName = forms.CharField(max_length=100, label="Surname:")
     phoneNumber = forms.CharField(max_length=50, label="Mobile phone number:")
-    bkRegistration = forms.CharField(
-        max_length=10, label="Registration number:")
-    address = forms.CharField(widget=forms.Textarea(attrs={"rows": 4}),
-                              label="Physical address:")
+    bkRegistration = forms.CharField(max_length=10, label="Registration number:")
+    address = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 4}), label="Physical address:"
+    )
     email = forms.EmailField(label="Email address")
 
 
 class InspectPreferenceModelForm(forms.ModelForm):
     class Meta:
         model = models.Profile
-        fields = ["inspectPeriodSummer",
-                  "inspectPeriodAutumn",
-                  "inspectPeriodWinter",
-                  "inspectPeriodSpring",
-                  # "inspectHealthIndex",
-                  # "inspectManualIndex",
-                  # "inspectDiaryAdd",
-                  ]
+        fields = [
+            "inspectPeriodSummer",
+            "inspectPeriodAutumn",
+            "inspectPeriodWinter",
+            "inspectPeriodSpring",
+            # "inspectHealthIndex",
+            # "inspectManualIndex",
+            # "inspectDiaryAdd",
+        ]
 
 
 class CommsPreferenceModelForm(forms.ModelForm):
     class Meta:
         model = models.Profile
-        fields = ["commsWeeklySummary",
-                  # "commsInspectionReminder",
-                  ]
+        fields = [
+            "commsWeeklySummary",
+            # "commsInspectionReminder",
+        ]
 
 
 class UserFeedbackModelForm(forms.ModelForm):
     class Meta:
         model = models.Feedback
-        fields = ["feedbackType",
-                  "subject",
-                  "detail",
-                  ]
+        fields = [
+            "feedbackType",
+            "subject",
+            "detail",
+        ]
 
 
 class AdminFeedbackModelForm(forms.ModelForm):
     class Meta:
         model = models.Feedback
-        fields = ["status",
-                  "devComment",
-                  ]
+        fields = [
+            "status",
+            "devComment",
+        ]
 
 
 class TreatInInspectForm(forms.Form):
@@ -396,73 +393,97 @@ class TreatInInspectForm(forms.Form):
     I could not use a model form as the treatmentType is required in the model. However this stops the
     form being submitted even if the user does not want to add a treatment
     """
-    treatmentType = forms.ModelChoiceField(models.TreatmentType.objects.all(), required=False)
+
+    treatmentType = forms.ModelChoiceField(
+        models.TreatmentType.objects.all(), required=False
+    )
     # this adds an 'onchange' attribute to the field. Every time the field changes
     # the form is submitted. This allows the remove Dt to be initialised
     # treatmentType.widget.attrs.update(onchange="this.form.submit()")
     treatmentType.widget.attrs.update(onchange="TreatRemoveDt('id_dt')")
 
-    removeDt = forms.DateField(label="Take treatment out:",
-                               input_formats=['%Y-%m-%d'],
-                               widget=FengyuanChenDatePickerInput(),
-                               required=False)
-    trNotes = forms.CharField(
-        widget=forms.Textarea, label="Notes", required=False
+    removeDt = forms.DateField(
+        label="Take treatment out:",
+        input_formats=["%Y-%m-%d"],
+        widget=FengyuanChenDatePickerInput(),
+        required=False,
     )
+    trNotes = forms.CharField(widget=forms.Textarea, label="Notes", required=False)
     trNotes.widget.attrs.update(rows=3)
 
 
 class NewTreatmentForm(forms.ModelForm):
     class Meta:
         model = models.Treatment
-        fields = ["treatmentType",
-                  "insertDt",
-                  "removeDt",
-                  "preVarroa",
-                  "trNotes",
-                  "completed"]
+        fields = [
+            "treatmentType",
+            "insertDt",
+            "removeDt",
+            "preVarroa",
+            "trNotes",
+            "completed",
+        ]
         widgets = {
             # this adds an 'onchange' attribute to the field. Every time the field changes
             # the form is submitted. This allows the remove Dt to be initialised
             # treatmentType.widget.attrs.update(onchange="this.form.submit()")
-            "treatmentType": forms.Select(attrs={'onchange': "TreatRemoveDt('id_insertDt')"}),
+            "treatmentType": forms.Select(
+                attrs={"onchange": "TreatRemoveDt('id_insertDt')"}
+            ),
             # Insert dt also uses the javascript function
-            "insertDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d'], 'onchange': "TreatRemoveDt('id_insertDt')"}),
-            "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
-            "trNotes": forms.Textarea(attrs={'rows': 3})
+            "insertDt": FengyuanChenDatePickerInput(
+                attrs={
+                    "input_formats": ["%Y-%m-%d"],
+                    "onchange": "TreatRemoveDt('id_insertDt')",
+                }
+            ),
+            "removeDt": FengyuanChenDatePickerInput(
+                attrs={"input_formats": ["%Y-%m-%d"]}
+            ),
+            "trNotes": forms.Textarea(attrs={"rows": 3}),
         }
 
 
 class ModTreatmentForm(forms.ModelForm):
     class Meta:
         model = models.Treatment
-        fields = ["treatmentType",
-                  "insertDt",
-                  "removeDt",
-                  "preVarroa",
-                  "postVarroa",
-                  "trNotes",
-                  "completed"]
-        widgets = { 
+        fields = [
+            "treatmentType",
+            "insertDt",
+            "removeDt",
+            "preVarroa",
+            "postVarroa",
+            "trNotes",
+            "completed",
+        ]
+        widgets = {
             # this adds an 'onchange' attribute to the field. Every time the field changes
             # the form is submitted. This allows the remove Dt to be initialised
-            "treatmentType": forms.Select(attrs={'onchange': "TreatRemoveDt('id_insertDt')"}),
-            "insertDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d'], 'onchange': "TreatRemoveDt('id_insertDt')"}),
-            "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),         
-            "trNotes": forms.Textarea(attrs={'rows': 3})
+            "treatmentType": forms.Select(
+                attrs={"onchange": "TreatRemoveDt('id_insertDt')"}
+            ),
+            "insertDt": FengyuanChenDatePickerInput(
+                attrs={
+                    "input_formats": ["%Y-%m-%d"],
+                    "onchange": "TreatRemoveDt('id_insertDt')",
+                }
+            ),
+            "removeDt": FengyuanChenDatePickerInput(
+                attrs={"input_formats": ["%Y-%m-%d"]}
+            ),
+            "trNotes": forms.Textarea(attrs={"rows": 3}),
         }
 
 
 class RemoveTreatmentForm(forms.ModelForm):
     class Meta:
         model = models.Treatment
-        fields = ["removeDt",
-                  "postVarroa",
-                  "trNotes",
-                  "completed"]
+        fields = ["removeDt", "postVarroa", "trNotes", "completed"]
         widgets = {
-            "removeDt": FengyuanChenDatePickerInput(attrs={'input_formats': ['%Y-%m-%d']}),
-            "trNotes": forms.Textarea(attrs={'rows': 3})
+            "removeDt": FengyuanChenDatePickerInput(
+                attrs={"input_formats": ["%Y-%m-%d"]}
+            ),
+            "trNotes": forms.Textarea(attrs={"rows": 3}),
         }
 
 
@@ -476,5 +497,4 @@ class ColonyReportForm(forms.Form):
     ]
 
     duration = forms.ChoiceField(choices=DURATION_CHOICES, initial=3)
-    colID = forms.IntegerField(widget=forms.HiddenInput(), required = False)
-
+    colID = forms.IntegerField(widget=forms.HiddenInput(), required=False)

@@ -1,11 +1,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from rest_framework.views import APIView
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils import timezone
-import logging
 
 from .models import TreatmentType
 
@@ -39,12 +36,13 @@ def treatmentType_view(request, treatType_ref):
             treatmentType = TreatmentType.objects.filter(id=treatType_ref)
             serializer = TreatmentTypeDetail(treatmentType, many=True)
             if treatmentType:
-                # It exists    
+                # It exists
                 return Response(serializer.data)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return HttpResponseRedirect(reverse("beedb:login"))
+
 
 @api_view(["GET"])
 def treatmentType_byName(request):
@@ -58,10 +56,10 @@ def treatmentType_byName(request):
                 treatmentType = TreatmentType.objects.filter(name=params["name"])
                 serializer = TreatmentTypeDetail(treatmentType, many=True)
                 return Response(serializer.data)
-                #if treatmentType:
-                    # It exists    
+                # if treatmentType:
+                # It exists
                 #    return Response(serializer.data)
-                #else:
+                # else:
                 #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return HttpResponseRedirect(reverse("beedb:login"))

@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0027_auto_20201213_1230'),
+        ("beedb", "0027_auto_20201213_1230"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='diary',
-            options={'ordering': ['-dueDt']},
+            name="diary",
+            options={"ordering": ["-dueDt"]},
         ),
     ]
