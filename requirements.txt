@@ -1,6 +1,6 @@
 Django
 psycopg2>=2.7,<3.0
-gunicorn==20.0.4
+gunicorn==22.0.0
 apprise
 geopy
 djangorestframework
