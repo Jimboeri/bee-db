@@ -1,17 +1,17 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib import auth, messages
-from django.views import generic
-from django.urls import reverse
-from django.utils import timezone
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django import forms
-from django.conf import settings
+from django.shortcuts import render, get_object_or_404, redirect # type: ignore
+from django.http import HttpResponseRedirect # type: ignore
+from django.contrib.auth.decorators import login_required # type: ignore
+from django.contrib.auth.models import User # type: ignore
+# from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.tokens import default_token_generator # type: ignore
+from django.contrib import auth, messages # type: ignore
+# from django.views import generic
+from django.urls import reverse # type: ignore
+from django.utils import timezone # type: ignore
+from django.utils.encoding import force_str # type: ignore
+from django.utils.http import urlsafe_base64_decode # type: ignore
+from django import forms # type: ignore
+# from django.conf import settings # type: ignore
 
 from .models import Apiary, Colony, Inspection, Transfer, Audit, Diary, Feedback, Treatment, TreatmentType, Picture
 
@@ -34,19 +34,19 @@ from .forms import (
     NewTreatmentForm,
     ModTreatmentForm,
     RemoveTreatmentForm,
-    ColonyReportForm,
+    # ColonyReportForm,
 )
 
-from . import forms
+from . import forms  # noqa: F811
 
-from .utils import sizeChoices, usrCheck
+from .utils import usrCheck
 
 import datetime
 import logging
 import os
-from geopy.distance import distance
+from geopy.distance import distance # type: ignore
 
-from PIL import Image
+# from PIL import Image # type: ignore
 
 eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
@@ -85,8 +85,8 @@ def index(request):
                 mapCoord['minLong'] = a.longitude
             if a.longitude > mapCoord['maxLong']:
                 mapCoord['maxLong'] = a.longitude
-    mapCoord['centreLat'] = (mapCoord['minLat'] + mapCoord['maxLat']) / 2
-    mapCoord['centreLong'] = (mapCoord['minLong'] + mapCoord['maxLong']) / 2
+    mapCoord['centreLat'] = (mapCoord['minLat'] + mapCoord['maxLat']) / 2 # type: ignore
+    mapCoord['centreLong'] = (mapCoord['minLong'] + mapCoord['maxLong']) / 2 # type: ignore
     mapCoord['maxDist'] = distance((mapCoord['minLat'], mapCoord['minLong']), (mapCoord['maxLat'], mapCoord['maxLong'])).m
     if mapCoord['maxDist'] < 1000:
         mapCoord['zoom'] = 16
@@ -119,7 +119,7 @@ def apDetail(request, ap_ref):
     context = {"ap": ap}
     deadCol = []
     liveCol = []
-    for c in ap.colony_set.all().order_by("-status_dt"):
+    for c in ap.colony_set.all().order_by("-status_dt"): # type: ignore
         if c.status == "D" or c.status == "A":
             if c.status_dt > (timezone.now() - datetime.timedelta(weeks=104)):
                 deadCol.append(c)
@@ -132,9 +132,9 @@ def apDetail(request, ap_ref):
 
             cCol = {"colony": c, "badges": badges}
             liveCol.append(cCol)
-    context["deadCol"] = deadCol
-    context["liveCol"] = liveCol
-    context['usrInfo'] = usrInfo
+    context["deadCol"] = deadCol # type: ignore
+    context["liveCol"] = liveCol # type: ignore
+    context['usrInfo'] = usrInfo # type: ignore
     return render(request, "beedb/apDetail.html", context)
 
 
@@ -154,7 +154,7 @@ def apAdd(request):
             ap.beek = request.user
             ap.save()
 
-            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.ApiaryAddForm()
@@ -175,7 +175,7 @@ def apMod(request, ap_ref):
         if nf.is_valid():
             ap.save()
 
-            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
         # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.ApiaryAddForm(instance=ap)
@@ -200,10 +200,10 @@ def apPhotoAdd(request, ap_ref):
             obj = Picture.objects.create(title = title)
             obj.beek = ap.beek
             obj.apiary = ap
-            obj.img = img
+            obj.img = img # type: ignore
             obj.save()
 
-            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
         # if a GET (or any other method) we'll create a blank form
     else:
         pf = forms.PhotoForm2()
@@ -245,7 +245,7 @@ def colAdd(request, ap_ref, col_add_type):
                 audit.detail = f"Swarm caught at {tr.location}"
                 audit.transfer = tr
                 audit.save()
-                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
         elif col_add_type == 2:                 # Purchase
             nf = forms.PurchaseForm(request.POST)
             if nf.is_valid():
@@ -277,7 +277,7 @@ def colAdd(request, ap_ref, col_add_type):
                 audit.detail = f"Colony purchased from {tr.beek_name}"
                 audit.transfer = tr
                 audit.save()
-                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
         elif col_add_type == 3:
             nf = forms.ColonyAddForm(request.POST)
             if nf.is_valid():
@@ -303,7 +303,7 @@ def colAdd(request, ap_ref, col_add_type):
                 audit.detail = "New colony entered "
                 audit.transfer = tr
                 audit.save()
-                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
         else:
             nf = forms.ColonyAddForm(request.POST)
             if nf.is_valid():
@@ -314,7 +314,7 @@ def colAdd(request, ap_ref, col_add_type):
                 col.status = "C"
                 col.save()
 
-                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id]))
+                return HttpResponseRedirect(reverse("beedb:apDetail", args=[ap.id])) # type: ignore
         # if a GET (or any other method) we'll create a blank form
     else:
         if col_add_type == 1:
@@ -334,13 +334,13 @@ def colDetail(request, col_ref):
     if col.apiary.beek != usrInfo["procBeek"]:
         return render(request, "beedb/not_authorised.html")
     lst_inspect = {}
-    if col.inspection_set.all():
-        lst_inspect = col.inspection_set.all()[0]
-    diary = col.diary_set.filter(completed=False).order_by('dueDt')
-    treatments = col.treatment_set.filter(completed=False).order_by('removeDt')
+    if col.inspection_set.all(): # type: ignore
+        lst_inspect = col.inspection_set.all()[0] # type: ignore
+    diary = col.diary_set.filter(completed=False).order_by('dueDt') # type: ignore
+    treatments = col.treatment_set.filter(completed=False).order_by('removeDt') # type: ignore
     yearAgo = timezone.now() - datetime.timedelta(weeks=52)
-    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by('-insertDt')
-    pastInspections = col.inspection_set.filter(dt__gte=yearAgo).order_by('-dt')
+    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by('-insertDt') # type: ignore
+    pastInspections = col.inspection_set.filter(dt__gte=yearAgo).order_by('-dt') # type: ignore
     context = {"col": col, "diary": diary, "lst_inspect": lst_inspect, "treatments": treatments}
     context['usrInfo'] = usrInfo
     context['today'] = timezone.now()
@@ -361,7 +361,7 @@ def colMod(request, col_ref):
             col.lastAction = timezone.now()
             col.save()
 
-            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.ColonyModelForm(instance=col)
@@ -388,10 +388,10 @@ def colPhotoAdd(request, col_ref):
             obj.beek = col.apiary.beek
             obj.apiary = col.apiary
             obj.colony = col
-            obj.img = img
+            obj.img = img # type: ignore
             obj.save()
 
-            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
         # if a GET (or any other method) we'll create a blank form
     else:
         pf = forms.PhotoForm2()
@@ -399,7 +399,7 @@ def colPhotoAdd(request, col_ref):
     context = {"form": pf, "colony": col}
     return render(request, "beedb/colPhotoAdd.html", context)
 
-=======
+# =======
 @login_required
 def colMoveChoose(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
@@ -425,7 +425,7 @@ def colMoveSelect(request, col_ref, ap_ref):
         col.lastAction = timezone.now()
         col.save()
 
-        return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+        return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
 
     context = {"col": col, "ap": ap}
     return render(request, "beedb/colMoveSelect.html", context)
@@ -452,7 +452,7 @@ def colDead(request, col_ref):
                 audit.detail = f"Colony {col.colonyID} appears to have absconded. Notes: {col.notes}"
             audit.save()
 
-            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.ColonyDeadForm(instance=col)
@@ -516,7 +516,7 @@ def inspectMod(request, ins_ref):
         if nf.is_valid():
             ins.save()
 
-            return HttpResponseRedirect(reverse("beedb:inspectDetail", args=[ins.id]))
+            return HttpResponseRedirect(reverse("beedb:inspectDetail", args=[ins.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.InspectionForm(instance=ins, inColony = ins.colony)
@@ -574,7 +574,7 @@ def inspectAdd(request, col_ref):
             if optForm.cleaned_data["addTreatment"]:
                 logging.debug("Treatment starting")
                 if tf.is_valid():
-                    logging.debug(f"Treatment is valid, ")
+                    logging.debug("Treatment is valid, ")
                     cTreatmentType = tf.cleaned_data["treatmentType"]
                     tTypes = TreatmentType.objects.filter(name=cTreatmentType)
                     if tTypes:  #Definately found a tratement type
@@ -588,7 +588,7 @@ def inspectAdd(request, col_ref):
                         treatment.save()
 
             return HttpResponseRedirect(
-                    reverse("beedb:colDetail", args=[ins.colony.id])
+                    reverse("beedb:colDetail", args=[ins.colony.id]) # type: ignore
                 )
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -608,7 +608,7 @@ def inspectDel(request, ins_ref):
     col = ins.colony
     if request.method == "POST":
         ins.delete()
-        return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+        return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
     else:
         context = {"ins": ins}
     return render(request, "beedb/inspectDelete.html", context)
@@ -633,7 +633,7 @@ def colTransfer(request, col_ref):
             audit.detail = f"Colony sold to {transRec.beek_name} "
             audit.save()
 
-            return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id]))
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.TransferForm()
@@ -673,7 +673,7 @@ def colSplit(request, col_ref):
             audit.transfer = tr
             audit.save()
 
-            return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id]))
+            return HttpResponseRedirect(reverse("beedb:apDetail", args=[col.apiary.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = forms.ColonyAddForm()
@@ -706,7 +706,7 @@ def diaryMod(request, diary_ref):
         if nf.is_valid():
             diary.save()
 
-            return HttpResponseRedirect(reverse("beedb:diaryDetail", args=[diary.id]))
+            return HttpResponseRedirect(reverse("beedb:diaryDetail", args=[diary.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = DiaryModelForm(instance=diary)
@@ -733,7 +733,7 @@ def colDiaryAdd(request, col_ref):
             )
             diary.save()
 
-            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = DiaryForm()
@@ -768,7 +768,7 @@ def treatmentAdd(request, col_ref):
                 treatment.completed = True
             treatment.save()
 
-            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id]))
+            return HttpResponseRedirect(reverse("beedb:colDetail", args=[col.id])) # type: ignore
         else:
             logging.debug(f"Invalid treatment form {ntf.non_field_errors}")
     # if a GET (or any other method) we'll create a blank form
@@ -798,7 +798,7 @@ def treatMod(request, treat_ref):
         if tf.is_valid():
             tf.save()
 
-            return HttpResponseRedirect(reverse("beedb:treatDetail", args=[treat.id]))
+            return HttpResponseRedirect(reverse("beedb:treatDetail", args=[treat.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         tf = ModTreatmentForm(instance=treat)
@@ -815,7 +815,7 @@ def treatComplete(request, treat_ref):
         if tf.is_valid():
             tf.save()
 
-            return HttpResponseRedirect(reverse("beedb:treatDetail", args=[treat.id]))
+            return HttpResponseRedirect(reverse("beedb:treatDetail", args=[treat.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         treat.completed = True
@@ -842,10 +842,10 @@ def purchSales(request):
         for c in a.colony_set.all():
             for t in c.transfer_set.filter(transaction__lte=2):
                 if t.transaction == 1:
-                    print(f"Sale")
+                    print("Sale")
                     sList.append(t)
                 else:
-                    print(f"Purchase")
+                    print("Purchase")
                     pList.append(t)
     disp = False
     if pList or sList:
@@ -865,8 +865,8 @@ def colReportChoose(request):
     aps = []
     for ap in apList:
         cols = []
-        currCols = ap.colony_set.filter(status="C")
-        otherCols = ap.colony_set.exclude(status="C").filter(lastAction__gte=(timezone.now() - datetime.timedelta(weeks=27)))
+        currCols = ap.colony_set.filter(status="C") # type: ignore
+        otherCols = ap.colony_set.exclude(status="C").filter(lastAction__gte=(timezone.now() - datetime.timedelta(weeks=27))) # type: ignore
         for cc in currCols:
             cols.append(cc)
         for oc in otherCols:
@@ -915,9 +915,9 @@ def colReport(request, col_ref, duration):
     else:
         startDt = timezone.now() - datetime.timedelta(weeks=1000)
 
-    pastTreatments = col.treatment_set.filter(insertDt__gte=startDt)
-    pastInspections = col.inspection_set.filter(dt__gte=startDt)
-    pastAudits = col.audit_set.filter(dt__gte=startDt)
+    pastTreatments = col.treatment_set.filter(insertDt__gte=startDt) # type: ignore
+    pastInspections = col.inspection_set.filter(dt__gte=startDt) # type: ignore
+    pastAudits = col.audit_set.filter(dt__gte=startDt) # type: ignore
     otherAudits = Audit.objects.filter(colony1=col).filter(dt__gte=startDt)
 
     events = []
@@ -1054,7 +1054,7 @@ def adminFeedbackMod(request, fb_ref):
             nf.save()
             fb.save()
 
-            return HttpResponseRedirect(reverse("beedb:userfbView", args=[fb.id]))
+            return HttpResponseRedirect(reverse("beedb:userfbView", args=[fb.id])) # type: ignore
     # if a GET (or any other method) we'll create a blank form
     else:
         nf = AdminFeedbackModelForm(instance=fb)
