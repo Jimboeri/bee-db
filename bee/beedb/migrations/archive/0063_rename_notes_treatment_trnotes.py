@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0062_remove_inspection_adddiary_and_more'),
+        ("beedb", "0062_remove_inspection_adddiary_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='treatment',
-            old_name='notes',
-            new_name='trNotes',
+            model_name="treatment",
+            old_name="notes",
+            new_name="trNotes",
         ),
     ]

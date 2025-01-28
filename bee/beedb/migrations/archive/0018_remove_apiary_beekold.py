@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0017_auto_20201208_1713'),
+        ("beedb", "0017_auto_20201208_1713"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='apiary',
-            name='beekold',
+            model_name="apiary",
+            name="beekold",
         ),
     ]

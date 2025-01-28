@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0049_sizechoice'),
+        ("beedb", "0049_sizechoice"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sizechoice',
-            name='text',
+            model_name="sizechoice",
+            name="text",
             field=models.CharField(max_length=40),
         ),
     ]

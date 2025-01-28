@@ -6,20 +6,29 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0064_alter_diary_duedt'),
+        ("beedb", "0064_alter_diary_duedt"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='audit',
-            name='transfer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.transfer'),
+            model_name="audit",
+            name="transfer",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="beedb.transfer",
+            ),
         ),
         migrations.AlterField(
-            model_name='diary',
-            name='dueDt',
-            field=models.DateTimeField(default=datetime.datetime(2022, 11, 23, 0, 21, 39, 889925, tzinfo=datetime.timezone.utc), verbose_name='Date to complete by'),
+            model_name="diary",
+            name="dueDt",
+            field=models.DateTimeField(
+                default=datetime.datetime(
+                    2022, 11, 23, 0, 21, 39, 889925, tzinfo=datetime.timezone.utc
+                ),
+                verbose_name="Date to complete by",
+            ),
         ),
     ]

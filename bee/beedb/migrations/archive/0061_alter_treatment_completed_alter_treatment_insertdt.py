@@ -5,20 +5,26 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0060_alter_treatment_insertdt_alter_treatment_postvarroa_and_more'),
+        ("beedb", "0060_alter_treatment_insertdt_alter_treatment_postvarroa_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='treatment',
-            name='completed',
-            field=models.BooleanField(default=False, verbose_name='Treatment completed & removed'),
+            model_name="treatment",
+            name="completed",
+            field=models.BooleanField(
+                default=False, verbose_name="Treatment completed & removed"
+            ),
         ),
         migrations.AlterField(
-            model_name='treatment',
-            name='insertDt',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='Date treatment put in'),
+            model_name="treatment",
+            name="insertDt",
+            field=models.DateTimeField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True,
+                verbose_name="Date treatment put in",
+            ),
         ),
     ]

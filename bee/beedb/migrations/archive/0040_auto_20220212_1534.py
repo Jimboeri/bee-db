@@ -4,25 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0039_auto_20220114_1651'),
+        ("beedb", "0039_auto_20220114_1651"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='commsInspectionReminder',
+            model_name="profile",
+            name="commsInspectionReminder",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='commsWeeklySummary',
-            field=models.BooleanField(default=False, verbose_name='Do you want weekly summary emails?'),
+            model_name="profile",
+            name="commsWeeklySummary",
+            field=models.BooleanField(
+                default=False, verbose_name="Do you want weekly summary emails?"
+            ),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='inspectPeriodSummer',
-            field=models.IntegerField(default=14, verbose_name='Days between inspections in summer'),
+            model_name="profile",
+            name="inspectPeriodSummer",
+            field=models.IntegerField(
+                default=14, verbose_name="Days between inspections in summer"
+            ),
         ),
     ]

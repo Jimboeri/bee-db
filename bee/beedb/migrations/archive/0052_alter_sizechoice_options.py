@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0051_auto_20220402_1740'),
+        ("beedb", "0051_auto_20220402_1740"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='sizechoice',
-            options={'ordering': ['value']},
+            name="sizechoice",
+            options={"ordering": ["value"]},
         ),
     ]
