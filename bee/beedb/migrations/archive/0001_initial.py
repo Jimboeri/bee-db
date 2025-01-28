@@ -7,7 +7,10 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
 =======
 >>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
     initial = True
@@ -18,6 +21,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+<<<<<<< HEAD
 <<<<<<< HEAD
             name='Profile',
             fields=[
@@ -39,6 +43,8 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Project',
                 'ordering': ['apiaryID'],
 =======
+=======
+>>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
             name="Profile",
             fields=[
                 (
@@ -89,6 +95,9 @@ class Migration(migrations.Migration):
             options={
                 "verbose_name": "Project",
                 "ordering": ["apiaryID"],
+<<<<<<< HEAD
+>>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
+=======
 >>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
             },
         ),
