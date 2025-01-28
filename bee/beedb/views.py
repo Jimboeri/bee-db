@@ -399,7 +399,7 @@ def colPhotoAdd(request, col_ref):
     context = {"form": pf, "colony": col}
     return render(request, "beedb/colPhotoAdd.html", context)
 
-=======
+#=======
 @login_required
 def colMoveChoose(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
