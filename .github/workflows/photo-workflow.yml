@@ -1,0 +1,35 @@
+#Trigger this flow on a push
+on: push
+
+# What to do
+jobs:
+  # Needs at least one job
+  lint:
+    name: Lint the code
+    # Runs-on defines the environment that the action runs on
+    runs-on: ubuntu-latest
+    steps:
+    # Each job can have one or more steps
+    - name: Checkout
+      # need to checkout the code so we can work on it
+      uses: actions/checkout@v4
+    - name: Setup python env
+      # Need a python environment to work with
+      uses: actions/setup-python@v5
+    - name: Install req
+      # Install things we need, e.g. ruff
+      run: pip install --quiet --requirement requirements.txt
+
+    - name: ruff check
+      # this does the linting check, and fixes what it can
+      run: ruff check --fix
+      
+    - name: ruff format
+      # Does some formatting if needed
+      run: ruff format
+      
+    - name: Auto commit
+      # will auto-commit if fixes or formatting has occured
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: 'Style fixes by ruff'

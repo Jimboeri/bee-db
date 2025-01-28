@@ -4,45 +4,46 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0028_auto_20201213_1719'),
+        ("beedb", "0028_auto_20201213_1719"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='apiary',
-            name='address',
+            model_name="apiary",
+            name="address",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='apiary',
-            name='hazards',
+            model_name="apiary",
+            name="hazards",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='apiary',
-            name='latitude',
+            model_name="apiary",
+            name="latitude",
             field=models.DecimalField(decimal_places=5, default=0, max_digits=10),
         ),
         migrations.AddField(
-            model_name='apiary',
-            name='location',
-            field=models.TextField(blank=True, help_text='Where the hives are located', null=True),
+            model_name="apiary",
+            name="location",
+            field=models.TextField(
+                blank=True, help_text="Where the hives are located", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='apiary',
-            name='longitude',
+            model_name="apiary",
+            name="longitude",
             field=models.DecimalField(decimal_places=5, default=0, max_digits=10),
         ),
         migrations.AddField(
-            model_name='apiary',
-            name='ownerResident',
+            model_name="apiary",
+            name="ownerResident",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='apiary',
-            name='residentPhone',
+            model_name="apiary",
+            name="residentPhone",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
     ]

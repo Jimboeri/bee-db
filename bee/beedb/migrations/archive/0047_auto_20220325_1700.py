@@ -4,60 +4,127 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0046_treatment_treatmenttype'),
+        ("beedb", "0046_treatment_treatmenttype"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='diary',
-            name='subject',
+            model_name="diary",
+            name="subject",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='disease',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'No disease present'), (3, 'Some disease'), (5, 'Heavy disease infection')], default=0, help_text='How healthy is the hive?'),
+            model_name="inspection",
+            name="disease",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "No disease present"),
+                    (3, "Some disease"),
+                    (5, "Heavy disease infection"),
+                ],
+                default=0,
+                help_text="How healthy is the hive?",
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='eggs',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Lots of eggs & larvae, good brood pattern'), (2, 'Lots of eggs & larvae, but spotty brood'), (3, 'Small - reasonable eggs & larvae'), (4, 'A few larvae, no eggs seen'), (5, 'None')], default=0, help_text='How much eggs and larvae is in the hive?'),
+            model_name="inspection",
+            name="eggs",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Lots of eggs & larvae, good brood pattern"),
+                    (2, "Lots of eggs & larvae, but spotty brood"),
+                    (3, "Small - reasonable eggs & larvae"),
+                    (4, "A few larvae, no eggs seen"),
+                    (5, "None"),
+                ],
+                default=0,
+                help_text="How much eggs and larvae is in the hive?",
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='numbers',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Bees on 20 or more frames'), (2, 'Bees on 10 - 20 frames'), (3, 'bees on 4 - 9 frames'), (4, 'Bees on 3 or less frames'), (5, 'Less than a frame of bees')], default=0, help_text='How many bees in the hive (seams of bees)?'),
+            model_name="inspection",
+            name="numbers",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Bees on 20 or more frames"),
+                    (2, "Bees on 10 - 20 frames"),
+                    (3, "bees on 4 - 9 frames"),
+                    (4, "Bees on 3 or less frames"),
+                    (5, "Less than a frame of bees"),
+                ],
+                default=0,
+                help_text="How many bees in the hive (seams of bees)?",
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='temper',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Calm bees'), (3, 'Bees a bit defensive'), (5, 'Bees attach beekeeper')], default=0, help_text='How happy is the hive?'),
+            model_name="inspection",
+            name="temper",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Calm bees"),
+                    (3, "Bees a bit defensive"),
+                    (5, "Bees attach beekeeper"),
+                ],
+                default=0,
+                help_text="How happy is the hive?",
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='varroa',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'No varroa seen'), (2, '1 - 2 varroa'), (3, '3 - 6 varroa'), (4, '7 - 15 varroa'), (5, 'More than 15 varroa')], default=0, help_text='How much varroa is in the hive?'),
+            model_name="inspection",
+            name="varroa",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "No varroa seen"),
+                    (2, "1 - 2 varroa"),
+                    (3, "3 - 6 varroa"),
+                    (4, "7 - 15 varroa"),
+                    (5, "More than 15 varroa"),
+                ],
+                default=0,
+                help_text="How much varroa is in the hive?",
+            ),
         ),
         migrations.AlterField(
-            model_name='inspection',
-            name='weight',
-            field=models.IntegerField(choices=[(0, 'Not recorded'), (1, 'Greater than 20 kg'), (2, '15 - 20 kg, plenty of stores'), (3, '10 - 15 kg'), (4, 'Less than 10 kg, hardly any stores'), (5, 'No weight, no stores')], default=0, help_text='How heavy is the hive?'),
+            model_name="inspection",
+            name="weight",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Not recorded"),
+                    (1, "Greater than 20 kg"),
+                    (2, "15 - 20 kg, plenty of stores"),
+                    (3, "10 - 15 kg"),
+                    (4, "Less than 10 kg, hardly any stores"),
+                    (5, "No weight, no stores"),
+                ],
+                default=0,
+                help_text="How heavy is the hive?",
+            ),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='inspectPeriodAutumn',
-            field=models.IntegerField(default=14, verbose_name='Days between inspections in autumn/fall'),
+            model_name="profile",
+            name="inspectPeriodAutumn",
+            field=models.IntegerField(
+                default=14, verbose_name="Days between inspections in autumn/fall"
+            ),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='inspectPeriodSpring',
-            field=models.IntegerField(default=7, verbose_name='Days between inspections in spring'),
+            model_name="profile",
+            name="inspectPeriodSpring",
+            field=models.IntegerField(
+                default=7, verbose_name="Days between inspections in spring"
+            ),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='inspectPeriodWinter',
-            field=models.IntegerField(default=60, verbose_name='Days between inspections in winter'),
+            model_name="profile",
+            name="inspectPeriodWinter",
+            field=models.IntegerField(
+                default=60, verbose_name="Days between inspections in winter"
+            ),
         ),
     ]

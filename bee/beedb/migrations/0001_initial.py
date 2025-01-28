@@ -9,7 +9,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -149,68 +148,52 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('phoneNumber', models.CharField(blank=True, max_length=50, null=True)),
-                ('bkRegistration', models.CharField(blank=True, max_length=10, null=True)),
-                ('address', models.TextField(blank=True, null=True)),
-                ('inspectPeriodSummer', models.IntegerField(default=14, verbose_name='Days between inspections in summer')),
-                ('inspectPeriodAutumn', models.IntegerField(default=14, verbose_name='Days between inspections in autumn/fall')),
-                ('inspectPeriodWinter', models.IntegerField(default=60, verbose_name='Days between inspections in winter')),
-                ('inspectPeriodSpring', models.IntegerField(default=7, verbose_name='Days between inspections in spring')),
-                ('inspectHealthIndex', models.BooleanField(default=True)),
-                ('inspectManualIndex', models.BooleanField(default=False)),
-                ('inspectDiaryAdd', models.BooleanField(default=True)),
-                ('commsWeeklySummary', models.BooleanField(default=False, verbose_name='Do you want weekly summary emails?')),
-                ('commsInspectionReminder', models.BooleanField(default=False)),
-                ('commsLstWeeklyEmail', models.DateTimeField(blank=True, null=True)),
-                ('lastApiary', models.ForeignKey(blank=True, help_text='The last apiary selected from the index page', null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.apiary')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("phoneNumber", models.CharField(blank=True, max_length=50, null=True)),
+                (
+                    "reportType",
+                    models.CharField(blank=True, default="S", max_length=1, null=True),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Picture',
+            name="Apiary",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('img', models.ImageField(upload_to=beedb.models.user_directory)),
-                ('uploadDt', models.DateTimeField(default=django.utils.timezone.now)),
-                ('apiary', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.apiary')),
-                ('beek', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('colony', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.colony')),
-                ('inspection', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.inspection')),
-            ],
-            options={
-                'ordering': ['-uploadDt'],
-            },
-        ),
-        migrations.CreateModel(
-            name='Message',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=100)),
-                ('body', models.TextField(blank=True, null=True)),
-                ('html', models.TextField(blank=True, null=True)),
-                ('processed', models.BooleanField(default=False)),
-                ('createdDt', models.DateTimeField(default=django.utils.timezone.now)),
-                ('processedDt', models.DateTimeField(blank=True, null=True)),
-                ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Feedback',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(help_text='A short description', max_length=100)),
-                ('detail', models.TextField(blank=True, help_text='The detail of your feedback', null=True)),
-                ('feedbackType', models.CharField(choices=[('F', 'General feedback'), ('B', 'Bug report (error)'), ('R', 'Request a feature'), ('S', 'Suggestion')], default='F', help_text='What sort of feedback is this?', max_length=1)),
-                ('status', models.CharField(blank=True, choices=[('N', 'New feedback'), ('I', 'Issue raised'), ('A', 'Archived')], default='N', max_length=1, null=True)),
-                ('devComment', models.TextField(blank=True, null=True)),
-                ('createdDt', models.DateTimeField(default=django.utils.timezone.now)),
-                ('lstStatusDt', models.DateTimeField(blank=True, null=True)),
-                ('lstCommentDt', models.DateTimeField(blank=True, null=True)),
-                ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("apiaryID", models.CharField(max_length=50)),
+                ("descr", models.TextField(blank=True, null=True)),
+                (
+                    "beek",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
@@ -229,21 +212,8 @@ class Migration(migrations.Migration):
                 ('colony', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.colony')),
             ],
             options={
-                'ordering': ['-dueDt'],
+                "verbose_name": "Project",
+                "ordering": ["apiaryID"],
             },
-        ),
-        migrations.CreateModel(
-            name='Audit',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dt', models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)),
-                ('transaction_cd', models.IntegerField(default=0)),
-                ('detail', models.TextField(blank=True, null=True)),
-                ('apiary', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.apiary')),
-                ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('colony', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.colony')),
-                ('colony1', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='beedb.colony')),
-                ('transfer', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.transfer')),
-            ],
         ),
     ]

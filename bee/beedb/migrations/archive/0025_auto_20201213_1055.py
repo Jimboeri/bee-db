@@ -7,31 +7,68 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('beedb', '0024_auto_20201212_1231'),
+        ("beedb", "0024_auto_20201212_1231"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='transfer',
-            name='transaction',
-            field=models.IntegerField(default=0, help_text='1 - Sold/given, 2 - Bought/received, 3 - Swarm, 4 - New entry, 5 - Split'),
+            model_name="transfer",
+            name="transaction",
+            field=models.IntegerField(
+                default=0,
+                help_text="1 - Sold/given, 2 - Bought/received, 3 - Swarm, 4 - New entry, 5 - Split",
+            ),
         ),
         migrations.CreateModel(
-            name='Diary',
+            name="Diary",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('createdDt', models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True)),
-                ('startDt', models.DateTimeField(blank=True, null=True)),
-                ('dueDt', models.DateTimeField(blank=True, null=True)),
-                ('notifyDt', models.DateTimeField(blank=True, null=True)),
-                ('subject', models.CharField(max_length=100)),
-                ('details', models.TextField(blank=True, null=True)),
-                ('apiary', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.apiary')),
-                ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('colony', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.colony')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "createdDt",
+                    models.DateTimeField(
+                        blank=True, default=django.utils.timezone.now, null=True
+                    ),
+                ),
+                ("startDt", models.DateTimeField(blank=True, null=True)),
+                ("dueDt", models.DateTimeField(blank=True, null=True)),
+                ("notifyDt", models.DateTimeField(blank=True, null=True)),
+                ("subject", models.CharField(max_length=100)),
+                ("details", models.TextField(blank=True, null=True)),
+                (
+                    "apiary",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="beedb.apiary",
+                    ),
+                ),
+                (
+                    "beek",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "colony",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="beedb.colony",
+                    ),
+                ),
             ],
         ),
     ]

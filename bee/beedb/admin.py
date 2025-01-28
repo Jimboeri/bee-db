@@ -4,16 +4,19 @@ from django.contrib.auth.models import User
 
 from . import models
 
+
 class ProfileInline(admin.StackedInline):
     model = models.Profile
 
+
 class CustomUserAdmin(UserAdmin):
-    inlines = (ProfileInline, )
+    inlines = (ProfileInline,)
 
-admin.site.unregister(User) # unregister User model
-admin.site.register(User, CustomUserAdmin) # register User model with changes
 
-#admin.site.register(models.Profile)
+admin.site.unregister(User)  # unregister User model
+admin.site.register(User, CustomUserAdmin)  # register User model with changes
+
+# admin.site.register(models.Profile)
 admin.site.register(models.Apiary)
 admin.site.register(models.Colony)
 admin.site.register(models.Inspection)
