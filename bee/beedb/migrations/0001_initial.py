@@ -3,7 +3,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import beedb.models
+=======
+>>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
 =======
 >>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
 =======
@@ -518,6 +521,7 @@ class Migration(migrations.Migration):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             name='Diary',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -532,6 +536,8 @@ class Migration(migrations.Migration):
                 ('beek', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('colony', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='beedb.colony')),
 =======
+=======
+>>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
 =======
 >>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
 =======
@@ -594,6 +600,9 @@ class Migration(migrations.Migration):
                 ),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
+=======
 >>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
 =======
 >>>>>>> b186e895f2d515af35d199da47ea8675d09e4967
