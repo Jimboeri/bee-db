@@ -1,5 +1,8 @@
 #Trigger this flow on a push
-on: push
+on: 
+  push:
+  workflow_dispatch:
+    
 
 # What to do
 jobs:
