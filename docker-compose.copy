@@ -2,20 +2,12 @@ version: '3'
 
 services:
   bee-db:
-<<<<<<< HEAD
     image: postgres:16
-=======
-    image: postgres:latest
->>>>>>> refs/remotes/origin/master
     environment:
       POSTGRES_PASSWORD:
       POSTGRES_USER:
     volumes:
-<<<<<<< HEAD
       - postgres-data-16:/var/lib/postgresql/data
-=======
-      - postgres-data:/var/lib/postgresql/data
->>>>>>> refs/remotes/origin/master
       - ./db-backup:/backup
     networks:
       - default
@@ -29,10 +21,10 @@ services:
     #command: gunicorn bee.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
-    #ports:
-    #  - "8005:8000"
-    expose:
-      - "8000"
+    ports:
+      - "8005:8005"
+    #expose:
+    #  - "8000"
     depends_on:
       - bee-db
     networks:
