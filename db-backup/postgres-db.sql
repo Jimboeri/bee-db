@@ -1335,8 +1335,8 @@ COPY public.auth_user (id, password, last_login, is_superuser, username, first_n
 8	pbkdf2_sha256$260000$THWS2IpdSCkyQKMKDqlB3a$w+GfDWT5swclD3KoYr4MPRa6hM4xh+jBGPMkhnCnaV4=	2022-04-05 22:04:26.327016+00	f	greg.borrageiro@xtra.co.nz			greg.borrageiro@xtra.co.nz	f	t	2022-04-05 22:03:59.055161+00
 11	pbkdf2_sha256$390000$DU5Lzv9kbrVy0JKHH32ATL$JVR/uxBzeUGByYdbnDfChju/8hGz/cgWGjMdDbQ8Agg=	2022-12-23 19:19:04.420117+00	f	alastair@mairangibay.net			alastair@mairangibay.net	f	t	2022-12-23 19:17:59.552602+00
 5	pbkdf2_sha256$390000$hFQ6kGI9yB4r0idcAVsLKS$u+ncDFNK4tEwJHBJVLf/d7CyeM6RnlSI19+zmiQ4e04=	2022-12-16 20:53:32.407522+00	f	et@west.net.nz			et@west.net.nz	f	t	2021-08-19 03:21:32.787393+00
+2	pbkdf2_sha256$390000$4LWIgmWem56ScOrIeIT2Xx$Esn0IC/NnWaxrbDFRwmapcfLPGiLRURScqYaukVDCR8=	2025-01-12 01:07:17.714069+00	t	jim	Jim	West	jim@west.net.nz	t	t	2020-12-05 20:29:16.919479+00
 7	pbkdf2_sha256$390000$4wQzNfB2YsmzAFx0RbqiEy$zCAEitvXyv9gJNbO+cnyLQ2T5XVjNHCTL+9DabH9DV0=	2025-01-24 22:35:11.787491+00	f	vwdundas@gmail.com			vwdundas@gmail.com	f	t	2021-09-22 02:20:11.883456+00
-2	pbkdf2_sha256$390000$4LWIgmWem56ScOrIeIT2Xx$Esn0IC/NnWaxrbDFRwmapcfLPGiLRURScqYaukVDCR8=	2025-01-27 19:59:22.2478+00	t	jim	Jim	West	jim@west.net.nz	t	t	2020-12-05 20:29:16.919479+00
 \.
 
 
@@ -1610,11 +1610,10 @@ COPY public.beedb_diary (id, "createdDt", "startDt", "dueDt", "notifyDt", subjec
 63	2024-12-07 22:24:30.759273+00	\N	2024-11-14 11:00:00+00	\N	Do varroa test	Saw a mite on a drone	\N	2	45	t
 64	2024-12-21 00:28:49.80624+00	\N	2024-12-25 11:00:00+00	\N	Bring oxalic cardboard atrips		\N	2	54	t
 65	2024-12-21 00:30:52.80654+00	\N	2024-12-25 11:00:00+00	\N	Bring oxalic strips		\N	2	45	t
+69	2025-01-18 00:45:29.726322+00	\N	2025-01-24 11:00:00+00	\N	Do varroa chack		\N	2	3	f
 66	2025-01-06 01:53:00.963832+00	\N	2025-01-18 11:00:00+00	\N	Check for eggs	Queen should have hatched 4/1/25. Might be laying	1	2	56	t
 68	2025-01-06 01:55:38.580442+00	\N	2025-01-18 11:00:00+00	\N	Check for eggs	Eggs check	1	2	58	t
 67	2025-01-06 01:54:23.09689+00	\N	2025-01-18 11:00:00+00	\N	Check for eggs	Should have hatched 4/1/25, might be laying	1	2	57	t
-70	2025-01-27 20:01:14.699169+00	\N	2025-01-29 11:00:00+00	\N	Apply formic pro treatmant asap		\N	2	3	f
-69	2025-01-18 00:45:29.726322+00	\N	2025-01-24 11:00:00+00	\N	Do varroa check	Varroa too high, 15 seen	\N	2	3	t
 \.
 
 
@@ -2271,11 +2270,6 @@ COPY public.beedb_inspection (id, dt, notes, numbers, colony_id, disease, eggs, 
 643	2025-01-22 11:00:00+00	Queen seen but not marked. She has been laying with a number of frames with eggs and larvae. Remove Oxalic strips	2	48	0	3	t	3	0	2	3
 644	2025-01-22 11:00:00+00	Hive building nicely. Good brood patterns in both upper and lower brood boxes. honey flow slowed down	2	49	1	1	t	1	1	2	3
 645	2025-01-22 11:00:00+00	Queen spotted, good brood on both upper and lower brood boxes	2	55	0	2	t	1	0	2	3
-646	2025-01-24 11:00:00+00	Oooo, varroa out of control. Need formic treatment soon	1	3	1	1	t	1	4	1	3
-647	2025-01-27 11:00:00+00	Did not see Q, but laying well	2	58	1	1	f	1	0	4	3
-648	2025-01-27 11:00:00+00	Did not see Q, but laying well	1	57	1	1	f	1	0	4	3
-649	2025-01-27 11:00:00+00	Saw Q, but she stayed on edge of frame, did not try to mark her this time	1	56	1	1	t	0	0	4	3
-650	2025-01-27 11:00:00+00	Varroa count too high, needs a treatment	1	27	1	1	f	1	3	2	4
 \.
 
 
@@ -3102,7 +3096,6 @@ tacs8maqljtos3rix9rtmi70goajjrmb	.eJxVjEsOgkAQBe8yazOBpufn0r1nmHTTrYMaSBhYGe8uJC
 dyq3x107gc3fobzsjtdb01a9uha7ks9u	.eJxVjEsOgkAQBe8yazOBpufn0r1nmHTTrYMaSBhYGe8uJCx0-6rqvU2mdSl5rTrnQczZgDn9bkz9U8cdyIPG-2T7aVzmge2u2INWe51EX5fD_TsoVMtWUxdSougaZgFU7xxTE7xnTAIbUAdArbobR8CkbQcUQ4gBgzAiivl8AdYPN1Q:1tRKNT:EnqBZ8weXDqna1ci6eLSQ9PSAMr3Y5KBIRSz12sg0vE	2025-01-11 00:08:23.584384+00
 zr52mqkt4rdqdaleuqogrd5bmbgtl0wy	.eJxVjEsOgkAQBe8yazOBpufn0r1nmHTTrYMaSBhYGe8uJCx0-6rqvU2mdSl5rTrnQczZgDn9bkz9U8cdyIPG-2T7aVzmge2u2INWe51EX5fD_TsoVMtWUxdSougaZgFU7xxTE7xnTAIbUAdArbobR8CkbQcUQ4gBgzAiivl8AdYPN1Q:1tUcCu:Vv_yialESLY-BrTYn-io-150u7Tv8iylDOHYuXG3HFE	2025-01-20 01:47:04.785388+00
 e2vhets7695xq0ol4qvrh6tss7er6hjs	.eJxVjEsOgkAQBe8yazOBpufn0r1nmHTTrYMaSBhYGe8uJCx0-6rqvU2mdSl5rTrnQczZgDn9bkz9U8cdyIPG-2T7aVzmge2u2INWe51EX5fD_TsoVMtWUxdSougaZgFU7xxTE7xnTAIbUAdArbobR8CkbQcUQ4gBgzAiivl8AdYPN1Q:1tWmRh:k9ESf_GFNvku56Ym0gr7YjeoI6znwZ7xgARi3r0KQuI	2025-01-26 01:07:17.726214+00
-lv89iooc0yxc2ivgpwgjbphcyu17xjv4	.eJxVjEsOgkAQBe8yazOBpufn0r1nmHTTrYMaSBhYGe8uJCx0-6rqvU2mdSl5rTrnQczZgDn9bkz9U8cdyIPG-2T7aVzmge2u2INWe51EX5fD_TsoVMtWUxdSougaZgFU7xxTE7xnTAIbUAdArbobR8CkbQcUQ4gBgzAiivl8AdYPN1Q:1tcVGU:NgGHFSlMH9yRUEohsFrB1DBEvsR6bQR1Z1sI7wIohgY	2025-02-10 19:59:22.277399+00
 \.
 
 
@@ -3204,7 +3197,7 @@ SELECT pg_catalog.setval('public.beedb_config_id_seq', 3, true);
 -- Name: beedb_diary_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.beedb_diary_id_seq', 70, true);
+SELECT pg_catalog.setval('public.beedb_diary_id_seq', 69, true);
 
 
 --
@@ -3218,7 +3211,7 @@ SELECT pg_catalog.setval('public.beedb_feedback_id_seq', 2, true);
 -- Name: beedb_inspection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.beedb_inspection_id_seq', 650, true);
+SELECT pg_catalog.setval('public.beedb_inspection_id_seq', 645, true);
 
 
 --
