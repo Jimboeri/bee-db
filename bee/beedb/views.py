@@ -424,7 +424,7 @@ def colPhotoAdd(request, col_ref):
 
 
 # =======
-#=======
+# =======
 @login_required
 def colMoveChoose(request, col_ref):
     col = get_object_or_404(Colony, pk=col_ref)
