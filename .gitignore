@@ -6,3 +6,4 @@ docker-compose.yml
 .env
 bee/media/images/*
 postgres-data-16.tar.bz2
+db-backup/postgres-db.sql
