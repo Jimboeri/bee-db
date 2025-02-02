@@ -31,7 +31,7 @@
       (function() {
         var u="//webstat.west.net.nz/";
         _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '5']);
+        _paq.push(['setSiteId', '{{ MATOMO_ID }}']);
         var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
         g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
       })();
@@ -40,6 +40,9 @@
     <title>
 	    {% block title %}
         Bee hive database
+        {% if ENV_MSG %}
+        - {{ ENV_MSG }}
+        {% endif %}
       {% endblock %}
     </title>
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
@@ -61,7 +64,11 @@
         {% endif %}
       </div>
       <div id="pg_header">
-        <span class="bd_heading_text">Bee hive database</span>
+        <span class="bd_heading_text">Bee hive database 
+          {% if ENV_MSG %}
+          ({{ ENV_MSG }})
+        {% endif%}
+      </span>
       </div>
 
       {% block navbar %}
@@ -109,6 +116,8 @@
       {% block web-body %}
         Bee database
       {% endblock %}
+      {% if request.settings.IS_DEV_ENV %} DEVELOPMENT
+      {% endif %}
       <!-- START FOOTER -->
       <div class="bd_footer">
         <table class="bd_footer">
