@@ -161,5 +161,5 @@ CSRF_TRUSTED_ORIGINS = ["https://*.west.net.nz", "http://localhost"]
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
-IS_DEV_ENV = False
+IS_DEV_ENV = True
 

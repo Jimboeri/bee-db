@@ -2,7 +2,7 @@
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
+from #django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             name="dt",
             field=models.DateTimeField(
                 blank=True,
-                default=datetime.datetime(2020, 12, 4, 23, 40, 8, 159380, tzinfo=utc),
+                default=datetime.datetime(2020, 12, 4, 23, 40, 8, 159380, tzinfo=datetime.timezone.utc),
                 null=True,
             ),
         ),
