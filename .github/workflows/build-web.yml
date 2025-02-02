@@ -1,5 +1,9 @@
 #Trigger this flow on a push
-on: push
+on: 
+  push:
+    branches:
+      - 'main'
+    workflow_dispatch:
 
 # What to do
 jobs:
