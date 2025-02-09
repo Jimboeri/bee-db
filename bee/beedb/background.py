@@ -90,21 +90,23 @@ def check_config():
 def loadSizeChoices():
     """Loads model data from JSON file"""
 
-    with open("sizeChoice.json") as f:
-        data = json.load(f)
-        for t in data:
-            logging.debug(t["Type"])
-            for rec in t["Records"]:
-                # logging.debug(rec['Value'])
-                sizeChoice, created = SizeChoice.objects.get_or_create(
-                    size=rec["Size"],
-                    type=t["Type"],
-                    value=rec["Value"],
-                )
-                sizeChoice.text = rec["Text"]
-                sizeChoice.save()
-            logging.debug("-----")
-
+    try:
+        with open("beedb/sizeChoice.json") as f:
+            data = json.load(f)
+            for t in data:
+                logging.debug(t["Type"])
+                for rec in t["Records"]:
+                    # logging.debug(rec['Value'])
+                    sizeChoice, created = SizeChoice.objects.get_or_create(
+                        size=rec["Size"],
+                        type=t["Type"],
+                        value=rec["Value"],
+                    )
+                    sizeChoice.text = rec["Text"]
+                    sizeChoice.save()
+                logging.debug("-----")
+    except Exception as e:
+        logging.error(f"Error loading sizeChoice.json - {e}")
 
 # ******************************************************************
 def sendMessage(msg):

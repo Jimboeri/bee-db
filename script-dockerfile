@@ -12,3 +12,5 @@ RUN apt-get update && apt-get -y upgrade && apt-get -y install libpq-dev gcc cma
 RUN pip install -r background-requirements.txt
 COPY . /code/
 WORKDIR /code/bee/
+CMD ["python", "beedb/background.py"]
+
