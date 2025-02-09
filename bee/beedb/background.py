@@ -108,6 +108,7 @@ def loadSizeChoices():
     except Exception as e:
         logging.error(f"Error loading sizeChoice.json - {e}")
 
+
 # ******************************************************************
 def sendMessage(msg):
     """
