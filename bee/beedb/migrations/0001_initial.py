@@ -734,68 +734,68 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.CreateModel(
-            name="Diary",
-            fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                (
-                    "createdDt",
-                    models.DateTimeField(
-                        blank=True, default=django.utils.timezone.now, null=True
-                    ),
-                ),
-                ("startDt", models.DateTimeField(blank=True, null=True)),
-                (
-                    "dueDt",
-                    models.DateTimeField(
-                        default=datetime.datetime(
-                            2025, 2, 8, 2, 49, 25, 465544, tzinfo=datetime.timezone.utc
-                        ),
-                        verbose_name="Date to complete by",
-                    ),
-                ),
-                ("notifyDt", models.DateTimeField(blank=True, null=True)),
-                ("subject", models.CharField(blank=True, max_length=100, null=True)),
-                ("details", models.TextField(blank=True, null=True)),
-                ("completed", models.BooleanField(default=False)),
-                (
-                    "apiary",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        to="beedb.apiary",
-                    ),
-                ),
-                (
-                    "beek",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to=settings.AUTH_USER_MODEL,
-                    ),
-                ),
-                (
-                    "colony",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        to="beedb.colony",
-                    ),
-                ),
-            ],
-            options={
-                "ordering": ["-dueDt"],
-            },
-        ),
+        # migrations.CreateModel(
+        #     name="Diary",
+        #     fields=[
+        #         (
+        #             "id",
+        #             models.AutoField(
+        #                 auto_created=True,
+        #                 primary_key=True,
+        #                 serialize=False,
+        #                 verbose_name="ID",
+        #             ),
+        #         ),
+        #         (
+        #             "createdDt",
+        #             models.DateTimeField(
+        #                 blank=True, default=django.utils.timezone.now, null=True
+        #             ),
+        #         ),
+        #         ("startDt", models.DateTimeField(blank=True, null=True)),
+        #         (
+        #             "dueDt",
+        #             models.DateTimeField(
+        #                 default=datetime.datetime(
+        #                     2025, 2, 8, 2, 49, 25, 465544, tzinfo=datetime.timezone.utc
+        #                 ),
+        #                 verbose_name="Date to complete by",
+        #             ),
+        #         ),
+        #         ("notifyDt", models.DateTimeField(blank=True, null=True)),
+        #         ("subject", models.CharField(blank=True, max_length=100, null=True)),
+        #         ("details", models.TextField(blank=True, null=True)),
+        #         ("completed", models.BooleanField(default=False)),
+        #         (
+        #             "apiary",
+        #             models.ForeignKey(
+        #                 blank=True,
+        #                 null=True,
+        #                 on_delete=django.db.models.deletion.SET_NULL,
+        #                 to="beedb.apiary",
+        #             ),
+        #         ),
+        #         (
+        #             "beek",
+        #             models.ForeignKey(
+        #                 on_delete=django.db.models.deletion.CASCADE,
+        #                 to=settings.AUTH_USER_MODEL,
+        #             ),
+        #         ),
+        #         (
+        #             "colony",
+        #             models.ForeignKey(
+        #                 blank=True,
+        #                 null=True,
+        #                 on_delete=django.db.models.deletion.SET_NULL,
+        #                 to="beedb.colony",
+        #             ),
+        #         ),
+        #     ],
+        #     options={
+        #         "ordering": ["-dueDt"],
+        #     },
+        # ),
         migrations.CreateModel(
             name="Audit",
             fields=[
