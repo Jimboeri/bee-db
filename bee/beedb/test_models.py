@@ -8,11 +8,12 @@ from beedb import models
 # Create your tests here.
 
 class ModelTests(TestCase):
-    fixtures = ['fixture3', 'SizeChoice']
+    #fixtures = ['fixture1', 'beedb/sizeChoice']
+    fixtures = ['fixture1']
     @classmethod
 
     def setUpTestData(cls):
-        cls.etUser = User.objects.get(username='et@west.net.nz')   # defined in fixture3
+        cls.etUser = User.objects.get(username='roderick@west.net.nz')   # defined in fixture1
         cls.user = User.objects.create_user('testuser',)
         cls.user.save()
         cls.ap = models.Apiary.objects.create(apiaryID='Test Apiary', beek=cls.user)
@@ -37,8 +38,8 @@ class ModelTests(TestCase):
         self.assertEqual(self.col1.__str__(), self.col1.colonyID)
         # check for no inspections
         self.assertEqual(self.col1.lastInspection(), None)
-        insp1 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now()-datetime.timedelta(days=7), notes='Old Inspection')
-        insp2 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now(), notes='Latest Inspection')
+        #insp1 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now()-datetime.timedelta(days=7), notes='Old Inspection')
+        #insp2 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now(), notes='Latest Inspection')
         self.assertEqual(self.col1.lastInspection(), insp2)
         # status checks
         self.assertEqual(self.col1.statusDisplay(), 'Current')
