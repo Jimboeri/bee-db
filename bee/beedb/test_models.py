@@ -39,7 +39,7 @@ class ModelTests(TestCase):
         # check for no inspections
         self.assertEqual(self.col1.lastInspection(), None)
         #insp1 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now()-datetime.timedelta(days=7), notes='Old Inspection')
-        #insp2 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now(), notes='Latest Inspection')
+        insp2 = models.Inspection.objects.create(colony=self.col1, dt=timezone.now(), notes='Latest Inspection')
         self.assertEqual(self.col1.lastInspection(), insp2)
         # status checks
         self.assertEqual(self.col1.statusDisplay(), 'Current')
