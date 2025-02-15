@@ -1,0 +1,143 @@
+/** {
+  box-sizing: border-box;
+}
+*/
+  body {
+      font-family:Verdana, Geneva, Arial, sans-serif;
+    }
+  
+  .bd_bee_background {
+      background-color: lightyellow;
+  }
+
+  .bd_content_block {
+    border-style: groove;
+    border: 5px;
+    border-radius: 15px;
+    padding: 10px;
+    color: black;
+    background-color: blanchedalmond;
+    margin: 10px 0px 10px 0px; 
+  }
+
+  .bd_action_button{
+    float: right;
+  }
+
+  a.bd_menu:link {
+    color: maroon;
+  }  
+
+  /*
+  .bd_table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+*/
+  .inset {
+    padding-left: 15px;
+  }
+
+  .italics {
+    font-style: italic;
+  }
+
+   .wrap_cell {
+    width: 50%;
+  }
+  
+  .bd_heading_text {
+    font-size: 2vw;
+    font-weight: bold;
+  }
+  
+  #logged_in {
+    float: right;
+  }
+  
+  /* items for a photo gallery */
+  div.gallery {
+    border: 1px solid #ccc;
+  }
+  
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
+  
+  div.gallery img {
+    width: 100%;
+    height: auto;
+  }
+  
+  div.desc {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  .responsive {
+    padding: 0 6px;
+    float: left;
+    /*width: 49.99999%;*/
+    width: 33.33332%;
+  }
+  
+  @media only screen and (max-width: 700px) {
+    .responsive {
+      width: 49.99999%;
+      margin: 6px 0;
+    }
+  }
+  
+  @media only screen and (max-width: 500px) {
+    .responsive {
+      width: 100%;
+    }
+  }
+  
+  .clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  /* end of gallery elements */
+   
+  .active, .bd_collapsible:hover {
+    background-color: rgb(121, 88, 19);
+  }
+  
+  #map { height: 600px; }
+
+  /* -------------------------------------
+      HEADER, FOOTER, MAIN
+  ------------------------------------- */
+
+  .bd_footer {
+    clear: both;
+    Margin-top: 10px;
+    text-align: center;
+    width: 100%; 
+  }
+  
+  .bd_footer td,
+    .footer p,
+    .footer span,
+    .footer a {
+      /*color: #999999;*/
+      font-size: 12px;
+      text-align: center; 
+  }
+  
+  .bd_author a {
+      color: inherit !important;
+      font-family: inherit !important;
+      font-size: inherit !important;
+      font-weight: inherit !important;
+      line-height: inherit !important;
+      text-decoration: none !important; 
+    }
+  
