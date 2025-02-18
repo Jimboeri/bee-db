@@ -1,6 +1,6 @@
 Django<=5.1.6
 psycopg2>=2.7,<3.0
-gunicorn==20.0.4
+gunicorn
 apprise
 geopy
 django-mailer
