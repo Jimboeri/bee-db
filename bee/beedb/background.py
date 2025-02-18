@@ -29,7 +29,6 @@ from beedb.models import (  # noqa: E402
     # Inspection,
     # Transfer,
     # Audit,
-    Diary,
     Config,
     Message,
     SizeChoice,
@@ -261,13 +260,13 @@ def procWeeklyReminders():
                                 logging.info("Inspection is late")
                                 colDet["lateInspectionWarning"] = "True"  # type: ignore
                         else:
-                            colDet["inspectionWarning"] = (                 # type: ignore
-                                "This colony has no recorded inspections"   # type: ignore
+                            colDet["inspectionWarning"] = (  # type: ignore
+                                "This colony has no recorded inspections"  # type: ignore
                             )
 
-                        reminders = colony.diary_set.order_by("dueDt").filter( # type: ignore
+                        reminders = colony.diary_set.order_by("dueDt").filter(  # type: ignore
                             completed=False
-                        )  
+                        )
                         logging.info(f"{len(reminders)} reminders found")
                         colDet["reminders"] = reminders
 
@@ -287,12 +286,15 @@ def procWeeklyReminders():
 
     # update the last run date
     logging.info("Finished processing weekly emails")
-    cfgWeeklyReminderWeekday, created = Config.objects.get_or_create(key="commsWeeklyDay")
+    cfgWeeklyReminderWeekday, created = Config.objects.get_or_create(
+        key="commsWeeklyDay"
+    )
     cfgWeeklyReminderWeekday.configDt = timezone.now()
     cfgWeeklyReminderWeekday.save()
     logging.info(f"Config updated - now is {cfgWeeklyReminderWeekday.configDt}")
 
     return
+
 
 # ******************************************************************
 def checkIfWeeklyReminders():
@@ -300,30 +302,39 @@ def checkIfWeeklyReminders():
     Checks to see if we should send weekly reminders
     """
     # get the config values
-    cfgWeeklyReminderWeekday, created = Config.objects.get_or_create(key="commsWeeklyDay")
+    cfgWeeklyReminderWeekday, created = Config.objects.get_or_create(
+        key="commsWeeklyDay"
+    )
     cfgWeeklyReminderHour, created = Config.objects.get_or_create(key="lstWeekly")
 
-    logging.debug(f"Checking weekly reminders, weekday = {cfgWeeklyReminderWeekday.configValue}, hour = {cfgWeeklyReminderHour.configValue}")
-    logging.debug(f"Current time is {timezone.now()}, last run was {cfgWeeklyReminderWeekday.configDt}")
+    logging.debug(
+        f"Checking weekly reminders, weekday = {cfgWeeklyReminderWeekday.configValue}, hour = {cfgWeeklyReminderHour.configValue}"
+    )
+    logging.debug(
+        f"Current time is {timezone.now()}, last run was {cfgWeeklyReminderWeekday.configDt}"
+    )
 
     # only run on the correct day of the week
-    #logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
+    # logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
     if timezone.now().weekday() != cfgWeeklyReminderWeekday.configValue:
-        return(False)
+        return False
 
     # ignore if already run today
-    #logging.debug(f"Date check, today: {timezone.now().date()}, config: {cfgWeeklyReminderWeekday.configDt.date()}") # type: ignore
-    if timezone.now().date() == cfgWeeklyReminderWeekday.configDt.date(): # type: ignore
-        #logging.debug("Already run today")
-        return(False)    
-    
+    # logging.debug(f"Date check, today: {timezone.now().date()}, config: {cfgWeeklyReminderWeekday.configDt.date()}") # type: ignore
+    if timezone.now().date() == cfgWeeklyReminderWeekday.configDt.date():  # type: ignore
+        # logging.debug("Already run today")
+        return False
+
     # only run after the magic hour
-    logging.debug(f"Hour check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour.configValue}")
+    logging.debug(
+        f"Hour check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour.configValue}"
+    )
     if timezone.now().hour >= cfgWeeklyReminderHour.configValue:  # type: ignore
         logging.debug("After the magic hour")
-        return(True)
-    
-    return(False)
+        return True
+
+    return False
+
 
 # ******************************************************************
 def sys_background():
@@ -352,7 +363,7 @@ def sys_background():
 
     if testFlag:
         logging.info("Testing - run weekly summary proc")
-        #procWeeklyReminders()
+        # procWeeklyReminders()
 
     while True:
         time.sleep(1)
@@ -367,7 +378,6 @@ def sys_background():
             # Check for weekly email summaries
             if checkIfWeeklyReminders():
                 procWeeklyReminders()
-                
 
         msgProc = Message.objects.filter(processed=False)
         if len(msgProc) > 0:
