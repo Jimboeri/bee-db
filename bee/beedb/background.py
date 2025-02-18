@@ -29,7 +29,6 @@ from beedb.models import (  # noqa: E402
     # Inspection,
     # Transfer,
     # Audit,
-    # Diary,
     Config,
     Message,
     SizeChoice,
@@ -49,7 +48,7 @@ testDailyFlag = os.getenv("BEEDB_TEST_DAILY", False)
 
 def testPr(tStr):
     if testFlag:
-        print(tStr)
+        logging.debug(tStr)
     return
 
 
@@ -233,17 +232,17 @@ def procWeeklyReminders():
 
     for beek in beeks:
         if beek.profile.commsWeeklySummary:  # type: ignore
-            print(f"Processing weekly summary for {beek.username}")
+            logging.info(f"Processing weekly summary for {beek.username}")
             apiaryDets = []
             apiaries = Apiary.objects.filter(beek=beek)
             for ap in apiaries:
-                print(f"Processing apiary: {ap.apiaryID}")
+                logging.info(f"Processing apiary: {ap.apiaryID}")
                 apDet = {"apID": ap.apiaryID, "element": ap}
                 colonies = Colony.objects.filter(apiary=ap)
                 liveApiary = False
                 colonyDets = []
                 for colony in colonies:
-                    print(f"Processing colony: {colony.colonyID}")
+                    logging.info(f"Processing colony: {colony.colonyID}")
                     if colony.status == "C":  # only send details on current colonies
                         liveApiary = True
                         colDet = {"element": colony}
@@ -251,24 +250,24 @@ def procWeeklyReminders():
                         # i1 = colony.lastInspection()
                         insp = colony.inspection_set.order_by("-dt")[:1]  # type: ignore
                         if len(insp) > 0:
-                            print(
+                            logging.info(
                                 f"Colony: {colony.colonyID}, last inspection dt : {insp[0].dt}"
                             )
                             colDet["lstInspection"] = insp[0]
                             if (timezone.now() - insp[0].dt) / datetime.timedelta(
                                 days=1
                             ) > currentInspectionCycle(beek):
-                                print("Inspection is late")
+                                logging.info("Inspection is late")
                                 colDet["lateInspectionWarning"] = "True"  # type: ignore
                         else:
-                            colDet["inspectionWarning"] = (
+                            colDet["inspectionWarning"] = (  # type: ignore
                                 "This colony has no recorded inspections"  # type: ignore
                             )
 
-                        reminders = colony.diary_set.order_by("dueDt").filter(
+                        reminders = colony.diary_set.order_by("dueDt").filter(  # type: ignore
                             completed=False
-                        )  # type: ignore
-                        print(f"{len(reminders)} reminders found")
+                        )
+                        logging.info(f"{len(reminders)} reminders found")
                         colDet["reminders"] = reminders
 
                         colonyDets.append(colDet)
@@ -276,7 +275,7 @@ def procWeeklyReminders():
                 apDet["colonies"] = colonyDets
                 if liveApiary:  # Onle send info if there are live colonies
                     apiaryDets.append(apDet)
-            print(apiaryDets)
+            logging.info(apiaryDets)
             if len(apiaryDets) > 0:
                 context = {
                     "apList": apiaryDets,
@@ -284,7 +283,57 @@ def procWeeklyReminders():
                     "web_base_url": eWeb_Base_URL,
                 }
                 sendEmail(context, "beedb/email/weekly_summary.html", beek)
+
+    # update the last run date
+    logging.info("Finished processing weekly emails")
+    cfgWeeklyReminderWeekday, created = Config.objects.get_or_create(
+        key="commsWeeklyDay"
+    )
+    cfgWeeklyReminderWeekday.configDt = timezone.now()
+    cfgWeeklyReminderWeekday.save()
+    logging.info(f"Config updated - now is {cfgWeeklyReminderWeekday.configDt}")
+
     return
+
+
+# ******************************************************************
+def checkIfWeeklyReminders():
+    """
+    Checks to see if we should send weekly reminders
+    """
+    # get the config values
+    cfgWeeklyReminderWeekday, created = Config.objects.get_or_create(
+        key="commsWeeklyDay"
+    )
+    cfgWeeklyReminderHour, created = Config.objects.get_or_create(key="lstWeekly")
+
+    logging.debug(
+        f"Checking weekly reminders, weekday = {cfgWeeklyReminderWeekday.configValue}, hour = {cfgWeeklyReminderHour.configValue}"
+    )
+    logging.debug(
+        f"Current time is {timezone.now()}, last run was {cfgWeeklyReminderWeekday.configDt}"
+    )
+
+    # only run on the correct day of the week
+    # logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
+    if timezone.now().weekday() != cfgWeeklyReminderWeekday.configValue:
+        return False
+
+    # ignore if already run today
+    # logging.debug(f"Date check, today: {timezone.now().date()}, config: {cfgWeeklyReminderWeekday.configDt.date()}") # type: ignore
+    if timezone.now().date() == cfgWeeklyReminderWeekday.configDt.date():  # type: ignore
+        # logging.debug("Already run today")
+        return False
+
+    # only run after the magic hour
+    logging.debug(
+        f"Hour check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour.configValue}"
+    )
+    if timezone.now().hour >= cfgWeeklyReminderHour.configValue:  # type: ignore
+        logging.debug("After the magic hour")
+        return True
+
+    return False
 
 
 # ******************************************************************
@@ -309,13 +358,12 @@ def sys_background():
     checkTimer = timezone.now()
     # statusTimer = timezone.now()
     # startTime = timezone.now()
-    # startedTime = timezone.now()
 
-    logging.info("About to start loop")
+    logging.info(f"About to start loop, time is {timezone.now()}")
 
     if testFlag:
         logging.info("Testing - run weekly summary proc")
-        procWeeklyReminders()
+        # procWeeklyReminders()
 
     while True:
         time.sleep(1)
@@ -328,24 +376,8 @@ def sys_background():
             testPr("Time check")
 
             # Check for weekly email summaries
-            cfgWeeklyReminderWeekday = Config.objects.filter(key="commsWeeklyDay")
-            cfgWeeklyReminderHour = Config.objects.filter(key="lstWeekly")
-            if len(cfgWeeklyReminderWeekday) == 0 or len(cfgWeeklyReminderHour) == 0:
-                continue
-            # print(f"Weekly proc day check, now(): {timezone.now().weekday()}, config: {cfgWeeklyReminderWeekday[0].configValue}")
-            if timezone.now().weekday() != cfgWeeklyReminderWeekday[0].configValue:
-                continue
-
-            # print("Passed weekday check")
-            print(
-                f"Time check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour[0].configValue}"
-            )
-            if timezone.now().hour >= cfgWeeklyReminderHour[0].configValue:  # type: ignore
-                print("After the magic hour")
-                if timezone.now().date() != cfgWeeklyReminderWeekday[0].configDt.date():  # type: ignore
-                    procWeeklyReminders()
-                    cfgWeeklyReminderWeekday[0].configDt = timezone.now()
-                    cfgWeeklyReminderWeekday[0].save()
+            if checkIfWeeklyReminders():
+                procWeeklyReminders()
 
         msgProc = Message.objects.filter(processed=False)
         if len(msgProc) > 0:
