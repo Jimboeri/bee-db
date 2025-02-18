@@ -29,7 +29,9 @@ jobs:
       run: ls -R
 
     - name: Run Django tests
-      run: python ./bee/manage.py test
+      run: |
+        cd bee
+        python manage.py test
 
     -
         name: Set up Docker Buildx
