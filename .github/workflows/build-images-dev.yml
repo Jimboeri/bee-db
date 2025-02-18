@@ -13,6 +13,21 @@ jobs:
     name: Build the docker web image
     # Runs-on defines the environment that the action runs on
     runs-on: ubuntu-latest
+    # Get a postgreas database for testing
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
         # Each job can have one or more steps
     - name: Checkout
@@ -29,8 +44,17 @@ jobs:
       run: ls -R
 
     - name: Run Django tests
+      env:
+        #DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
+        POSTGRES_HOST: postgres
+        POSTGRES_NAME: test_db
+        POSTGRES_USER: test_user
+        POSTGRES_PASSWORD: test_password
+        POSTGRES_PORT: 5432
+
       run: |
         cd bee
+        python manage.py migrate
         python manage.py test
 
     -
