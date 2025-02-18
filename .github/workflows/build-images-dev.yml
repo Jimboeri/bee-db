@@ -26,7 +26,7 @@ jobs:
       run: pip install --quiet --requirement requirements.txt
 
     - name: Run Django tests
-      run: python manage.py test
+      run: python bee/manage.py test
 
     -
         name: Set up Docker Buildx
