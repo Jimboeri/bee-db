@@ -40,9 +40,6 @@ jobs:
         # Install things we need, e.g. docker
       run: pip install --quiet --requirement requirements.txt
 
-    - name: List files
-      run: ls -R
-
     - name: Run Django tests
       env:
         #DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
