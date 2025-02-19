@@ -1,8 +1,8 @@
 #Trigger this flow on a push
 on: 
-  #push:
-  #  branches:
-  #    - 'master'
+  push:
+    branches:
+      - 'master'
   workflow_dispatch:
 
 # What to do
