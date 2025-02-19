@@ -40,8 +40,15 @@ from beedb.models import (  # noqa: E402
 
 eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
-testFlag = os.getenv("BEEDB_TESTING", False)
+testFlagEnv = os.getenv("BEEDB_TESTING", 'N')
 testDailyFlag = os.getenv("BEEDB_TEST_DAILY", False)
+
+if testFlagEnv.upper() == "TRUE" or testFlagEnv == "T" or testFlagEnv == "Y":
+    testFlag = True
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    testFlag = False
+    logging.basicConfig(level=logging.INFO)
 
 # ********************************************************************
 
@@ -307,12 +314,12 @@ def checkIfWeeklyReminders():
     )
     cfgWeeklyReminderHour, created = Config.objects.get_or_create(key="lstWeekly")
 
-    logging.debug(
-        f"Checking weekly reminders, weekday = {cfgWeeklyReminderWeekday.configValue}, hour = {cfgWeeklyReminderHour.configValue}"
-    )
-    logging.debug(
-        f"Current time is {timezone.now()}, last run was {cfgWeeklyReminderWeekday.configDt}"
-    )
+    #logging.debug(
+    #    f"Checking weekly reminders, weekday = {cfgWeeklyReminderWeekday.configValue}, hour = {cfgWeeklyReminderHour.configValue}"
+    #)
+    #logging.debug(
+    #    f"Current time is {timezone.now()}, last run was {cfgWeeklyReminderWeekday.configDt}"
+    #)
 
     # only run on the correct day of the week
     # logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
@@ -363,7 +370,7 @@ def sys_background():
 
     if testFlag:
         logging.info("Testing - run weekly summary proc")
-        # procWeeklyReminders()
+        procWeeklyReminders()
 
     while True:
         time.sleep(1)
