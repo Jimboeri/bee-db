@@ -322,20 +322,20 @@ def checkIfWeeklyReminders():
     # )
 
     # only run on the correct day of the week
-    #logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
+    # logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
     if timezone.now().weekday() != cfgWeeklyReminderWeekday.configValue:
         return False
 
     # ignore if already run today
-    #logging.debug(f"Date check, today: {timezone.now().date()}, config: {cfgWeeklyReminderWeekday.configDt.date()}") # type: ignore
+    # logging.debug(f"Date check, today: {timezone.now().date()}, config: {cfgWeeklyReminderWeekday.configDt.date()}") # type: ignore
     if timezone.now().date() == cfgWeeklyReminderWeekday.configDt.date():  # type: ignore
         # logging.debug("Already run today")
         return False
 
     # only run after the magic hour
-    #logging.debug(
+    # logging.debug(
     #    f"Hour check, now: {timezone.now().hour}, config: {cfgWeeklyReminderHour.configValue}"
-    #)
+    # )
     if timezone.now().hour >= cfgWeeklyReminderHour.configValue:  # type: ignore
         logging.debug("After the magic hour")
         return True
