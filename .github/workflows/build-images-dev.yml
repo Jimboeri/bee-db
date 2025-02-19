@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     # Get a postgreas database for testing
     services:
-      postgres:
+      postgres_main:
         image: postgres:latest
         env:
           POSTGRES_DB: test_db
@@ -46,7 +46,7 @@ jobs:
     - name: Run Django tests
       env:
         #DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
-        POSTGRES_HOST: postgres
+        POSTGRES_HOST: postgres_main
         POSTGRES_NAME: test_db
         POSTGRES_USER: test_user
         POSTGRES_PASSWORD: test_password
