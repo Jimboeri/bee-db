@@ -40,7 +40,7 @@ from beedb.models import (  # noqa: E402
 
 eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
-testFlagEnv = os.getenv("BEEDB_TESTING", 'N')
+testFlagEnv = os.getenv("BEEDB_TESTING", "N")
 testDailyFlag = os.getenv("BEEDB_TEST_DAILY", False)
 
 if testFlagEnv.upper() == "TRUE" or testFlagEnv == "T" or testFlagEnv == "Y":
@@ -314,12 +314,12 @@ def checkIfWeeklyReminders():
     )
     cfgWeeklyReminderHour, created = Config.objects.get_or_create(key="lstWeekly")
 
-    #logging.debug(
+    # logging.debug(
     #    f"Checking weekly reminders, weekday = {cfgWeeklyReminderWeekday.configValue}, hour = {cfgWeeklyReminderHour.configValue}"
-    #)
-    #logging.debug(
+    # )
+    # logging.debug(
     #    f"Current time is {timezone.now()}, last run was {cfgWeeklyReminderWeekday.configDt}"
-    #)
+    # )
 
     # only run on the correct day of the week
     # logging.debug(f"Day of week = {timezone.now().weekday()}, config = {cfgWeeklyReminderWeekday.configValue}")
