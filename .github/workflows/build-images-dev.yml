@@ -46,7 +46,7 @@ jobs:
     - name: Run Django tests
       env:
         #DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
-        POSTGRES_HOST: postgres_main
+        POSTGRES_HOST: localhost
         POSTGRES_NAME: test_db
         POSTGRES_USER: test_user
         POSTGRES_PASSWORD: test_password
