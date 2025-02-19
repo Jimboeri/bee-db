@@ -10,13 +10,13 @@ jobs:
   # Needs at least one job
     
   build-web:
-    name: Build the docker web image
+    name: Test the docker web image
     # Runs-on defines the environment that the action runs on
     runs-on: ubuntu-latest
     # Get a postgreas database for testing
     services:
       postgres_main:
-        image: postgres:latest
+        image: postgres:16
         env:
           POSTGRES_DB: test_db
           POSTGRES_USER: test_user
@@ -46,7 +46,7 @@ jobs:
     - name: Run Django tests
       env:
         #DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
-        POSTGRES_HOST: postgres_main
+        POSTGRES_HOST: localhost
         POSTGRES_NAME: test_db
         POSTGRES_USER: test_user
         POSTGRES_PASSWORD: test_password
