@@ -30,10 +30,10 @@ class ModelTests(TestCase):
         pass
 
     def test_Model_Profile(self):
-        self.assertEqual(self.user.profile.__str__(), self.user.username) # type: ignore
+        self.assertEqual(self.user.profile.__str__(), self.user.username)  # type: ignore
 
     def test_Model_Apiary(self):
-        ap = self.user.apiary_set.all().filter(apiaryID="Test Apiary") # type: ignore
+        ap = self.user.apiary_set.all().filter(apiaryID="Test Apiary")  # type: ignore
         self.assertEqual(ap[0].__str__(), ap[0].apiaryID)
         return
 
@@ -62,20 +62,22 @@ class ModelTests(TestCase):
         # Size display checks
         self.assertTrue(1 <= self.col1.size <= 5)
         self.assertIn(
-            "Small - single storey brood chamber", self.col1.get_size_display() # type: ignore
+            "Small - single storey brood chamber",
+            self.col1.get_size_display(),  # type: ignore
         )
         self.col1.size = 1
-        self.assertEqual(self.col1.get_size_display(), "Micro - 3 - mini frames") # type: ignore
+        self.assertEqual(self.col1.get_size_display(), "Micro - 3 - mini frames")  # type: ignore
         self.col1.size = 2
-        self.assertEqual(self.col1.get_size_display(), "Little - queen castle or nuc") # type: ignore # type: ignore
+        self.assertEqual(self.col1.get_size_display(), "Little - queen castle or nuc")  # type: ignore # type: ignore
         self.col1.size = 4
         self.assertEqual(
-            self.col1.get_size_display(), # type: ignore
+            self.col1.get_size_display(),  # type: ignore
             "Large - double storey brood chamber, 18 - 20 frames",
         )
         self.col1.size = 5
         self.assertEqual(
-            self.col1.get_size_display(), "Huge - 3 or more storey brood chamber" # type: ignore
+            self.col1.get_size_display(),
+            "Huge - 3 or more storey brood chamber",  # type: ignore
         )
 
         # print(f"col1.size: {self.col1.get_size_display()}")
@@ -192,9 +194,12 @@ class ModelTests(TestCase):
             createdDt=timezone.now(),
             subject="Test Diary Entry",
             details="This is a test diary entry.",
-            dueDt=timezone.now() + timezone.timedelta(days=7)
+            dueDt=timezone.now() + timezone.timedelta(days=7),
         )
-        self.assertEqual(diary_entry.__str__(), f"Beek: {diary_entry.beek.username}, Subject: {diary_entry.subject}")
+        self.assertEqual(
+            diary_entry.__str__(),
+            f"Beek: {diary_entry.beek.username}, Subject: {diary_entry.subject}",
+        )
         self.assertEqual(diary_entry.beek, self.col1.apiary.beek)
         self.assertEqual(diary_entry.subject, "Test Diary Entry")
         self.assertTrue(diary_entry.dueDt > timezone.now())
