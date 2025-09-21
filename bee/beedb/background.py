@@ -254,7 +254,7 @@ def procDailyDiary():
             for colony in colonies:
                 logging.info(f"Processing colony: {colony.colonyID}")
                 newReminders = (
-                    colony.diary_set.order_by("dueDt") # type: ignore
+                    colony.diary_set.order_by("dueDt")  # type: ignore
                     .filter(completed=False)
                     .filter(dueDt__lte=timezone.now())
                     .filter(notifyDt__isnull=True)
@@ -266,7 +266,7 @@ def procDailyDiary():
                     # send reminder
 
                     oldReminders = (
-                        colony.diary_set.order_by("dueDt") # type: ignore
+                        colony.diary_set.order_by("dueDt")  # type: ignore
                         .filter(completed=False)
                         .filter(dueDt__lte=timezone.now())
                         .filter(notifyDt__isnull=False)
@@ -285,7 +285,7 @@ def procDailyDiary():
 
             sendEmail(context, "beedb/email/reminderSummary.html", beek)
 
-            #for reminder in beekNewReminders:
+            # for reminder in beekNewReminders:
             #    reminder.notifyDt = timezone.now()
             #    reminder.save()
 
@@ -431,7 +431,7 @@ def sys_background():
     if testFlag:
         logging.info("Testing - run weekly summary proc")
         logging.info("---------------------------------")
-        #procWeeklyReminders()
+        # procWeeklyReminders()
         logging.info("---------------------------------")
         logging.info("Testing - run daily diary proc")
         logging.info("---------------------------------")
