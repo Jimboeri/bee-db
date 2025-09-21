@@ -233,6 +233,66 @@ def sendEmail(inDict, inTemplate, inBeek):
 
 
 # ******************************************************************
+def procDailyDiary():
+    """
+    This module looks to see if any diary entries have recently become due
+    """
+
+    # get all the users
+    beeks = User.objects.all()
+
+    for beek in beeks:
+        logging.info(f"Processing beek: {beek.username}")
+
+        beekNewReminders = []
+        beekOldReminders = []
+
+        apiaries = Apiary.objects.filter(beek=beek)
+        for ap in apiaries:
+            logging.info(f"Processing apiary: {ap.apiaryID}")
+            colonies = Colony.objects.filter(apiary=ap)
+            for colony in colonies:
+                logging.info(f"Processing colony: {colony.colonyID}")
+                newReminders = (
+                    colony.diary_set.order_by("dueDt") # type: ignore
+                    .filter(completed=False)
+                    .filter(dueDt__lte=timezone.now())
+                    .filter(notifyDt__isnull=True)
+                )
+                if len(newReminders) > 0:
+                    logging.info(f"Reminder due for {colony.colonyID}")
+                    for nR in newReminders:
+                        beekNewReminders.append(nR)
+                    # send reminder
+
+                    oldReminders = (
+                        colony.diary_set.order_by("dueDt") # type: ignore
+                        .filter(completed=False)
+                        .filter(dueDt__lte=timezone.now())
+                        .filter(notifyDt__isnull=False)
+                    )
+                    if len(oldReminders) > 0:
+                        logging.info(f"Reminder overdue for {colony.colonyID}")
+                        beekOldReminders.append(oldReminders)
+
+        if beekNewReminders:
+            context = {
+                "beek": beek,
+                "newReminders": beekNewReminders,
+                "oldReminders": beekOldReminders,
+                "web_base_url": eWeb_Base_URL,
+            }
+
+            sendEmail(context, "beedb/email/reminderSummary.html", beek)
+
+            #for reminder in beekNewReminders:
+            #    reminder.notifyDt = timezone.now()
+            #    reminder.save()
+
+    return
+
+
+# ******************************************************************
 def procWeeklyReminders():
     """Sends weekly summary emails"""
     beeks = User.objects.all()
@@ -371,7 +431,12 @@ def sys_background():
     if testFlag:
         logging.info("Testing - run weekly summary proc")
         logging.info("---------------------------------")
-        procWeeklyReminders()
+        #procWeeklyReminders()
+        logging.info("---------------------------------")
+        logging.info("Testing - run daily diary proc")
+        logging.info("---------------------------------")
+        procDailyDiary()
+        logging.info("---------------------------------")
 
     while True:
         time.sleep(1)

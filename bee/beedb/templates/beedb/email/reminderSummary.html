@@ -1,0 +1,28 @@
+{% extends "beedb/email/email-html-base.html" %}
+
+{% block title %}
+Reminders
+{% endblock %}
+
+{% block email-body %}
+<p>Hi {{ beek.first_name|capfirst }}</p>
+
+<div id="apiaries" class="container-fluid">
+  <div class="indent bold">
+    Reminders
+  </div>
+  {% for new in newReminders %}
+    <div class="indent2">
+      <a href="{{web_base_url}}/beedb/diary/{{new.id}}">{{ new.subject }}</a> - Due by: {{ new.dueDt|date:"D d M Y" }}
+      {{ new }}
+    </div>
+    {% endfor %}
+</div>
+<br>
+<div class="notice">
+  This email is being sent to you as per your settings in the Bee database system. You can turn on and off these emails
+  <a href="{{web_base_url}}/beedb/inspectPrefDetail/">here</a>,
+  and adjust your inspections timing preferences <a href="{{web_base_url}}/beedb/commsPrefDetail/">here</a>.
+</div>
+
+{% endblock %}
