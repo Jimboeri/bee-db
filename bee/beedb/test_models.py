@@ -32,12 +32,11 @@ class ModelTests(TestCase):
     def test_Model_Profile(self):
         self.assertEqual(self.user.profile.__str__(), self.user.username)  # type: ignore
 
-    
     def test_Model_Apiary(self):
         ap = self.user.apiary_set.all().filter(apiaryID="Test Apiary")  # type: ignore
         self.assertEqual(ap[0].__str__(), ap[0].apiaryID)
         return
-    
+
     def test_Model_Colony(self):
         self.assertEqual(self.col1.__str__(), self.col1.colonyID)
         # check for no inspections
@@ -60,7 +59,7 @@ class ModelTests(TestCase):
         self.col1.status = "X"
         self.assertEqual(self.col1.statusDisplay(), "?")
 
-       # Size display checks
+        # Size display checks
         self.assertTrue(1 <= self.col1.size <= 5)
         self.assertIn(
             "Small - single storey brood chamber",
@@ -83,7 +82,7 @@ class ModelTests(TestCase):
 
         # print(f"col1.size: {self.col1.get_size_display()}")
         return
-    
+
     def getSizeChoice(self, size, type, value):
         cSize = (
             models.SizeChoice.objects.filter(size=size)
@@ -219,4 +218,3 @@ class ModelTests(TestCase):
             models.Diary.objects.get(id=diary_entry_id)
 
         return
-    
