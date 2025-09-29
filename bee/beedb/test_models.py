@@ -255,7 +255,7 @@ class ModelTests(TestCase):
 
         self.assertNotIn(diary_entry_past, dueDiariesNew)
         self.assertNotIn(diary_entry_past, dueDiaries)
- 
+
         # Delete the diary entry
         diary_entry_id = diary_entry.id
         diary_entry.delete()

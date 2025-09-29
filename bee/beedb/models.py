@@ -177,15 +177,18 @@ class Colony(models.Model):
         """
         Return a list of due diary entries, that have already nee notified
         """
-        dueDiaries = self.diary_set.order_by("dueDt").filter(dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=False)
+        dueDiaries = self.diary_set.order_by("dueDt").filter(
+            dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=False
+        )
         return dueDiaries
-    
+
     def diaryDueNew(self):
         """
         Return a list of due diary entries, that have not yet been notified"""
-        dueDiaries = self.diary_set.order_by("dueDt").filter(dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=True)
+        dueDiaries = self.diary_set.order_by("dueDt").filter(
+            dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=True
+        )
         return dueDiaries
-    
 
 
 class Inspection(models.Model):
