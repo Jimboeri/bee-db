@@ -1,10 +1,11 @@
 import datetime
+import logging
 
-from django.contrib.auth.models import User
-from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.utils import timezone
+from django.contrib.auth.models import User  # type: ignore
+from django.db import models  # type: ignore
+from django.db.models.signals import post_save  # type: ignore
+from django.dispatch import receiver  # type: ignore
+from django.utils import timezone  # type: ignore
 
 # define some re-used choice options
 VARROA_CHOICES = [
@@ -56,8 +57,8 @@ class Apiary(models.Model):
     beek = models.ForeignKey(User, on_delete=models.CASCADE)
     apiaryID = models.CharField(max_length=50)
     descr = models.TextField(blank=True, null=True)
-    latitude = models.DecimalField(max_digits=12, decimal_places=7, default=0)
-    longitude = models.DecimalField(max_digits=12, decimal_places=7, default=0)
+    latitude = models.DecimalField(max_digits=12, decimal_places=7, default=0)  # type: ignore
+    longitude = models.DecimalField(max_digits=12, decimal_places=7, default=0)  # type: ignore
     ownerResident = models.CharField(
         "Name of owner / occupier", max_length=200, blank=True, null=True
     )
@@ -159,11 +160,11 @@ class Colony(models.Model):
         return self.colonyID
 
     def lastInspection(self):
-        lstInsp = self.inspection_set.order_by("-dt")[:1]
+        lstInsp = self.inspection_set.order_by("-dt")[:1]  # type: ignore
         if len(lstInsp) > 0:
             return lstInsp[0]
         else:
-            print("No inspections available")
+            logging.debug("No inspections available")
             return
 
     def statusDisplay(self):
@@ -171,6 +172,23 @@ class Colony(models.Model):
             if e[0] == self.status:
                 return e[1]
         return "?"
+
+    def diaryDue(self):
+        """
+        Return a list of due diary entries, that have already nee notified
+        """
+        dueDiaries = self.diary_set.order_by("dueDt").filter(
+            dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=False
+        )
+        return dueDiaries
+
+    def diaryDueNew(self):
+        """
+        Return a list of due diary entries, that have not yet been notified"""
+        dueDiaries = self.diary_set.order_by("dueDt").filter(
+            dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=True
+        )
+        return dueDiaries
 
 
 class Inspection(models.Model):
@@ -346,7 +364,7 @@ class Transfer(models.Model):
         ordering = ["-dt"]
 
     def __str__(self):
-        return f"Colony: {self.colony.colonyID}"
+        return f"Colony: {self.colony.colonyID}"  # type: ignore
 
 
 class Audit(models.Model):
@@ -379,7 +397,7 @@ class Audit(models.Model):
     )
 
     def __str__(self):
-        return f"Date: {self.dt}, beek: {self.beek.username}, Col: {self.colony.colonyID}, Tr code: {self.transaction_cd} "
+        return f"Date: {self.dt}, beek: {self.beek.username}, Col: {self.colony.colonyID}, Tr code: {self.transaction_cd} "  # type: ignore
 
 
 class Diary(models.Model):
@@ -398,6 +416,11 @@ class Diary(models.Model):
 
     def __str__(self):
         return f"Beek: {self.beek.username}, Subject: {self.subject}"
+
+    def isDue(self):
+        if self.dueDt < timezone.now() and not self.completed:
+            return True
+        return False
 
     class Meta:
         ordering = ["-dueDt"]

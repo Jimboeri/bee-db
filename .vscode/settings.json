@@ -18,5 +18,14 @@
         }
     ],
     "python.analysis.typeCheckingMode": "basic",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./bee",
+        "-p",
+        "test*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true
 }

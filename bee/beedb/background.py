@@ -50,6 +50,8 @@ else:
     testFlag = False
     logging.basicConfig(level=logging.INFO)
 
+enVironment = os.getenv("ENVIRONMENT", "")
+
 # ********************************************************************
 
 
@@ -223,12 +225,66 @@ def currentInspectionCycle(beek):
 
 
 # ******************************************************************
-def sendEmail(inDict, inTemplate, inBeek):
+def sendEmail(inDict, inTemplate, inBeek, subject=""):
     t = template.loader.get_template(inTemplate)  # type: ignore
     emailMessage = Message(beek=inBeek)
     emailMessage.html = t.render(inDict)
-    emailMessage.subject = "Weekly summary from Bee-db"
+    # emailMessage.subject = "Weekly summary from Bee-db"
+    emailMessage.subject = subject
+    if enVironment:
+        emailMessage.subject = f"[{enVironment}] {emailMessage.subject}"
     emailMessage.save()
+    return
+
+
+# ******************************************************************
+def procHourlyDiary():
+    """
+    This module looks to see if any diary entries have recently become due
+    """
+
+    # get all the users
+    beeks = User.objects.all()
+
+    for beek in beeks:
+        logging.info(f"Processing beek: {beek.username}")
+
+        beekNewReminder = False
+
+        apiaries = Apiary.objects.filter(beek=beek)
+        for ap in apiaries:
+            logging.info(f"Processing apiary: {ap.apiaryID}")
+            colonies = Colony.objects.filter(apiary=ap)
+            for colony in colonies:
+                logging.info(f"Processing colony: {colony.colonyID}")
+
+                if colony.diaryDueNew().count() > 0:
+                    logging.info(f"New diary entry due for colony: {colony.colonyID}")
+                    beekNewReminder = True  # at least one new reminder for this beek
+
+        if beekNewReminder:
+            context = {
+                "beek": beek,
+                "web_base_url": eWeb_Base_URL,
+            }
+
+            sendEmail(
+                context,
+                "beedb/email/reminderSummary.html",
+                inBeek=beek,
+                subject="Reminders from Bee-db",
+            )
+            for ap in apiaries:
+                logging.info(f"Post Processing apiary: {ap.apiaryID}")
+                colonies = Colony.objects.filter(apiary=ap)
+                for colony in colonies:
+                    logging.info(f"Post Processing colony: {colony.colonyID}")
+
+                    for diary in colony.diaryDueNew():
+                        logging.info(f"Updating Diary entry {diary.id} as notified")
+                        diary.notifyDt = timezone.now()
+                        diary.save()
+
     return
 
 
@@ -289,7 +345,12 @@ def procWeeklyReminders():
                     "beek": beek,
                     "web_base_url": eWeb_Base_URL,
                 }
-                sendEmail(context, "beedb/email/weekly_summary.html", beek)
+                sendEmail(
+                    context,
+                    "beedb/email/weekly_summary.html",
+                    beek,
+                    subject="Weekly summary from Bee-db",
+                )
 
     # update the last run date
     logging.info("Finished processing weekly emails")
@@ -363,6 +424,7 @@ def sys_background():
 
     # initialise timers
     checkTimer = timezone.now()
+    lastHour = 0
     # statusTimer = timezone.now()
     # startTime = timezone.now()
 
@@ -371,7 +433,12 @@ def sys_background():
     if testFlag:
         logging.info("Testing - run weekly summary proc")
         logging.info("---------------------------------")
-        procWeeklyReminders()
+        # procWeeklyReminders()
+        logging.info("---------------------------------")
+        # logging.info("Testing - run hourly diary proc")
+        # logging.info("---------------------------------")
+        # procHourlyDiary()
+        # logging.info("---------------------------------")
 
     while True:
         time.sleep(1)
@@ -386,6 +453,14 @@ def sys_background():
             # Check for weekly email summaries
             if checkIfWeeklyReminders():
                 procWeeklyReminders()
+
+            if lastHour != timezone.now().hour:
+                lastHour = timezone.now().hour
+                testPr("New hour")
+                logging.info("New hour - run hourly diary proc")
+                logging.info("---------------------------------")
+                procHourlyDiary()
+                logging.info("---------------------------------")
 
         msgProc = Message.objects.filter(processed=False)
         if len(msgProc) > 0:

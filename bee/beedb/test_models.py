@@ -26,10 +26,10 @@ class ModelTests(TestCase):
         pass
 
     def test_Model_Profile(self):
-        self.assertEqual(self.user.profile.__str__(), self.user.username)
+        self.assertEqual(self.user.profile.__str__(), self.user.username)  # type: ignore
 
     def test_Model_Apiary(self):
-        ap = self.user.apiary_set.all().filter(apiaryID='Test Apiary')
+        ap = self.user.apiary_set.all().filter(apiaryID="Test Apiary")  # type: ignore
         self.assertEqual(ap[0].__str__(), ap[0].apiaryID)
         return
     
@@ -55,15 +55,24 @@ class ModelTests(TestCase):
 
         # Size display checks
         self.assertTrue(1 <= self.col1.size <= 5)
-        self.assertIn('Small - single storey brood chamber', self.col1.get_size_display())
+        self.assertIn(
+            "Small - single storey brood chamber",
+            self.col1.get_size_display(),  # type: ignore
+        )
         self.col1.size = 1
-        self.assertEqual(self.col1.get_size_display(), "Micro - 3 - mini frames")
+        self.assertEqual(self.col1.get_size_display(), "Micro - 3 - mini frames")  # type: ignore
         self.col1.size = 2
-        self.assertEqual(self.col1.get_size_display(), "Little - queen castle or nuc")
+        self.assertEqual(self.col1.get_size_display(), "Little - queen castle or nuc")  # type: ignore # type: ignore
         self.col1.size = 4
-        self.assertEqual(self.col1.get_size_display(), "Large - double storey brood chamber, 18 - 20 frames")
+        self.assertEqual(
+            self.col1.get_size_display(),  # type: ignore
+            "Large - double storey brood chamber, 18 - 20 frames",
+        )
         self.col1.size = 5
-        self.assertEqual(self.col1.get_size_display(), "Huge - 3 or more storey brood chamber")
+        self.assertEqual(
+            self.col1.get_size_display(),
+            "Huge - 3 or more storey brood chamber",  # type: ignore
+        )
 
         #print(f"col1.size: {self.col1.get_size_display()}")
         return
@@ -157,6 +166,80 @@ class ModelTests(TestCase):
         insp2.temper = 25
         self.assertEqual("?", insp2.temperChoiceDisplay())
 
-        
+    def test_Model_Diary(self):
+        # create diary entry - 7 days in future
+        diary_entry = models.Diary.objects.create(
+            beek=self.col1.apiary.beek,
+            colony=self.col1,
+            createdDt=timezone.now(),
+            subject="Test Diary Entry Future",
+            details="This is a future diary entry.",
+            dueDt=timezone.now() + timezone.timedelta(days=7),
+        )
+
+        # create diary entry - 7 days in Past
+        diary_entry_past = models.Diary.objects.create(
+            beek=self.col1.apiary.beek,
+            colony=self.col1,
+            createdDt=timezone.now(),
+            subject="Test Diary Entry, past date",
+            details="This is a test diary entry in the past.",
+            dueDt=timezone.now() + timezone.timedelta(days=-7),
+        )
+        diary_entry_past.save()
+
+        self.assertEqual(
+            diary_entry.__str__(),
+            f"Beek: {diary_entry.beek.username}, Subject: {diary_entry.subject}",
+        )
+        self.assertEqual(diary_entry.beek, self.col1.apiary.beek)
+        self.assertEqual(diary_entry.subject, "Test Diary Entry Future")
+        self.assertTrue(diary_entry.dueDt > timezone.now())
+        self.assertFalse(diary_entry.completed)
+        self.assertEqual(diary_entry.details, "This is a future diary entry.")
+        self.assertFalse(diary_entry.isDue())
+
+        self.assertTrue(diary_entry_past.isDue())
+
+        # Update the diary entry
+        diary_entry.subject = "Updated diary entry."
+        diary_entry.save()
+        self.assertEqual(diary_entry.subject, "Updated diary entry.")
+
+        # check if due lists OK
+        dueDiariesNew = self.col1.diaryDueNew()
+        dueDiaries = self.col1.diaryDue()
+
+        self.assertIn(diary_entry_past, dueDiariesNew)
+        self.assertNotIn(diary_entry, dueDiariesNew)
+        self.assertNotIn(diary_entry_past, dueDiaries)
+        self.assertNotIn(diary_entry, dueDiaries)
+
+        diary_entry_past.notifyDt = timezone.now()
+        diary_entry_past.save()
+
+        dueDiariesNew = self.col1.diaryDueNew()
+        dueDiaries = self.col1.diaryDue()
+
+        self.assertNotIn(diary_entry_past, dueDiariesNew)
+        self.assertNotIn(diary_entry, dueDiariesNew)
+        self.assertIn(diary_entry_past, dueDiaries)
+        self.assertNotIn(diary_entry, dueDiaries)
+
+        diary_entry_past.completed = True
+        diary_entry_past.save()
+
+        dueDiariesNew = self.col1.diaryDueNew()
+        dueDiaries = self.col1.diaryDue()
+
+        self.assertNotIn(diary_entry_past, dueDiariesNew)
+        self.assertNotIn(diary_entry_past, dueDiaries)
+
+        # Delete the diary entry
+        diary_entry_id = diary_entry.id
+        diary_entry.delete()
+        with self.assertRaises(models.Diary.DoesNotExist):
+            models.Diary.objects.get(id=diary_entry_id)
 
         return
+

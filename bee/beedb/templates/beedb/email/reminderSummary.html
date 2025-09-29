@@ -1,0 +1,60 @@
+{% extends "beedb/email/email-html-base.html" %}
+
+{% block title %}
+Reminders
+{% endblock %}
+
+{% block email-body %}
+<p>Hi {{ beek.first_name|capfirst }}</p>
+
+<div id="apiaries" class="container-fluid">
+  <div class="indent bold">
+    Reminders that you have set up in the Bee database system.
+  </div>
+
+  {% for ap in beek.apiary_set.all %}
+
+    {% for col in ap.colony_set.all %}
+      {% with newReminders=col.diaryDueNew %}
+        {% if newReminders.count > 0 %}
+          <div class="indent">
+            <br>
+            <strong>Colony: <a href="{{web_base_url}}/beedb/colony/{{col.id}}">{{ col.colonyID }}</a> in Apiary: <a href="{{web_base_url}}/beedb/apiary/{{ap.id}}">{{ ap.apiaryID }}</a></strong>
+          </div>
+          <div class="indent">
+            <em>New reminders:</em>
+          </div>
+          {% for new in newReminders %}
+            <div class="indent2">
+              <a href="{{web_base_url}}/beedb/diary/{{new.id}}">{{ new.subject }}</a> - Due by: {{ new.dueDt|date:"D d M Y" }}
+              {{ new }}
+            </div>
+          {% endfor %}
+          {% with oldReminders=col.diaryDue %}
+            {% if oldReminders.count > 0 %}
+              <div class="indent">
+                <em>Older reminders:</em>
+              </div>
+              {% for old in oldReminders %}
+                <div class="indent2">
+                  <a href="{{web_base_url}}/beedb/diary/{{old.id}}">{{ old.subject }}</a> - Due by: {{ old.dueDt|date:"D d M Y" }}
+                  {{ old }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}            
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
+  {% endfor %}
+     
+
+</div>
+<br>
+<div class="notice">
+  This email is being sent to you as per your settings in the Bee database system. You can turn on and off these emails
+  <a href="{{web_base_url}}/beedb/inspectPrefDetail/">here</a>,
+  and adjust your inspections timing preferences <a href="{{web_base_url}}/beedb/commsPrefDetail/">here</a>.
+</div>
+
+{% endblock %} 
