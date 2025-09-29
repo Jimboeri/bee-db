@@ -189,29 +189,74 @@ class ModelTests(TestCase):
         self.assertEqual("?", insp2.temperChoiceDisplay())
 
     def test_Model_Diary(self):
+        # create diary entry - 7 days in future
         diary_entry = models.Diary.objects.create(
             beek=self.col1.apiary.beek,
             colony=self.col1,
             createdDt=timezone.now(),
-            subject="Test Diary Entry",
-            details="This is a test diary entry.",
+            subject="Test Diary Entry Future",
+            details="This is a future diary entry.",
             dueDt=timezone.now() + timezone.timedelta(days=7),
         )
+
+        # create diary entry - 7 days in Past
+        diary_entry_past = models.Diary.objects.create(
+            beek=self.col1.apiary.beek,
+            colony=self.col1,
+            createdDt=timezone.now(),
+            subject="Test Diary Entry, past date",
+            details="This is a test diary entry in the past.",
+            dueDt=timezone.now() + timezone.timedelta(days=-7),
+        )
+        diary_entry_past.save()
+
         self.assertEqual(
             diary_entry.__str__(),
             f"Beek: {diary_entry.beek.username}, Subject: {diary_entry.subject}",
         )
         self.assertEqual(diary_entry.beek, self.col1.apiary.beek)
-        self.assertEqual(diary_entry.subject, "Test Diary Entry")
+        self.assertEqual(diary_entry.subject, "Test Diary Entry Future")
         self.assertTrue(diary_entry.dueDt > timezone.now())
         self.assertFalse(diary_entry.completed)
-        self.assertEqual(diary_entry.details, "This is a test diary entry.")
+        self.assertEqual(diary_entry.details, "This is a future diary entry.")
+        self.assertFalse(diary_entry.isDue())
+
+        self.assertTrue(diary_entry_past.isDue())
 
         # Update the diary entry
         diary_entry.subject = "Updated diary entry."
         diary_entry.save()
         self.assertEqual(diary_entry.subject, "Updated diary entry.")
 
+        # check if due lists OK
+        dueDiariesNew = self.col1.diaryDueNew()
+        dueDiaries = self.col1.diaryDue()
+
+        self.assertIn(diary_entry_past, dueDiariesNew)
+        self.assertNotIn(diary_entry, dueDiariesNew)
+        self.assertNotIn(diary_entry_past, dueDiaries)
+        self.assertNotIn(diary_entry, dueDiaries)
+
+        diary_entry_past.notifyDt = timezone.now()
+        diary_entry_past.save()
+
+        dueDiariesNew = self.col1.diaryDueNew()
+        dueDiaries = self.col1.diaryDue()
+
+        self.assertNotIn(diary_entry_past, dueDiariesNew)
+        self.assertNotIn(diary_entry, dueDiariesNew)
+        self.assertIn(diary_entry_past, dueDiaries)
+        self.assertNotIn(diary_entry, dueDiaries)
+
+        diary_entry_past.completed = True
+        diary_entry_past.save()
+
+        dueDiariesNew = self.col1.diaryDueNew()
+        dueDiaries = self.col1.diaryDue()
+
+        self.assertNotIn(diary_entry_past, dueDiariesNew)
+        self.assertNotIn(diary_entry_past, dueDiaries)
+ 
         # Delete the diary entry
         diary_entry_id = diary_entry.id
         diary_entry.delete()

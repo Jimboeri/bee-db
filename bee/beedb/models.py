@@ -173,6 +173,20 @@ class Colony(models.Model):
                 return e[1]
         return "?"
 
+    def diaryDue(self):
+        """
+        Return a list of due diary entries, that have already nee notified
+        """
+        dueDiaries = self.diary_set.order_by("dueDt").filter(dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=False)
+        return dueDiaries
+    
+    def diaryDueNew(self):
+        """
+        Return a list of due diary entries, that have not yet been notified"""
+        dueDiaries = self.diary_set.order_by("dueDt").filter(dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=True)
+        return dueDiaries
+    
+
 
 class Inspection(models.Model):
     """
@@ -399,6 +413,11 @@ class Diary(models.Model):
 
     def __str__(self):
         return f"Beek: {self.beek.username}, Subject: {self.subject}"
+
+    def isDue(self):
+        if self.dueDt < timezone.now() and not self.completed:
+            return True
+        return False
 
     class Meta:
         ordering = ["-dueDt"]

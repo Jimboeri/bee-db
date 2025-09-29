@@ -1,7 +1,9 @@
 #Testing and development notes
-#Testing
+## Testing
+To run a test from the terminal
+docker compose run --rm web python manage.py test
 
-##Database stuff
+## Database stuff
 Log into database shell (can be in portainer), then run
 psql -U postgres
 
