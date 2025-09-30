@@ -254,7 +254,7 @@ def procHourlyDiary():
         apiaries = Apiary.objects.filter(beek=beek)
         for ap in apiaries:
             logging.info(f"Processing apiary: {ap.apiaryID}")
-            colonies = Colony.objects.filter(apiary=ap)
+            colonies = Colony.objects.filter(apiary=ap).filter(status="C")
             for colony in colonies:
                 logging.info(f"Processing colony: {colony.colonyID}")
 
@@ -275,10 +275,10 @@ def procHourlyDiary():
                 subject="Reminders from Bee-db",
             )
             for ap in apiaries:
-                logging.info(f"Post Processing apiary: {ap.apiaryID}")
+                logging.debug(f"Post Processing apiary: {ap.apiaryID}")
                 colonies = Colony.objects.filter(apiary=ap)
                 for colony in colonies:
-                    logging.info(f"Post Processing colony: {colony.colonyID}")
+                    logging.debug(f"Post Processing colony: {colony.colonyID}")
 
                     for diary in colony.diaryDueNew():
                         logging.info(f"Updating Diary entry {diary.id} as notified")
