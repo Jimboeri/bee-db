@@ -129,7 +129,7 @@ LOGGING = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'NZ'
+TIME_ZONE = 'Pacific/Auckland'
 
 USE_I18N = True
 
