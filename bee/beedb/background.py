@@ -21,22 +21,16 @@ django.setup()
 
 from django.contrib.auth.models import User  # type: ignore # noqa: E402
 
-# import mailer
 from beedb.models import (  # noqa: E402
     Apiary,
     # Profile,
     Colony,
-    # Inspection,
-    # Transfer,
-    # Audit,
-    Config,
     Message,
     SizeChoice,
-    # webNotification,
+    Config,
 )
 
 # all config parameters are set as environment variables, best practice in docker environment
-# eMqtt_client_id = os.getenv("AKLC_MQTT_CLIENT_ID", "mqtt_monitor")
 
 eWeb_Base_URL = os.getenv("BEEDB_WEB_BASE_URL", "http://beedb.west.net.nz")
 
@@ -51,6 +45,10 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 enVironment = os.getenv("ENVIRONMENT", "")
+
+logging.debug(f"Environment is {enVironment}")
+logging.debug(f"Django debug is {settings.DEBUG}")
+
 
 # ********************************************************************
 
