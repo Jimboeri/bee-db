@@ -257,5 +257,5 @@ class ModelTests(TestCase):
         diary_entry.delete()
         with self.assertRaises(models.Diary.DoesNotExist):
             models.Diary.objects.get(id=diary_entry_id)
-        
+
         return
