@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", False)
 
 #ALLOWED_HOSTS = [".west.net.nz", "172.105.254.32", ".localhost"]
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", ".west.net.nz, .localhost").split(",")

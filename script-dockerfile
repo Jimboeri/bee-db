@@ -11,6 +11,8 @@ RUN apt-get update && apt-get -y upgrade && apt-get -y install libpq-dev gcc cma
     && rm -rf /var/lib/apt/lists/*
 RUN pip install -r background-requirements.txt
 COPY . /code/
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 WORKDIR /code/bee/
-CMD ["python", "beedb/background.py"]
+#CMD ["python", "beedb/background.py"]
 
