@@ -74,6 +74,8 @@ urlpatterns = [
     path("purch/", views.purchSales, name="purchSales"),
     path("colReportChoose/", views.colReportChoose, name="colReportChoose"),
     path("colReport/<int:col_ref>/<int:duration>", views.colReport, name="colReport"),
+    path("apReportChoose/", views.apReportChoose, name="apReportChoose"),
+    path("apReport/<int:ap_ref>/<int:duration>", views.apReport, name="apReport"),
     # Feedback section
     path("fbIndex/", views.feedbackIndex, name="fbIndex"),
     path("fbAdd/", views.userFeedbackAdd, name="userfbAdd"),

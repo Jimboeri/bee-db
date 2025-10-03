@@ -1,0 +1,36 @@
+{% extends "beedb/webbase.html" %}
+<!-- This template uses W3.CSS -->
+{% block title %}
+Apiary report choice
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <h2>Select a time frame for the report and then a apiary to report on</h2>
+  <form action="{% url 'beedb:apReportChoose' %}{{usrInfo.getParams}}" method="POST" name="selectForm">
+    {% csrf_token %}
+    {{ form.non_field_errors}}
+    {{ form }}
+    {% for ap in apList %}
+      <div class="w3-panel">
+        <h2>{{ ap.apiary.apiaryID }} colonies</h2>
+      </div>
+      <ul class="w3-ul w3-border">
+        {% for col in ap.colonies %}
+          {% if col.status == "C" %}
+            <li class="w3-button w3-block w3-left-align w3-amber">
+              <a href="javascript: submitform({{col.id}})">{{col.colonyID}}</a>
+            </li>
+          {% else %}
+            <li class="w3-button w3-block w3-left-align w3-pale-red">
+              <a href="javascript: submitform({{col.id}})">{{col.colonyID}} ({{col.statusDisplay}})</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </form>
+</div>
+
+
+{% endblock %}

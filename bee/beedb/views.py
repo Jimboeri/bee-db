@@ -29,15 +29,6 @@ from .models import (
 )
 
 from .forms import (
-    # ApiaryAddForm,
-    # ColonyAddForm,
-    # ColonyDeadForm,
-    # InspectionForm,
-    # InspectionOptionsForm,
-    # TransferForm,
-    # SwarmForm,
-    # PurchaseForm,
-    # ColonyModelForm,
     DiaryModelForm,
     DiaryForm,
     CustomUserCreationForm,
@@ -162,7 +153,6 @@ def apAdd(request):
     if request.method == "POST":
         nf = forms.ApiaryAddForm(request.POST)
         if nf.is_valid():
-            print("Valid BK 1")
             ap = Apiary(
                 apiaryID=nf.cleaned_data["apiaryID"], descr=nf.cleaned_data["descr"]
             )
@@ -232,7 +222,6 @@ def colAdd(request, ap_ref, col_add_type):
     if ap.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
-        # print("Post message received")
         if col_add_type == 1:  # SWARM
             nf = forms.SwarmForm(request.POST)
             if nf.is_valid():
@@ -252,7 +241,7 @@ def colAdd(request, ap_ref, col_add_type):
                 tr.save()
                 audit = Audit(
                     dt=timezone.now(),
-                    transaction_cd=3,
+                    transaction_cd=3, # collect swarm
                     beek=request.user,
                     colony=col,
                     apiary=col.apiary,
@@ -948,45 +937,7 @@ def colReportChoose(request):
     return render(request, "beedb/colReportChoose.html", context)
 
 
-@login_required
-def apiaryReport(request, ap_ref, duration=4):
-    """This function allows users to create a report by apiary
 
-    More data here in the future
-    """
-    usrInfo = usrCheck(request)
-    ap = get_object_or_404(Apiary, pk=ap_ref)
-    if ap.beek != usrInfo["procBeek"]:
-        return render(request, "beedb/not_authorised.html")
-
-    if duration == 1:
-        startDt = timezone.now() - datetime.timedelta(days=30)
-    elif duration == 2:
-        startDt = timezone.now() - datetime.timedelta(weeks=27)
-    elif duration == 3:
-        startDt = timezone.now() - datetime.timedelta(weeks=52)
-    elif duration == 4:
-        startDt = timezone.now() - datetime.timedelta(weeks=260)
-    else:
-        startDt = timezone.now() - datetime.timedelta(weeks=1000)
-
-    pastTreatments = Treatment.objects.filter(
-        colony__apiary=ap, insertDt__gte=startDt
-    )  # type: ignore
-    pastInspections = Inspection.objects.filter(
-        colony__apiary=ap, dt__gte=startDt
-    )  # type: ignore
-    pastAudits = Audit.objects.filter(apiary=ap, dt__gte=startDt)
-
-    context = {
-        "ap": ap,
-        "reportactive": "Y",
-        "usrInfo": usrInfo,
-        "pastTreatments": pastTreatments,
-        "pastInspections": pastInspections,
-        "pastAudits": pastAudits,
-    }
-    return render(request, "beedb/apiaryReport.html", context)
 
 @login_required
 def colReport(request, col_ref, duration):
@@ -1035,6 +986,66 @@ def colReport(request, col_ref, duration):
     context = {"col": col, "reportactive": "Y", "usrInfo": usrInfo, "events": events}
     return render(request, "beedb/colReport.html", context)
 
+@login_required
+def apReportChoose(request):
+    """This function allows users to create a report by apiary
+
+    More data here in the future
+    """
+    usrInfo = usrCheck(request)
+    apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
+
+    if request.method == "POST":
+        # print("Post message received")
+        rf = forms.ApiaryReportForm(request.POST)
+        if rf.is_valid():
+            print(rf.cleaned_data)
+            logging.debug(f"Form keys = {rf.cleaned_data}")
+
+            return HttpResponseRedirect(
+                reverse(
+                    "beedb:apReport",
+                    args=[rf.cleaned_data["apID"], rf.cleaned_data["duration"]],
+                )
+            )
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        rf = forms.ApiaryReportForm()
+
+    context = {"apList": apList, "reportactive": "Y", "usrInfo": usrInfo, "form": rf}
+    return render(request, "beedb/apReportChoose.html", context)
+
+
+
+@login_required
+def apReport(request, ap_ref, duration=4):
+    """This function allows users to create a report by apiary
+
+    More data here in the future
+    """
+    usrInfo = usrCheck(request)
+    ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
+
+    if duration == 1:
+        startDt = timezone.now() - datetime.timedelta(days=30)
+    elif duration == 2:
+        startDt = timezone.now() - datetime.timedelta(weeks=27)
+    elif duration == 3:
+        startDt = timezone.now() - datetime.timedelta(weeks=52)
+    elif duration == 4:
+        startDt = timezone.now() - datetime.timedelta(weeks=260)
+    else:
+        startDt = timezone.now() - datetime.timedelta(weeks=1000)
+
+
+    context = {
+        "ap": ap,
+        "reportactive": "Y",
+        "usrInfo": usrInfo,
+    }
+    return render(request, "beedb/apiaryReport.html", context)
 
 def login(request):
     if request.user.is_authenticated:
