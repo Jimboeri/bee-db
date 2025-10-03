@@ -344,7 +344,7 @@ def colDetail(request, col_ref):
     diary = col.diary_set.filter(completed=False).order_by("dueDt")  # type: ignore
     treatments = col.treatment_set.filter(completed=False).order_by("removeDt")  # type: ignore
     yearAgo = timezone.now() - datetime.timedelta(weeks=52)
-    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by(
+    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by( # type: ignore
         "-insertDt"
     )  # type: ignore
     pastInspections = col.inspection_set.filter(dt__gte=yearAgo).order_by("-dt")  # type: ignore
@@ -907,7 +907,7 @@ def colReportChoose(request):
     for ap in apList:
         cols = []
         currCols = ap.colony_set.filter(status="C")  # type: ignore
-        otherCols = ap.colony_set.exclude(status="C").filter(
+        otherCols = ap.colony_set.exclude(status="C").filter( # type: ignore
             lastAction__gte=(timezone.now() - datetime.timedelta(weeks=27))
         )  # type: ignore
         for cc in currCols:
@@ -935,43 +935,6 @@ def colReportChoose(request):
 
     context = {"apList": aps, "reportactive": "Y", "usrInfo": usrInfo, "form": rf}
     return render(request, "beedb/colReportChoose.html", context)
-
-
-@login_required
-def apiaryReport(request, ap_ref, duration=4):
-    """This function allows users to create a report by apiary
-
-    More data here in the future
-    """
-    usrInfo = usrCheck(request)
-    ap = get_object_or_404(Apiary, pk=ap_ref)
-    if ap.beek != usrInfo["procBeek"]:
-        return render(request, "beedb/not_authorised.html")
-
-    if duration == 1:
-        startDt = timezone.now() - datetime.timedelta(days=30)
-    elif duration == 2:
-        startDt = timezone.now() - datetime.timedelta(weeks=27)
-    elif duration == 3:
-        startDt = timezone.now() - datetime.timedelta(weeks=52)
-    elif duration == 4:
-        startDt = timezone.now() - datetime.timedelta(weeks=260)
-    else:
-        startDt = timezone.now() - datetime.timedelta(weeks=1000)
-
-    pastTreatments = Treatment.objects.filter(colony__apiary=ap, insertDt__gte=startDt)  # type: ignore
-    pastInspections = Inspection.objects.filter(colony__apiary=ap, dt__gte=startDt)  # type: ignore
-    pastAudits = Audit.objects.filter(apiary=ap, dt__gte=startDt)
-
-    context = {
-        "ap": ap,
-        "reportactive": "Y",
-        "usrInfo": usrInfo,
-        "pastTreatments": pastTreatments,
-        "pastInspections": pastInspections,
-        "pastAudits": pastAudits,
-    }
-    return render(request, "beedb/apiaryReport.html", context)
 
 
 @login_required
