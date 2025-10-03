@@ -937,6 +937,41 @@ def colReportChoose(request):
     return render(request, "beedb/colReportChoose.html", context)
 
 
+@login_required
+def apiaryReport(request, ap_ref, duration=4):
+    """This function allows users to create a report by apiary
+
+    More data here in the future
+    """
+    usrInfo = usrCheck(request)
+    ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
+
+    if duration == 1:
+        startDt = timezone.now() - datetime.timedelta(days=30)
+    elif duration == 2:
+        startDt = timezone.now() - datetime.timedelta(weeks=27)
+    elif duration == 3:
+        startDt = timezone.now() - datetime.timedelta(weeks=52)
+    elif duration == 4:
+        startDt = timezone.now() - datetime.timedelta(weeks=260)
+    else:
+        startDt = timezone.now() - datetime.timedelta(weeks=1000)
+
+    pastTreatments = Treatment.objects.filter(colony__apiary=ap, insertDt__gte=startDt)  # type: ignore
+    pastInspections = Inspection.objects.filter(colony__apiary=ap, dt__gte=startDt)  # type: ignore
+    pastAudits = Audit.objects.filter(apiary=ap, dt__gte=startDt)
+
+    context = {
+        "ap": ap,
+        "reportactive": "Y",
+        "usrInfo": usrInfo,
+        "pastTreatments": pastTreatments,
+        "pastInspections": pastInspections,
+        "pastAudits": pastAudits,
+    }
+    return render(request, "beedb/apiaryReport.html", context)
 
 
 @login_required
