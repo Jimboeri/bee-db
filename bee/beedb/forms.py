@@ -499,6 +499,7 @@ class ColonyReportForm(forms.Form):
     duration = forms.ChoiceField(choices=DURATION_CHOICES, initial=3)
     colID = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
+
 class ApiaryReportForm(forms.Form):
     DURATION_CHOICES = [
         (1, "1 Month"),

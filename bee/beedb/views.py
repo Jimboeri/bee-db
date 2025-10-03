@@ -241,7 +241,7 @@ def colAdd(request, ap_ref, col_add_type):
                 tr.save()
                 audit = Audit(
                     dt=timezone.now(),
-                    transaction_cd=3, # collect swarm
+                    transaction_cd=3,  # collect swarm
                     beek=request.user,
                     colony=col,
                     apiary=col.apiary,
@@ -1021,6 +1021,7 @@ def colReport(request, col_ref, duration):
     context = {"col": col, "reportactive": "Y", "usrInfo": usrInfo, "events": events}
     return render(request, "beedb/colReport.html", context)
 
+
 @login_required
 def apReportChoose(request):
     """This function allows users to create a report by apiary
@@ -1049,7 +1050,6 @@ def apReportChoose(request):
 
     context = {"apList": apList, "reportactive": "Y", "usrInfo": usrInfo, "form": rf}
     return render(request, "beedb/apReportChoose.html", context)
-
 
 
 @login_required
@@ -1083,6 +1083,7 @@ def apReport(request, ap_ref, duration=4):
     }
 
     return render(request, "beedb/apiaryReport.html", context)
+
 
 def login(request):
     if request.user.is_authenticated:
