@@ -177,7 +177,7 @@ class Colony(models.Model):
         """
         Return a list of due diary entries, that have already nee notified
         """
-        dueDiaries = self.diary_set.order_by("dueDt").filter( # type: ignore
+        dueDiaries = self.diary_set.order_by("dueDt").filter(  # type: ignore
             dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=False
         )
         return dueDiaries
@@ -185,7 +185,7 @@ class Colony(models.Model):
     def diaryDueNew(self):
         """
         Return a list of due diary entries, that have not yet been notified"""
-        dueDiaries = self.diary_set.order_by("dueDt").filter( # type: ignore
+        dueDiaries = self.diary_set.order_by("dueDt").filter(  # type: ignore
             dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=True
         )
         return dueDiaries
