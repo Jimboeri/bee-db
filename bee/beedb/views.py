@@ -970,12 +970,8 @@ def apiaryReport(request, ap_ref, duration=4):
     else:
         startDt = timezone.now() - datetime.timedelta(weeks=1000)
 
-    pastTreatments = Treatment.objects.filter(
-        colony__apiary=ap, insertDt__gte=startDt
-    )  # type: ignore
-    pastInspections = Inspection.objects.filter(
-        colony__apiary=ap, dt__gte=startDt
-    )  # type: ignore
+    pastTreatments = Treatment.objects.filter(colony__apiary=ap, insertDt__gte=startDt)  # type: ignore
+    pastInspections = Inspection.objects.filter(colony__apiary=ap, dt__gte=startDt)  # type: ignore
     pastAudits = Audit.objects.filter(apiary=ap, dt__gte=startDt)
 
     context = {
@@ -987,6 +983,7 @@ def apiaryReport(request, ap_ref, duration=4):
         "pastAudits": pastAudits,
     }
     return render(request, "beedb/apiaryReport.html", context)
+
 
 @login_required
 def colReport(request, col_ref, duration):
