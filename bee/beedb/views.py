@@ -1074,12 +1074,14 @@ def apReport(request, ap_ref, duration=4):
     else:
         startDt = timezone.now() - datetime.timedelta(weeks=1000)
 
-
+    pastAudits = col.audit_set.filter(dt__gte=startDt)  # type: ignore
     context = {
         "ap": ap,
         "reportactive": "Y",
         "usrInfo": usrInfo,
+        "pastAudits": pastAudits,
     }
+
     return render(request, "beedb/apiaryReport.html", context)
 
 def login(request):
