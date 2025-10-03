@@ -344,7 +344,7 @@ def colDetail(request, col_ref):
     diary = col.diary_set.filter(completed=False).order_by("dueDt")  # type: ignore
     treatments = col.treatment_set.filter(completed=False).order_by("removeDt")  # type: ignore
     yearAgo = timezone.now() - datetime.timedelta(weeks=52)
-    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by( # type: ignore
+    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by(  # type: ignore
         "-insertDt"
     )  # type: ignore
     pastInspections = col.inspection_set.filter(dt__gte=yearAgo).order_by("-dt")  # type: ignore
@@ -907,7 +907,7 @@ def colReportChoose(request):
     for ap in apList:
         cols = []
         currCols = ap.colony_set.filter(status="C")  # type: ignore
-        otherCols = ap.colony_set.exclude(status="C").filter( # type: ignore
+        otherCols = ap.colony_set.exclude(status="C").filter(  # type: ignore
             lastAction__gte=(timezone.now() - datetime.timedelta(weeks=27))
         )  # type: ignore
         for cc in currCols:
