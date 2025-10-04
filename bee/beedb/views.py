@@ -998,8 +998,8 @@ def apReportChoose(request):
         logging.debug("Post message received")
         rf = forms.ApiaryReportForm(request.POST)
         if rf.is_valid():
-            #logging.debug(rf.cleaned_data)
-            #logging.debug(f"Form keys = {rf.cleaned_data}")
+            # logging.debug(rf.cleaned_data)
+            # logging.debug(f"Form keys = {rf.cleaned_data}")
 
             return HttpResponseRedirect(
                 reverse(
@@ -1040,13 +1040,13 @@ def apReport(request, ap_ref, duration=4):
     currCol = ap.colony_set.filter(status="C")  # type: ignore
     otherCol = ap.colony_set.exclude(status="C").filter(  # type: ignore
         lastAction__gte=startDt
-    )  # type: ignore   
+    )  # type: ignore
 
     context = {
         "ap": ap,
         "reportactive": "Y",
         "usrInfo": usrInfo,
-        #"startDt": startDt,
+        # "startDt": startDt,
         "duration": duration,
         "currCol": currCol,
         "otherCol": otherCol,
