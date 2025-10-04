@@ -998,8 +998,8 @@ def apReportChoose(request):
         logging.debug("Post message received")
         rf = forms.ApiaryReportForm(request.POST)
         if rf.is_valid():
-            logging.debug(rf.cleaned_data)
-            logging.debug(f"Form keys = {rf.cleaned_data}")
+            #logging.debug(rf.cleaned_data)
+            #logging.debug(f"Form keys = {rf.cleaned_data}")
 
             return HttpResponseRedirect(
                 reverse(
@@ -1037,15 +1037,22 @@ def apReport(request, ap_ref, duration=4):
     else:
         startDt = timezone.now() - datetime.timedelta(weeks=1000)
 
-    pastAudits = ap.colony_set.audit_set.filter(dt__gte=startDt)  # type: ignore
+    currCol = ap.colony_set.filter(status="C")  # type: ignore
+    otherCol = ap.colony_set.exclude(status="C").filter(  # type: ignore
+        lastAction__gte=startDt
+    )  # type: ignore   
+
     context = {
         "ap": ap,
         "reportactive": "Y",
         "usrInfo": usrInfo,
-        "pastAudits": pastAudits,
+        #"startDt": startDt,
+        "duration": duration,
+        "currCol": currCol,
+        "otherCol": otherCol,
     }
 
-    return render(request, "beedb/apiaryReport.html", context)
+    return render(request, "beedb/apReport.html", context)
 
 
 def login(request):

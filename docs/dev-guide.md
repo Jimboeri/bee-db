@@ -9,3 +9,9 @@
 ```docker compose run web python manage.py test```
 
 **NB The test file should be in the tests folder**
+
+## Changing javascript
+
+It is necessary to 'hard reset' Firefox. to do so press
+```ctrl F5```
+

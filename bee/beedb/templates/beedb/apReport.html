@@ -1,0 +1,28 @@
+{% extends "beedb/webbase.html" %}
+<!-- This template uses W3.CSS, boot strap depeciated here -->
+{% block title %}
+Apiary report
+{% endblock %}
+
+{% block web-body %}
+<div class="bd_bee_background">
+  <h3>Apiary report - {{ ap.apiaryID }}</h3>
+  <div>
+    <h4>Colonies currently in apiary</h4>
+    {% for col in currCol %}
+      <a href="{% url 'beedb:colReport' col.id duration %}{{usrInfo.getParams}}" class="w3-button w3-block w3-left-align w3-amber">
+        Colony {{ col.colonyID }}
+      </a>
+    {% endfor %}
+  </div>
+    <h4>Colonies lost/dead etc.</h4>
+    {% for col in otherCol %}
+      <a href="{% url 'beedb:colReport' col.id duration %}{{usrInfo.getParams}}" class="w3-button w3-block w3-left-align w3-red">
+        Colony {{ col.colonyID }}
+      </a>
+    {% endfor %}
+  </div>
+
+
+</div>
+{% endblock %}
