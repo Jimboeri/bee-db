@@ -1,0 +1,25 @@
+{% extends "beedb/webbase.html" %}
+<!-- This template uses W3.CSS -->
+{% block title %}
+Apiary report choice
+{% endblock %}
+
+{% block web-body %}
+<div class="beedb_background">
+  <h2>Select a time frame for the report and then a apiary to report on</h2>
+  <form action="{% url 'beedb:apReportChoose' %}{{usrInfo.getParams}}" method="POST" name="selectApForm">
+    {% csrf_token %}
+    {{ form.non_field_errors}}
+    {{ form }}
+    <br>
+    {% for ap in apList %}
+      <li class="w3-button w3-block w3-left-align w3-amber">
+        <a href="javascript:submitApReportform({{ ap.id }})">{{ap.apiaryID}}</a>
+      </li>
+        
+    {% endfor %}
+  </form>
+</div>
+
+
+{% endblock %}

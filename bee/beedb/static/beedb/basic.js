@@ -104,6 +104,15 @@ function submitform(colID)
   document.selectForm.submit();
 }
 
+function submitApReportform(apID)
+{
+  apField = document.getElementById("id_apID");
+  apField.value = apID;
+
+  document.selectApForm.submit();
+}
+
+
 function showHide(id) {
   var x = document.getElementById(id);
   if (x.className.indexOf("w3-show") == -1) {

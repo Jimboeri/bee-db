@@ -1,6 +1,6 @@
 #Trigger this flow on a push
 on: 
-  #push:
+  push:
   #  branches:
   #    - '!master'
   workflow_dispatch:

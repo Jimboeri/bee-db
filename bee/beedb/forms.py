@@ -1,12 +1,12 @@
-from django import forms
-from django.utils import timezone
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
-from django.template.loader import render_to_string
-from django.contrib.admin.widgets import AdminDateWidget
+from django import forms  # type: ignore
+from django.utils import timezone  # type: ignore
+from django.contrib.auth.models import User  # type: ignore
+from django.core.exceptions import ValidationError  # type: ignore
+from django.contrib.auth.tokens import default_token_generator  # type: ignore
+from django.utils.encoding import force_bytes  # type: ignore
+from django.utils.http import urlsafe_base64_encode  # type: ignore
+from django.template.loader import render_to_string  # type: ignore
+from django.contrib.admin.widgets import AdminDateWidget  # type: ignore
 
 from .utils import sizeChoices
 from .widgets import FengyuanChenDatePickerInput
@@ -498,3 +498,16 @@ class ColonyReportForm(forms.Form):
 
     duration = forms.ChoiceField(choices=DURATION_CHOICES, initial=3)
     colID = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+
+
+class ApiaryReportForm(forms.Form):
+    DURATION_CHOICES = [
+        (1, "1 Month"),
+        (2, "6 Months"),
+        (3, "1 Year"),
+        (4, "5 Years"),
+        (5, "All information"),
+    ]
+
+    duration = forms.ChoiceField(choices=DURATION_CHOICES, initial=3)
+    apID = forms.IntegerField(widget=forms.HiddenInput(), required=False)
