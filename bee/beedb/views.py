@@ -993,12 +993,12 @@ def apReportChoose(request):
     """
     usrInfo = usrCheck(request)
     apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
-
+    logging.debug(f"Apiary List = {apList}")
     if request.method == "POST":
-        # print("Post message received")
+        logging.debug("Post message received")
         rf = forms.ApiaryReportForm(request.POST)
         if rf.is_valid():
-            print(rf.cleaned_data)
+            logging.debug(rf.cleaned_data)
             logging.debug(f"Form keys = {rf.cleaned_data}")
 
             return HttpResponseRedirect(
