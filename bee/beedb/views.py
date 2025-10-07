@@ -29,15 +29,6 @@ from .models import (
 )
 
 from .forms import (
-    # ApiaryAddForm,
-    # ColonyAddForm,
-    # ColonyDeadForm,
-    # InspectionForm,
-    # InspectionOptionsForm,
-    # TransferForm,
-    # SwarmForm,
-    # PurchaseForm,
-    # ColonyModelForm,
     DiaryModelForm,
     DiaryForm,
     CustomUserCreationForm,
@@ -162,7 +153,6 @@ def apAdd(request):
     if request.method == "POST":
         nf = forms.ApiaryAddForm(request.POST)
         if nf.is_valid():
-            print("Valid BK 1")
             ap = Apiary(
                 apiaryID=nf.cleaned_data["apiaryID"], descr=nf.cleaned_data["descr"]
             )
@@ -232,7 +222,6 @@ def colAdd(request, ap_ref, col_add_type):
     if ap.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
-        # print("Post message received")
         if col_add_type == 1:  # SWARM
             nf = forms.SwarmForm(request.POST)
             if nf.is_valid():
@@ -252,7 +241,7 @@ def colAdd(request, ap_ref, col_add_type):
                 tr.save()
                 audit = Audit(
                     dt=timezone.now(),
-                    transaction_cd=3,
+                    transaction_cd=3,  # collect swarm
                     beek=request.user,
                     colony=col,
                     apiary=col.apiary,
@@ -355,7 +344,7 @@ def colDetail(request, col_ref):
     diary = col.diary_set.filter(completed=False).order_by("dueDt")  # type: ignore
     treatments = col.treatment_set.filter(completed=False).order_by("removeDt")  # type: ignore
     yearAgo = timezone.now() - datetime.timedelta(weeks=52)
-    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by(
+    pastTreatments = col.treatment_set.filter(insertDt__gte=yearAgo).order_by(  # type: ignore
         "-insertDt"
     )  # type: ignore
     pastInspections = col.inspection_set.filter(dt__gte=yearAgo).order_by("-dt")  # type: ignore
@@ -918,7 +907,7 @@ def colReportChoose(request):
     for ap in apList:
         cols = []
         currCols = ap.colony_set.filter(status="C")  # type: ignore
-        otherCols = ap.colony_set.exclude(status="C").filter(
+        otherCols = ap.colony_set.exclude(status="C").filter(  # type: ignore
             lastAction__gte=(timezone.now() - datetime.timedelta(weeks=27))
         )  # type: ignore
         for cc in currCols:
@@ -994,6 +983,78 @@ def colReport(request, col_ref, duration):
 
     context = {"col": col, "reportactive": "Y", "usrInfo": usrInfo, "events": events}
     return render(request, "beedb/colReport.html", context)
+
+
+@login_required
+def apReportChoose(request):
+    """This function allows users to create a report by apiary
+
+    More data here in the future
+    """
+
+    usrInfo = usrCheck(request)
+    apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
+    logging.debug(f"Apiary List = {apList}")
+    if request.method == "POST":
+        logging.debug("Post message received")
+        rf = forms.ApiaryReportForm(request.POST)
+        if rf.is_valid():
+            # logging.debug(rf.cleaned_data)
+            # logging.debug(f"Form keys = {rf.cleaned_data}")
+
+            return HttpResponseRedirect(
+                reverse(
+                    "beedb:apReport",
+                    args=[rf.cleaned_data["apID"], rf.cleaned_data["duration"]],
+                )
+            )
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        rf = forms.ApiaryReportForm()
+
+    context = {"apList": apList, "reportactive": "Y", "usrInfo": usrInfo, "form": rf}
+    return render(request, "beedb/apReportChoose.html", context)
+
+
+@login_required
+def apReport(request, ap_ref, duration=4):
+    """This function allows users to create a report by apiary
+
+    More data here in the future
+    """
+
+    usrInfo = usrCheck(request)
+    ap = get_object_or_404(Apiary, pk=ap_ref)
+    if ap.beek != usrInfo["procBeek"]:
+        return render(request, "beedb/not_authorised.html")
+
+    if duration == 1:
+        startDt = timezone.now() - datetime.timedelta(days=30)
+    elif duration == 2:
+        startDt = timezone.now() - datetime.timedelta(weeks=27)
+    elif duration == 3:
+        startDt = timezone.now() - datetime.timedelta(weeks=52)
+    elif duration == 4:
+        startDt = timezone.now() - datetime.timedelta(weeks=260)
+    else:
+        startDt = timezone.now() - datetime.timedelta(weeks=1000)
+
+    currCol = ap.colony_set.filter(status="C")  # type: ignore
+    logging.debug(f"Current colonies {currCol}")
+    otherCol = ap.colony_set.filter(status__in=["D", "A"]).filter(
+        lastAction__gte=startDt
+    )
+
+    context = {
+        "ap": ap,
+        "reportactive": "Y",
+        "usrInfo": usrInfo,
+        "duration": duration,
+        "currCol": currCol,
+        "otherCol": otherCol,
+    }
+
+    return render(request, "beedb/apReport.html", context)
 
 
 def login(request):

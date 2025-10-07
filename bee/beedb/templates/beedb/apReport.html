@@ -1,0 +1,69 @@
+{% extends "beedb/webbase.html" %}
+<!-- This template uses W3.CSS, boot strap depeciated here -->
+{% block title %}
+Apiary report
+{% endblock %}
+
+{% block web-body %}
+<div class="bd_bee_background">
+  <h3>Apiary report - {{ ap.apiaryID }}</h3>
+  <div>
+     <h4>Colonies currently in apiary</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Notes</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for colony in currCol %}
+        <tr>
+          <td>
+            <a class="text-warning" href="{% url 'beedb:colReport' colony.id duration %}{{usrInfo.getParams}}">
+              {{ colony.colonyID }}
+            </a>
+          </td>
+          <td>{{ colony.descr }}</td>
+          <td>{{ colony.notes }}</td>
+          <td>{{ colony.statusDisplay }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>  
+
+  <div>
+    <h4>Dead or absconded apiaries</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Notes</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for colony in otherCol %}
+        <tr>
+          <td>
+            <a class="text-warning" href="{% url 'beedb:colReport' colony.id duration %}{{usrInfo.getParams}}">
+              {{ colony.colonyID }}
+            </a>
+          </td>
+          <td>{{ colony.descr }}</td>
+          <td>{{ colony.notes }}</td>
+          <td>{{ colony.statusDisplay }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>  
+
+
+  </div>
+
+
+</div>
+{% endblock %}

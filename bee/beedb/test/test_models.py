@@ -1,6 +1,6 @@
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.utils import timezone
+from django.test import TestCase  # type: ignore
+from django.contrib.auth.models import User  # type: ignore
+from django.utils import timezone  # type: ignore
 from beedb import models
 
 # Create your tests here.
@@ -72,7 +72,7 @@ class ModelTests(TestCase):
         )
         self.col1.size = 5
         self.assertEqual(
-            self.col1.get_size_display(),
+            self.col1.get_size_display(),  # type: ignore
             "Huge - 3 or more storey brood chamber",  # type: ignore
         )
 
@@ -253,7 +253,7 @@ class ModelTests(TestCase):
         self.assertNotIn(diary_entry_past, dueDiaries)
 
         # Delete the diary entry
-        diary_entry_id = diary_entry.id
+        diary_entry_id = diary_entry.id  # type: ignore
         diary_entry.delete()
         with self.assertRaises(models.Diary.DoesNotExist):
             models.Diary.objects.get(id=diary_entry_id)

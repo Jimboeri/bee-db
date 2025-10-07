@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict eT4N8clHZ60ypWDCBQvL6zcEZcBQRn51vrDwdzmGpBGCKYxtOMme1dpXv092S9W
+\restrict CeZvDkdgaoW01PLNoE187NdxroeRSsPvUNW3KunAahoaVxoLvb28sCwLe0bMyTH
 
 -- Dumped from database version 16.10 (Debian 16.10-1.pgdg13+1)
 -- Dumped by pg_dump version 16.10 (Debian 16.10-1.pgdg13+1)
@@ -1001,7 +1001,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
 2	pbkdf2_sha256$390000$j3oHyE80FAyb0ITabd0j6P$SyrBhfC9kfxbKhG/k+EzOgdCl2xlzeVW3S+zX9TAqLY=	\N	f	rod@west.net.nz			rod@west.net.nz	f	f	2025-02-11 04:44:13.391072+00
 3	pbkdf2_sha256$390000$ffRePRytqJg1Dd9CRrZdkM$pLCSXnKBfoYi10QjWEo7oKmx9W9ATUzSsz4RKDr08ts=	2025-02-11 04:51:01+00	f	roderick@west.net.nz	Roderick	West	roderick@west.net.nz	f	t	2025-02-11 04:50:00+00
-1	pbkdf2_sha256$870000$WZBdgCSgqtzNdlR6JpeWGz$n7aK6Mt783leE6bkzrbqdl8ZyGRGs9ylgZDht3GtEpQ=	2025-10-06 06:50:42.435659+00	t	jim	Jim	West	jim@west.kiwi	t	t	2025-02-11 04:35:28+00
+1	pbkdf2_sha256$870000$WZBdgCSgqtzNdlR6JpeWGz$n7aK6Mt783leE6bkzrbqdl8ZyGRGs9ylgZDht3GtEpQ=	2025-10-03 21:43:25.381003+00	t	jim	Jim	West	jim@west.kiwi	t	t	2025-02-11 04:35:28+00
 \.
 
 
@@ -1193,22 +1193,6 @@ COPY public.beedb_sizechoice (id, size, type, value, text) FROM stdin;
 17	3	Number	4	Very few bees
 18	3	Number	5	No bees
 19	4	Number	0	Not Recorded
-20	4	Number	1	Most frames with bees
-21	4	Number	2	8 or more frames with bees
-22	4	Number	3	Only a few frames with bees
-23	4	Number	4	Very few bees
-24	4	Number	5	No bees
-25	5	Number	0	Not Recorded
-26	5	Number	1	20 or more frames with bees
-27	5	Number	2	10 or more frames with bees
-28	5	Number	3	Only a few frames with bees
-29	5	Number	4	Very few bees
-30	5	Number	5	No bees
-31	1	Weight	0	Not Recorded
-32	1	Weight	1	Good honey stores
-33	1	Weight	2	Some stored honey
-34	1	Weight	3	Some nectar
-35	1	Weight	4	A little nectar
 36	1	Weight	5	No stores
 37	2	Weight	0	Not Recorded
 38	2	Weight	1	Good honey stores
@@ -1234,6 +1218,22 @@ COPY public.beedb_sizechoice (id, size, type, value, text) FROM stdin;
 58	5	Weight	3	Honey on 5 or more frames
 59	5	Weight	4	Not much honey/nectar
 60	5	Weight	5	No stores
+20	4	Number	1	Most frames with bees
+21	4	Number	2	8 or more frames with bees
+22	4	Number	3	Only a few frames with bees
+23	4	Number	4	Very few bees
+24	4	Number	5	No bees
+25	5	Number	0	Not Recorded
+26	5	Number	1	20 or more frames with bees
+27	5	Number	2	10 or more frames with bees
+28	5	Number	3	Only a few frames with bees
+29	5	Number	4	Very few bees
+30	5	Number	5	No bees
+31	1	Weight	0	Not Recorded
+32	1	Weight	1	Good honey stores
+33	1	Weight	2	Some stored honey
+34	1	Weight	3	Some nectar
+35	1	Weight	4	A little nectar
 \.
 
 
@@ -1445,7 +1445,6 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 n5pvk3slk5yxljyj7u458u6lqb2dh6ju	.eJxVjDsOwjAQBe_iGln2ev2jpOcM1vqHA8iR4qRC3B0ipYD2zcx7sUDb2sI2yhKmzM5MstPvFik9St9BvlO_zTzNfV2myHeFH3Tw65zL83K4fweNRvvWxgtTKzmrEapWOSEaCQKKjZiiEsoBYiIpAJ2q1loUWnhjtdbgQRX2_gCyWjX0:1tjv8M:zWjInWCfvL4oZxDfeLLW4cosRas6eDWcJWM1h5HkBlk	2025-03-03 07:01:38.126481+00
 uvbcwtopwzzii21xwm8z6roq6opy94fl	.eJxVjEEOwiAQRe_C2hBmhtLi0n3PQBgYbNWUpLQr491Nky50-997_61C3Lcp7E3WMGd1VaAuvxvH9JTlAPkRl3vVqS7bOrM-FH3Spsea5XU73b-DKbbpqAEB2VMSLH0iQjGdB18i0ZAcCjDn3jkRzNlYHHpyxlrwQKV0jkV9vtUuN2s:1v4na0:m-7xJkDXjVbVEZ4TVVJozWdry-QPRDfM1DJX7JVTl8k	2025-10-17 21:44:44.034707+00
-kp755h7e0k36sf2zaz4o8dqtvdub4i8q	.eJxVjEEOwiAQRe_C2hBmhtLi0n3PQBgYbNWUpLQr491Nky50-997_61C3Lcp7E3WMGd1VaAuvxvH9JTlAPkRl3vVqS7bOrM-FH3Spsea5XU73b-DKbbpqAEB2VMSLH0iQjGdB18i0ZAcCjDn3jkRzNlYHHpyxlrwQKV0jkV9vtUuN2s:1v5f3S:AL9Mnjh-fNF5S05ba7f9fuE7qhXsVPPslLNNtYG_R30	2025-10-20 06:50:42.438556+00
 \.
 
 
@@ -2485,5 +2484,5 @@ ALTER TABLE ONLY public.django_admin_log
 -- PostgreSQL database dump complete
 --
 
-\unrestrict eT4N8clHZ60ypWDCBQvL6zcEZcBQRn51vrDwdzmGpBGCKYxtOMme1dpXv092S9W
+\unrestrict CeZvDkdgaoW01PLNoE187NdxroeRSsPvUNW3KunAahoaVxoLvb28sCwLe0bMyTH
 
