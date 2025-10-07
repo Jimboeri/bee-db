@@ -27,7 +27,6 @@ Reminders
           {% for new in newReminders %}
             <div class="indent2">
               <a href="{{web_base_url}}/beedb/diary/{{new.id}}">{{ new.subject }}</a> - Due by: {{ new.dueDt|date:"D d M Y" }}
-              {{ new }}
             </div>
           {% endfor %}
           {% with oldReminders=col.diaryDue %}
