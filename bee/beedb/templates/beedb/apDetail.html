@@ -74,28 +74,6 @@ Apiary Details
   </div>
 {% endif %}
 
-{% if deadCol %}
-<div id="ap_colonies" class="bd_content_block">
-  <H5>Dead or absconded colonies in last 2 years</H5>
-    <table class="table">
-      {% for colony in deadCol %}
-        <tr>
-          <td> <a class="text-warning" href="{% url 'beedb:colDetail' colony.id %}{{usrInfo.getParams}}">{{colony.colonyID}}</a> </td>
-          {% if colony.status == "D" %}
-            <td>Dead</td>
-          {% elif  colony.status == "A" %}
-            <td>Absconded</td>
-          {% else %}
-            <td>Unknown</td>
-          {% endif %}
-          <td>{{colony.descr}}<br>{{ colony.notes }}</td>
-        </tr>
-
-      {% endfor %}
-    </table>
-  </div>
-{% endif %}
-
 
 <div id="map"></div>
 <a href="{% url 'beedb:index' %}{{usrInfo.getParams}}" class="btn btn-warning" role="button">Return to Apiaries</a>

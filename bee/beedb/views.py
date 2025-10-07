@@ -991,6 +991,7 @@ def apReportChoose(request):
 
     More data here in the future
     """
+    
     usrInfo = usrCheck(request)
     apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
     logging.debug(f"Apiary List = {apList}")
@@ -1021,6 +1022,7 @@ def apReport(request, ap_ref, duration=4):
 
     More data here in the future
     """
+
     usrInfo = usrCheck(request)
     ap = get_object_or_404(Apiary, pk=ap_ref)
     if ap.beek != usrInfo["procBeek"]:
@@ -1038,15 +1040,14 @@ def apReport(request, ap_ref, duration=4):
         startDt = timezone.now() - datetime.timedelta(weeks=1000)
 
     currCol = ap.colony_set.filter(status="C")  # type: ignore
-    otherCol = ap.colony_set.exclude(status="C").filter(  # type: ignore
-        lastAction__gte=startDt
-    )  # type: ignore
+    logging.debug(f"Current colonies {currCol}")
+    otherCol = ap.colony_set.filter(status__in=["D", "A"]).filter(lastAction__gte=startDt)
+
 
     context = {
         "ap": ap,
         "reportactive": "Y",
         "usrInfo": usrInfo,
-        # "startDt": startDt,
         "duration": duration,
         "currCol": currCol,
         "otherCol": otherCol,

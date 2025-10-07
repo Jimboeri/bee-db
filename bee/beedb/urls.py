@@ -69,6 +69,7 @@ urlpatterns = [
     path("inspectPrefMod/", profile.inspectPrefMod, name="inspectPrefMod"),
     path("commsPrefDetail/", profile.commsPrefDetail, name="commsPrefDetail"),
     path("commsPrefMod/", profile.commsPrefMod, name="commsPrefMod"),
+    
     # Displays reports
     path("reports/", views.reports, name="reports"),
     path("purch/", views.purchSales, name="purchSales"),
@@ -76,6 +77,7 @@ urlpatterns = [
     path("colReport/<int:col_ref>/<int:duration>", views.colReport, name="colReport"),
     path("apReportChoose/", views.apReportChoose, name="apReportChoose"),
     path("apReport/<int:ap_ref>/<int:duration>", views.apReport, name="apReport"),
+    
     # Feedback section
     path("fbIndex/", views.feedbackIndex, name="fbIndex"),
     path("fbAdd/", views.userFeedbackAdd, name="userfbAdd"),
