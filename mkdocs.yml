@@ -42,5 +42,5 @@ nav:
   - User guide:
       - Overview: user/overview.md
   - Developer guide:
-      - Tips & tricks: dev/tiptricks.md
-      - Contributing: guides/contributing.md
+      - Tips & tricks: dev/tipstricks.md
+      #- Contributing: guides/contributing.md
