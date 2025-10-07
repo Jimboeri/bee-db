@@ -1,0 +1,54 @@
+site_name: Air NZ Tech Docs
+site_description: Internal architecture, standards, and guides.
+site_url: https://<your-username>.github.io/<your-repo>/
+repo_url: https://github.com/<your-username>/<your-repo>
+repo_name: <your-username>/<your-repo>
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - toc.integrate
+  palette:
+    - scheme: default
+
+plugins:
+  - search
+  # Enable tags if you like; uncomment these two lines and add 'tags' to pages
+  # - tags:
+  #     tags_file: tags.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.critic
+  - pymdownx.snippets
+
+nav:
+  - Home: index.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Principles: architecture/principles.md
+      - Reference Models: architecture/reference-models.md
+  - Standards:
+      - API Guidelines: standards/api-guidelines.md
+      - Security Baseline: standards/security-baseline.md
+  - How‑to:
+      - Set up local dev: how-to/setup-local-dev.md
+      - Add a new page: how-to/add-a-page.md
+  - Guides:
+      - Getting Started: guides/getting-started.md
+      - Contributing: guides/contributing.md
