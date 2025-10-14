@@ -25,7 +25,7 @@ from .models import (
     Feedback,
     Treatment,
     TreatmentType,
-    Picture, 
+    Picture,
 )
 
 from .forms import (
