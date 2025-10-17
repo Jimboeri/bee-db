@@ -901,6 +901,8 @@ def colReportChoose(request):
     More data here in the future
     """
     usrInfo = usrCheck(request)
+    logging.debug("Entered colReportChoose")
+    print("Entered colReportChoose")
     apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
 
     aps = []

@@ -7,10 +7,15 @@ from beedb import models
 
 
 class ModelTests(TestCase):
-    fixtures = ["fixture3.json"]
+    #fixtures = ["fixture3.json"]
+    serialized_rollback = True
 
     @classmethod
     def setUpTestData(cls):
+        allUsr = User.objects.all()
+        print("All users:")
+        for u in allUsr:
+            print(u)
         cls.etUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
         cls.user = User.objects.create_user(
             "testuser",
@@ -257,5 +262,15 @@ class ModelTests(TestCase):
         diary_entry.delete()
         with self.assertRaises(models.Diary.DoesNotExist):
             models.Diary.objects.get(id=diary_entry_id)
+
+        return
+
+
+    def  test_ApChooseReport(self):
+        self.client.login(username="testuser", password="")
+    #    response = self.client.get(f"/beedb/apchoose_report/{self.ap.id}/")
+    #    self.assertEqual(response.status_code, 200)
+    #    self.assertTemplateUsed(response, "beedb/apchoose_report.html")
+    #    self.assertContains(response, "Test Apiary")
 
         return
