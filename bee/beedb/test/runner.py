@@ -3,6 +3,7 @@ from django.core.management import call_command
 from django.test.runner import DiscoverRunner
 from django.db import connections
 
+
 class FixtureOnceRunner(DiscoverRunner):
     # names without path if they’re in app fixtures or FIXTURE_DIRS
     preload_fixtures = ("fixture3.json",)

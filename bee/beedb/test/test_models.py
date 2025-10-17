@@ -7,7 +7,7 @@ from beedb import models
 
 
 class ModelTests(TestCase):
-    #fixtures = ["fixture3.json"]
+    # fixtures = ["fixture3.json"]
     serialized_rollback = True
 
     @classmethod
@@ -265,12 +265,11 @@ class ModelTests(TestCase):
 
         return
 
-
-    def  test_ApChooseReport(self):
+    def test_ApChooseReport(self):
         self.client.login(username="testuser", password="")
-    #    response = self.client.get(f"/beedb/apchoose_report/{self.ap.id}/")
-    #    self.assertEqual(response.status_code, 200)
-    #    self.assertTemplateUsed(response, "beedb/apchoose_report.html")
-    #    self.assertContains(response, "Test Apiary")
+        #    response = self.client.get(f"/beedb/apchoose_report/{self.ap.id}/")
+        #    self.assertEqual(response.status_code, 200)
+        #    self.assertTemplateUsed(response, "beedb/apchoose_report.html")
+        #    self.assertContains(response, "Test Apiary")
 
         return

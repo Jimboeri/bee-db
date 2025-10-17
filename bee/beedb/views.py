@@ -1043,7 +1043,7 @@ def apReport(request, ap_ref, duration=4):
 
     currCol = ap.colony_set.filter(status="C")  # type: ignore
     logging.debug(f"Current colonies {currCol}")
-    otherCol = ap.colony_set.filter(status__in=["D", "A"]).filter( # type: ignore
+    otherCol = ap.colony_set.filter(status__in=["D", "A"]).filter(  # type: ignore
         lastAction__gte=startDt
     )
 
