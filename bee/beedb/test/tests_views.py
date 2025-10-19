@@ -1,8 +1,7 @@
 from django.test import TestCase, Client  # type: ignore
 from django.contrib.auth.models import User  # type: ignore
 from beedb import models
-from django.urls import reverse
-
+from django.urls import reverse # type: ignore
 
 def printResp(response):
     print(f"Response code: {response.status_code}")
@@ -72,17 +71,17 @@ class ViewTests(TestCase):
         # Not logged in so expect a redirect to login
         response = self.client.get(reverse("beedb:colReportChoose"))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/beedb/login?next=/beedb/colReportChoose/")
+        self.assertEqual(response.url, "/beedb/login?next=/beedb/colReportChoose/") # type: ignore
 
-        # now login a user, should get code 200
-        # self.client.force_login(self.rodUser)
-        self.client.login(username="jim", password="whuck1tt")
-        printClient(self.client)
-        response = self.client.get(reverse("beedb:colReportChoose"))
-        # printResp(response)
-        # self.assertEqual(response.status_code, 200)
-        # response = self.client.get(f"/beedb/apchoose_report/{self.ap.id}/")
+        # now login a user, should get code 200                 
+        #self.client.force_login(self.jimUser)
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("beedb:apReportChoose"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "beedb/apReportChoose.html")
 
-    #    self.assertEqual(response.status_code, 200)
-    #    self.assertTemplateUsed(response, "beedb/apchoose_report.html")
+        # now test the report view
+        response = self.client.get(reverse("beedb:apReport", args=[self.ap.id, 4])) # type: ignore
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "beedb/apReport.html")
     #    self.assertContains(response, "Test Apiary")
