@@ -901,7 +901,7 @@ def colReportChoose(request):
     More data here in the future
     """
     usrInfo = usrCheck(request)
-    #logging.debug("Entered colReportChoose")
+    # logging.debug("Entered colReportChoose")
     apList = Apiary.objects.filter(beek=usrInfo["procBeek"])
 
     aps = []
@@ -1045,7 +1045,7 @@ def apReport(request, ap_ref, duration=4):
     otherCol = ap.colony_set.filter(status__in=["D", "A"]).filter(  # type: ignore
         lastAction__gte=startDt
     )
-    soldCol = ap.colony_set.filter(status__in=["S"]).filter( # type: ignore
+    soldCol = ap.colony_set.filter(status__in=["S"]).filter(  # type: ignore
         lastAction__gte=startDt
     )
 

@@ -12,7 +12,7 @@ class ModelTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        #allUsr = User.objects.all()
+        # allUsr = User.objects.all()
 
         cls.etUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
         cls.user = User.objects.create_user(
@@ -149,7 +149,7 @@ class ModelTests(TestCase):
         self.assertEqual(Choices, insp2.weightChoiceDisplay())
 
         # Check varroa
-        #print(f"Varoa number {insp2.varroa}, varroa text {insp2.varroaChoiceDisplay()}")
+        # print(f"Varoa number {insp2.varroa}, varroa text {insp2.varroaChoiceDisplay()}")
         self.assertEqual("Not recorded", insp2.varroaChoiceDisplay())
         insp2.varroa = 2
         self.assertEqual("1 - 2 varroa / 300 bees", insp2.varroaChoiceDisplay())
@@ -157,7 +157,7 @@ class ModelTests(TestCase):
         self.assertEqual("?", insp2.varroaChoiceDisplay())
 
         # Check Eggs
-        #print(f"Egg number {insp2.eggs}, egg text {insp2.eggChoiceDisplay()}")
+        # print(f"Egg number {insp2.eggs}, egg text {insp2.eggChoiceDisplay()}")
         self.assertEqual("Not recorded", insp2.eggChoiceDisplay())
         insp2.eggs = 2
         self.assertEqual(

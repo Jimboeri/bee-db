@@ -1,5 +1,4 @@
 import datetime
-import logging
 
 from django.contrib.auth.models import User  # type: ignore
 from django.db import models  # type: ignore
@@ -164,7 +163,7 @@ class Colony(models.Model):
         if len(lstInsp) > 0:
             return lstInsp[0]
         else:
-            #logging.debug("No inspections available")
+            # logging.debug("No inspections available")
             return
 
     def statusDisplay(self):
