@@ -41,7 +41,7 @@ class ViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        allUsr = User.objects.all()
+        #allUsr = User.objects.all()
         #print("All users:")
         #for u in allUsr:
         #    print(u)
