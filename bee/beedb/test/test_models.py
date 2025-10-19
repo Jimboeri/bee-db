@@ -13,9 +13,7 @@ class ModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         allUsr = User.objects.all()
-        print("All users:")
-        for u in allUsr:
-            print(u)
+
         cls.etUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
         cls.user = User.objects.create_user(
             "testuser",
@@ -151,7 +149,7 @@ class ModelTests(TestCase):
         self.assertEqual(Choices, insp2.weightChoiceDisplay())
 
         # Check varroa
-        print(f"Varoa number {insp2.varroa}, varroa text {insp2.varroaChoiceDisplay()}")
+        #print(f"Varoa number {insp2.varroa}, varroa text {insp2.varroaChoiceDisplay()}")
         self.assertEqual("Not recorded", insp2.varroaChoiceDisplay())
         insp2.varroa = 2
         self.assertEqual("1 - 2 varroa / 300 bees", insp2.varroaChoiceDisplay())
@@ -159,7 +157,7 @@ class ModelTests(TestCase):
         self.assertEqual("?", insp2.varroaChoiceDisplay())
 
         # Check Eggs
-        print(f"Egg number {insp2.eggs}, egg text {insp2.eggChoiceDisplay()}")
+        #print(f"Egg number {insp2.eggs}, egg text {insp2.eggChoiceDisplay()}")
         self.assertEqual("Not recorded", insp2.eggChoiceDisplay())
         insp2.eggs = 2
         self.assertEqual(
@@ -169,9 +167,7 @@ class ModelTests(TestCase):
         self.assertEqual("?", insp2.eggChoiceDisplay())
 
         # Check Desease
-        print(
-            f"Desease number {insp2.disease}, disease text {insp2.diseaseChoiceDisplay()}"
-        )
+
         self.assertEqual("Not recorded", insp2.diseaseChoiceDisplay())
         insp2.disease = 3
         self.assertEqual("Some disease", insp2.diseaseChoiceDisplay())
@@ -179,9 +175,6 @@ class ModelTests(TestCase):
         self.assertEqual("?", insp2.diseaseChoiceDisplay())
 
         # Check Desease
-        print(
-            f"Temper number {insp2.temper}, temper text {insp2.temperChoiceDisplay()}"
-        )
         self.assertEqual("Not recorded", insp2.temperChoiceDisplay())
         insp2.temper = 3
         self.assertEqual("Bees a bit defensive", insp2.temperChoiceDisplay())

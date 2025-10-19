@@ -12,9 +12,9 @@ def printResp(response):
     print("Response cookies:")
     for k, v in response.cookies.items():
         print(f"  {k}:{v}")
-    print("Response content:")
-    print(response.content)
-    print(f"Response templates: {response.templates}")
+    #print("Response content:")
+    #print(response.content)
+    #print(f"Response templates: {response.templates}")
 
     print(f"Response context:{response.context}")
     print(f"Response url:{response.url}")
@@ -43,9 +43,9 @@ class ViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         allUsr = User.objects.all()
-        print("All users:")
-        for u in allUsr:
-            print(u)
+        #print("All users:")
+        #for u in allUsr:
+        #    print(u)
 
         # cls.etUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
         cls.user = User.objects.create_user(
@@ -57,6 +57,7 @@ class ViewTests(TestCase):
 
         try:
             cls.rodUser = User.objects.get(username="rod@west.net.nz")
+            cls.jimUser = User.objects.get(username="jim")
         except User.DoesNotExist:
             cls.rodUser = User.objects.create_user(
                 "rod@west.net.nz", password="password"
