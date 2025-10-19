@@ -12,7 +12,7 @@ class ModelTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        allUsr = User.objects.all()
+        #allUsr = User.objects.all()
 
         cls.etUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
         cls.user = User.objects.create_user(
