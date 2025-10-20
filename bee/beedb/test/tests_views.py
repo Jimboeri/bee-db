@@ -6,18 +6,18 @@ from django.urls import reverse  # type: ignore
 
 def printResp(response):
     print(f"Response code: {response.status_code}")
-    print("Response headers:")
-    for k, v in response.items():
-        print(f"  {k}:{v}")
-    print("Response cookies:")
-    for k, v in response.cookies.items():
-        print(f"  {k}:{v}")
+    #print("Response headers:")
+    #for k, v in response.items():
+    #    print(f"  {k}:{v}")
+    #print("Response cookies:")
+    #for k, v in response.cookies.items():
+    #    print(f"  {k}:{v}")
     # print("Response content:")
     # print(response.content)
     # print(f"Response templates: {response.templates}")
 
     print(f"Response context:{response.context}")
-    print(f"Response url:{response.url}")
+    #print(f"Response url:{response.url}")
 
     print("End of response")
     return
@@ -42,12 +42,8 @@ class ViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        # allUsr = User.objects.all()
-        # print("All users:")
-        # for u in allUsr:
-        #    print(u)
 
-        # cls.etUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
+        cls.rodUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
         cls.user = User.objects.create_user(
             "testuser",
         )
@@ -70,9 +66,9 @@ class ViewTests(TestCase):
 
     def test_ApChooseReport(self):
         # Not logged in so expect a redirect to login
-        response = self.client.get(reverse("beedb:colReportChoose"))
+        response = self.client.get(reverse("beedb:apReportChoose"))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/beedb/login?next=/beedb/colReportChoose/")  # type: ignore
+        self.assertEqual(response.url, "/beedb/login?next=/beedb/apReportChoose/")  # type: ignore
 
         # now login a user, should get code 200
         # self.client.force_login(self.jimUser)
@@ -80,10 +76,12 @@ class ViewTests(TestCase):
         response = self.client.get(reverse("beedb:apReportChoose"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "beedb/apReportChoose.html")
+        self.assertQuerySetEqual(response.context["apList"], [self.ap])
 
         # now test the report view
         response = self.client.get(reverse("beedb:apReport", args=[self.ap.id, 4]))  # type: ignore
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "beedb/apReport.html")
+        
 
     #    self.assertContains(response, "Test Apiary")
