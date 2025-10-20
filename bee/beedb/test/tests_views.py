@@ -6,18 +6,18 @@ from django.urls import reverse  # type: ignore
 
 def printResp(response):
     print(f"Response code: {response.status_code}")
-    #print("Response headers:")
-    #for k, v in response.items():
+    # print("Response headers:")
+    # for k, v in response.items():
     #    print(f"  {k}:{v}")
-    #print("Response cookies:")
-    #for k, v in response.cookies.items():
+    # print("Response cookies:")
+    # for k, v in response.cookies.items():
     #    print(f"  {k}:{v}")
     # print("Response content:")
     # print(response.content)
     # print(f"Response templates: {response.templates}")
 
     print(f"Response context:{response.context}")
-    #print(f"Response url:{response.url}")
+    # print(f"Response url:{response.url}")
 
     print("End of response")
     return
@@ -42,8 +42,9 @@ class ViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-
-        cls.rodUser = User.objects.get(username="rod@west.net.nz")  # defined in fixture3
+        cls.rodUser = User.objects.get(
+            username="rod@west.net.nz"
+        )  # defined in fixture3
         cls.user = User.objects.create_user(
             "testuser",
         )
@@ -82,6 +83,5 @@ class ViewTests(TestCase):
         response = self.client.get(reverse("beedb:apReport", args=[self.ap.id, 4]))  # type: ignore
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "beedb/apReport.html")
-        
 
     #    self.assertContains(response, "Test Apiary")
