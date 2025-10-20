@@ -1,0 +1,46 @@
+site_name: Bee database Docs
+site_description: User guides and developer guides
+site_url: https://jimboeri.github.io/bee-db/
+repo_url: https://github.com/jimboeri/bee-db
+repo_name: jimboeri/bee-db
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - toc.integrate
+  palette:
+    - scheme: default
+
+plugins:
+  - search
+  # Enable tags if you like; uncomment these two lines and add 'tags' to pages
+  # - tags:
+  #     tags_file: tags.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.critic
+  - pymdownx.snippets
+
+nav:
+  - Home: index.md
+  - User guide:
+      - Overview: user/overview.md
+  - Developer guide:
+      - Tips & tricks: dev/tipstricks.md
+      #- Contributing: guides/contributing.md

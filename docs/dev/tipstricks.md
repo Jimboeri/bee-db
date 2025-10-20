@@ -1,9 +1,14 @@
-# Database
-## Creating fixtures
+# Tips & Tricks
+
+## Database
+
+### Creating fixtures
 
 ```docker compose run web python manage.py dumpdata >> bee/beedb/fixtures/filename.json```
 
 **NB the files chould be stored in the fixtures folder**
+
+# Testing
 
 ## Running the test suite
 ```docker compose run web python manage.py test```
