@@ -13,6 +13,7 @@ Then check yupr email. You should find an email that looks similar to this:
 ![Registration email](../img/RegistrationEmail.png)
 
 Click on the green 'Confirm address' button. This should take you back to the web, let you know your account has been activated and prompt you to login.
+
 ![Account activation page](../img/AccountActivation.png)
 
 Login with your email address and password. You will then come tou your 'Home' screen which will show you a list of your apiaries. But as you don't have any yet, click on the 'Add Apiary' link to get started.
