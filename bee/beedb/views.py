@@ -549,8 +549,9 @@ def inspectMod(request, ins_ref):
 
 @login_required
 def inspectAdd(request, col_ref):
-    logging.debug("InspectAdd function")
+    #logging.debug("InspectAdd function")
     col = get_object_or_404(Colony, pk=col_ref)
+    #logging.debug(f"col beek {col.apiary.beek}, request user {request.user}")
     if col.apiary.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":

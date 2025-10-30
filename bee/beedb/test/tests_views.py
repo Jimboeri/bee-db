@@ -14,7 +14,7 @@ def printResp(response):
     #    print(f"  {k}:{v}")
     # print("Response content:")
     # print(response.content)
-    # print(f"Response templates: {response.templates}")
+    print(f"Response templates: {response.templates}")
 
     print(f"Response context:{response.context}")
     # print(f"Response url:{response.url}")
@@ -65,6 +65,57 @@ class ViewTests(TestCase):
         self.client = Client()
         pass
 
+    def test_InspectionAdd_view(self):
+        """
+        Tests for the addition of inspections
+
+        Start with simple tests and then add more
+        
+        """
+        # Login jim, but try for test user colony
+        self.client.force_login(self.jimUser)
+        response= self.client.get(reverse("beedb:inspectAdd", args=[self.col1.id])) # type: ignore
+        self.assertTemplateUsed("beedb/not_authorised.html")
+        self.assertEqual(response.status_code, 200)
+
+        # Login test user from the fixture load
+        self.client.force_login(self.user)
+        response= self.client.get(reverse("beedb:inspectAdd", args=[self.col1.id])) # type: ignore
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("beedb/inspectAdd.html")
+
+    def test_Inspection_form(self):
+        """
+        Tests for the addition of inspections via form post
+
+        Start with simple tests and then add more
+        
+        """
+        # Create form data
+        form_data = {"dt": "2024-06-01", "notes": "Test inspection notes"}
+        # Login test user from the fixture load
+        self.client.force_login(self.user)
+        response= self.client.post(
+            reverse("beedb:inspectAdd", args=[self.col1.id]), # type: ignore
+            form_data,
+        )
+        print(response.status_code)
+        """
+        # Should redirect to colony view
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse("beedb:colonyView", args=[self.col1.id]), # type: ignore
+        )
+
+        # Now check that the inspection was created
+        inspections = models.Inspection.objects.filter(colony=self.col1)
+        self.assertEqual(inspections.count(), 1)
+        inspection = inspections.first()
+        self.assertEqual(str(inspection.inspectionDate), "2024-06-01")
+        self.assertEqual(inspection.weather, "Sunny")
+        self.assertEqual(inspection.notes, "Test inspection notes")
+        """
     def test_ApChooseReport(self):
         # Not logged in so expect a redirect to login
         response = self.client.get(reverse("beedb:apReportChoose"))
