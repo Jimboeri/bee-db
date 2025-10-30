@@ -163,7 +163,7 @@ class InspectionForm(forms.ModelForm):
         try:
             self.colony = inColony
             super(InspectionForm, self).__init__(*args, **kwargs)
-            #logging.info(f"colony is {self.colony.colonyID}")
+            # logging.info(f"colony is {self.colony.colonyID}")
             # self.fields['numbers'].choices=sizeChoices(self.colony.size, "Number")
             self.fields["numbers"] = forms.ChoiceField(
                 choices=sizeChoices(self.colony.size, "Number"),

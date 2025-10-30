@@ -5,20 +5,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0004_alter_diary_duedt'),
+        ("beedb", "0004_alter_diary_duedt"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='inspection',
-            name='broodFrames',
-            field=models.ImageField(default=0, help_text='Number of frames with brood', upload_to=''),
+            model_name="inspection",
+            name="broodFrames",
+            field=models.ImageField(
+                default=0, help_text="Number of frames with brood", upload_to=""
+            ),
         ),
         migrations.AlterField(
-            model_name='diary',
-            name='dueDt',
-            field=models.DateTimeField(default=datetime.datetime(2025, 11, 3, 3, 28, 2, 982331, tzinfo=datetime.timezone.utc), verbose_name='Date to complete by'),
+            model_name="diary",
+            name="dueDt",
+            field=models.DateTimeField(
+                default=datetime.datetime(
+                    2025, 11, 3, 3, 28, 2, 982331, tzinfo=datetime.timezone.utc
+                ),
+                verbose_name="Date to complete by",
+            ),
         ),
     ]
