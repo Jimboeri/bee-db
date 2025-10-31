@@ -1,6 +1,6 @@
 from django.test import TestCase, Client  # type: ignore
 from django.contrib.auth.models import User  # type: ignore
-from beedb import models
+from beedb import models, forms
 from django.urls import reverse  # type: ignore
 import datetime
 
@@ -94,19 +94,38 @@ class ViewTests(TestCase):
         """
         inspDt = datetime.datetime.now().date()
         # Create form data
-        form_data = {
-            "dt": inspDt.strftime("%Y-%m-%d"),
-            "notes": "Test inspection notes",
-            "numbers": 0,
-            "eggs": 0,
-            "varroa": 0,
-            "disease": 0,
-            "weight": 4,
-            "temper": 1,
-            "broodFrames": 5,
-        }
+        form_data = {"dt": inspDt.strftime("%Y-%m-%d"), 
+                     "notes": "Test inspection notes",
+                     "numbers": 0,
+                     "eggs": 0,
+                     "varroa": 0,
+                     "disease": 0,
+                     "weight": 4,
+                     "temper": 1,
+                     "broodFrames": 5,}
+
+        # Basic form tests
+        form = forms.InspectionForm(data=form_data, inColony=self.col1)
+        self.assertTrue(form.is_valid())
+
+        # Now invalid data
+        form_data["varroa"] = 7  # invalid data
+        form = forms.InspectionForm(data=form_data, inColony=self.col1)
+        self.assertFalse(form.is_valid())
+        self.assertIn("varroa", form.errors)
+
         # Login test user from the fixture load
         self.client.force_login(self.user)
+        # Check valid form 
+        form_data = {"dt": inspDt.strftime("%Y-%m-%d"), 
+                     "notes": "Test inspection notes",
+                     "numbers": 0,
+                     "eggs": 0,
+                     "varroa": 0,
+                     "disease": 0,
+                     "weight": 4,
+                     "temper": 1,
+                     "broodFrames": 5,}
         response = self.client.post(
             reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
             form_data,
