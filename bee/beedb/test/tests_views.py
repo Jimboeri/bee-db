@@ -94,15 +94,17 @@ class ViewTests(TestCase):
         """
         inspDt = datetime.datetime.now().date()
         # Create form data
-        form_data = {"dt": inspDt.strftime("%Y-%m-%d"), 
-                     "notes": "Test inspection notes",
-                     "numbers": 0,
-                     "eggs": 0,
-                     "varroa": 0,
-                     "disease": 0,
-                     "weight": 4,
-                     "temper": 1,
-                     "broodFrames": 5,}
+        form_data = {
+            "dt": inspDt.strftime("%Y-%m-%d"),
+            "notes": "Test inspection notes",
+            "numbers": 0,
+            "eggs": 0,
+            "varroa": 0,
+            "disease": 0,
+            "weight": 4,
+            "temper": 1,
+            "broodFrames": 5,
+        }
 
         # Basic form tests
         form = forms.InspectionForm(data=form_data, inColony=self.col1)
@@ -116,16 +118,18 @@ class ViewTests(TestCase):
 
         # Login test user from the fixture load
         self.client.force_login(self.user)
-        # Check valid form 
-        form_data = {"dt": inspDt.strftime("%Y-%m-%d"), 
-                     "notes": "Test inspection notes",
-                     "numbers": 0,
-                     "eggs": 0,
-                     "varroa": 0,
-                     "disease": 0,
-                     "weight": 4,
-                     "temper": 1,
-                     "broodFrames": 5,}
+        # Check valid form
+        form_data = {
+            "dt": inspDt.strftime("%Y-%m-%d"),
+            "notes": "Test inspection notes",
+            "numbers": 0,
+            "eggs": 0,
+            "varroa": 0,
+            "disease": 0,
+            "weight": 4,
+            "temper": 1,
+            "broodFrames": 5,
+        }
         response = self.client.post(
             reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
             form_data,
