@@ -2,6 +2,7 @@ from django.test import TestCase, Client  # type: ignore
 from django.contrib.auth.models import User  # type: ignore
 from beedb import models
 from django.urls import reverse  # type: ignore
+import datetime
 
 
 def printResp(response):
@@ -91,8 +92,17 @@ class ViewTests(TestCase):
         Start with simple tests and then add more
 
         """
+        inspDt = datetime.datetime.now().date()
         # Create form data
-        form_data = {"dt": "2024-06-01", "notes": "Test inspection notes"}
+        form_data = {"dt": inspDt.strftime("%Y-%m-%d"), 
+                     "notes": "Test inspection notes",
+                     "numbers": 0,
+                     "eggs": 0,
+                     "varroa": 0,
+                     "disease": 0,
+                     "weight": 4,
+                     "temper": 1,
+                     "broodFrames": 5,}
         # Login test user from the fixture load
         self.client.force_login(self.user)
         response = self.client.post(
@@ -100,22 +110,25 @@ class ViewTests(TestCase):
             form_data,
         )
         print(response.status_code)
-        """
-        # Should redirect to colony view
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            reverse("beedb:colonyView", args=[self.col1.id]), # type: ignore
-        )
+        # Should go to colony view
+        self.assertTemplateUsed("beedb/colDetail.html")
 
-        # Now check that the inspection was created
+       # Now check that the inspection was created
         inspections = models.Inspection.objects.filter(colony=self.col1)
         self.assertEqual(inspections.count(), 1)
         inspection = inspections.first()
-        self.assertEqual(str(inspection.inspectionDate), "2024-06-01")
-        self.assertEqual(inspection.weather, "Sunny")
+        #self.assertEqual(str(inspection.dt.strftime("%Y-%m-%d")), inspDt.strftime("%Y-%m-%d"))
         self.assertEqual(inspection.notes, "Test inspection notes")
-        """
+
+        # Now to test form error
+        form_data["varroa"] = 7  # invalid data
+        response= self.client.post(
+            reverse("beedb:inspectAdd", args=[self.col1.id]), # type: ignore
+            form_data,
+        )
+        print(response.status_code)
+        self.assertEqual(response.status_code, 200)
 
     def test_ApChooseReport(self):
         # Not logged in so expect a redirect to login
