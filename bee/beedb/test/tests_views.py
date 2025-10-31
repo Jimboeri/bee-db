@@ -94,15 +94,17 @@ class ViewTests(TestCase):
         """
         inspDt = datetime.datetime.now().date()
         # Create form data
-        form_data = {"dt": inspDt.strftime("%Y-%m-%d"), 
-                     "notes": "Test inspection notes",
-                     "numbers": 0,
-                     "eggs": 0,
-                     "varroa": 0,
-                     "disease": 0,
-                     "weight": 4,
-                     "temper": 1,
-                     "broodFrames": 5,}
+        form_data = {
+            "dt": inspDt.strftime("%Y-%m-%d"),
+            "notes": "Test inspection notes",
+            "numbers": 0,
+            "eggs": 0,
+            "varroa": 0,
+            "disease": 0,
+            "weight": 4,
+            "temper": 1,
+            "broodFrames": 5,
+        }
         # Login test user from the fixture load
         self.client.force_login(self.user)
         response = self.client.post(
@@ -114,17 +116,17 @@ class ViewTests(TestCase):
         # Should go to colony view
         self.assertTemplateUsed("beedb/colDetail.html")
 
-       # Now check that the inspection was created
+        # Now check that the inspection was created
         inspections = models.Inspection.objects.filter(colony=self.col1)
         self.assertEqual(inspections.count(), 1)
         inspection = inspections.first()
-        #self.assertEqual(str(inspection.dt.strftime("%Y-%m-%d")), inspDt.strftime("%Y-%m-%d"))
+        # self.assertEqual(str(inspection.dt.strftime("%Y-%m-%d")), inspDt.strftime("%Y-%m-%d"))
         self.assertEqual(inspection.notes, "Test inspection notes")
 
         # Now to test form error
         form_data["varroa"] = 7  # invalid data
-        response= self.client.post(
-            reverse("beedb:inspectAdd", args=[self.col1.id]), # type: ignore
+        response = self.client.post(
+            reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
             form_data,
         )
         print(response.status_code)

@@ -578,7 +578,7 @@ def inspectAdd(request, col_ref):
                 lTreatment = False
             logging.debug(f"TreatmentType = {tf.cleaned_data['treatmentType']}")
 
-        #logging.debug(f"lDiary = {lDiary} and lTreatment = {lTreatment}")
+        # logging.debug(f"lDiary = {lDiary} and lTreatment = {lTreatment}")
 
         if nf.is_valid() and optForm.is_valid() and lDiary and lTreatment:
             logging.debug(f"Inspection valid, cleaned data = {nf.cleaned_data}")
