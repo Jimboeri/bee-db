@@ -1,7 +1,8 @@
 from django.test import TestCase, Client  # type: ignore
 from django.contrib.auth.models import User  # type: ignore
-from beedb import models
+from beedb import models, forms
 from django.urls import reverse  # type: ignore
+import datetime
 
 
 def printResp(response):
@@ -14,7 +15,7 @@ def printResp(response):
     #    print(f"  {k}:{v}")
     # print("Response content:")
     # print(response.content)
-    # print(f"Response templates: {response.templates}")
+    print(f"Response templates: {response.templates}")
 
     print(f"Response context:{response.context}")
     # print(f"Response url:{response.url}")
@@ -64,6 +65,95 @@ class ViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         pass
+
+    def test_InspectionAdd_view(self):
+        """
+        Tests for the addition of inspections
+
+        Start with simple tests and then add more
+
+        """
+        # Login jim, but try for test user colony
+        self.client.force_login(self.jimUser)
+        response = self.client.get(reverse("beedb:inspectAdd", args=[self.col1.id]))  # type: ignore
+        self.assertTemplateUsed("beedb/not_authorised.html")
+        self.assertEqual(response.status_code, 200)
+
+        # Login test user from the fixture load
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("beedb:inspectAdd", args=[self.col1.id]))  # type: ignore
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("beedb/inspectAdd.html")
+
+    def test_Inspection_form(self):
+        """
+        Tests for the addition of inspections via form post
+
+        Start with simple tests and then add more
+
+        """
+        inspDt = datetime.datetime.now().date()
+        # Create form data
+        form_data = {
+            "dt": inspDt.strftime("%Y-%m-%d"),
+            "notes": "Test inspection notes",
+            "numbers": 0,
+            "eggs": 0,
+            "varroa": 0,
+            "disease": 0,
+            "weight": 4,
+            "temper": 1,
+            "broodFrames": 5,
+        }
+
+        # Basic form tests
+        form = forms.InspectionForm(data=form_data, inColony=self.col1)
+        self.assertTrue(form.is_valid())
+
+        # Now invalid data
+        form_data["varroa"] = 7  # invalid data
+        form = forms.InspectionForm(data=form_data, inColony=self.col1)
+        self.assertFalse(form.is_valid())
+        self.assertIn("varroa", form.errors)
+
+        # Login test user from the fixture load
+        self.client.force_login(self.user)
+        # Check valid form
+        form_data = {
+            "dt": inspDt.strftime("%Y-%m-%d"),
+            "notes": "Test inspection notes",
+            "numbers": 0,
+            "eggs": 0,
+            "varroa": 0,
+            "disease": 0,
+            "weight": 4,
+            "temper": 1,
+            "broodFrames": 5,
+        }
+        response = self.client.post(
+            reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
+            form_data,
+        )
+        print(response.status_code)
+        self.assertEqual(response.status_code, 302)
+        # Should go to colony view
+        self.assertTemplateUsed("beedb/colDetail.html")
+
+        # Now check that the inspection was created
+        inspections = models.Inspection.objects.filter(colony=self.col1)
+        self.assertEqual(inspections.count(), 1)
+        inspection = inspections.first()
+        # self.assertEqual(str(inspection.dt.strftime("%Y-%m-%d")), inspDt.strftime("%Y-%m-%d"))
+        self.assertEqual(inspection.notes, "Test inspection notes")
+
+        # Now to test form error
+        form_data["varroa"] = 7  # invalid data
+        response = self.client.post(
+            reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
+            form_data,
+        )
+        print(response.status_code)
+        self.assertEqual(response.status_code, 200)
 
     def test_ApChooseReport(self):
         # Not logged in so expect a redirect to login

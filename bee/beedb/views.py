@@ -549,8 +549,9 @@ def inspectMod(request, ins_ref):
 
 @login_required
 def inspectAdd(request, col_ref):
-    logging.debug("InspectAdd function")
+    # logging.debug("InspectAdd function")
     col = get_object_or_404(Colony, pk=col_ref)
+    # logging.debug(f"col beek {col.apiary.beek}, request user {request.user}")
     if col.apiary.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
@@ -577,10 +578,10 @@ def inspectAdd(request, col_ref):
                 lTreatment = False
             logging.debug(f"TreatmentType = {tf.cleaned_data['treatmentType']}")
 
-        logging.debug(f"lDiary = {lDiary} and lTreatment = {lTreatment}")
+        # logging.debug(f"lDiary = {lDiary} and lTreatment = {lTreatment}")
 
         if nf.is_valid() and optForm.is_valid() and lDiary and lTreatment:
-            logging.info(f"Inspection valid, cleaned data = {nf.cleaned_data}")
+            logging.debug(f"Inspection valid, cleaned data = {nf.cleaned_data}")
             ins = nf.save(commit=False)
             ins.colony = col
             ins.size = col.size
@@ -613,6 +614,8 @@ def inspectAdd(request, col_ref):
             return HttpResponseRedirect(
                 reverse("beedb:colDetail", args=[ins.colony.id])  # type: ignore
             )
+        else:
+            logging.debug(f"Inspection form invalid, errors = {nf.errors}")
     # if a GET (or any other method) we'll create a blank form
     else:
         optForm = forms.InspectionOptionsForm()

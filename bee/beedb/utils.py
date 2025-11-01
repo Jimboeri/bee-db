@@ -12,7 +12,7 @@ def sizeChoices(inSize, inType):
     lChoice = []
     for ch in choices:
         lChoice.append((ch.value, ch.text))
-    logging.info(f"Choice is {lChoice}")
+    # logging.info(f"Choice is {lChoice}")
     return lChoice
 
 

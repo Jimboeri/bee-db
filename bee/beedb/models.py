@@ -245,6 +245,10 @@ class Inspection(models.Model):
         choices=TEMPER_CHOICES,
         default=0,
     )
+    broodFrames = models.IntegerField(
+        help_text="Number of frames with brood", default=0
+    )
+
     queen_seen = models.BooleanField(default=False)
     # addDiary = models.BooleanField(default=False, help_text="Add a reminder?")
     # addTreatment = models.BooleanField(
