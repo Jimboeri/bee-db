@@ -136,7 +136,8 @@ def apDetail(request, ap_ref):
             ):
                 badges.append("Treatment needs removal")
 
-            cCol = {"colony": c, "badges": badges}
+            cCol = {"colony": c, "badges": badges, "diarys": c.diaryDue()}
+      
             liveCol.append(cCol)
     context["deadCol"] = deadCol  # type: ignore
     context["liveCol"] = liveCol  # type: ignore

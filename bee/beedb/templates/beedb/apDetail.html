@@ -52,6 +52,18 @@ Apiary Details
             {% endfor %}
           {% endif %}
         </tr>
+        {% if colony.diarys.count > 0 %}
+          <tr>
+            <td colspan="3">
+              <strong>Reminders:</strong>
+            </td>
+          </tr>
+        {% endif %}
+        {% for remind in colony.diarys %}
+          <td>
+            <span title="{{ remind }}">{{ remind.subject }}</span>
+          </td>
+        {% endfor %}
       {% endfor %}
     </table>      
 </div>

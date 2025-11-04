@@ -6,6 +6,8 @@ from django.db.models.signals import post_save  # type: ignore
 from django.dispatch import receiver  # type: ignore
 from django.utils import timezone  # type: ignore
 
+import logging
+
 # define some re-used choice options
 VARROA_CHOICES = [
     (0, "Not recorded"),
@@ -174,11 +176,12 @@ class Colony(models.Model):
 
     def diaryDue(self):
         """
-        Return a list of due diary entries, that have already nee notified
+        Return a list of due diary entries, that have already been notified
         """
         dueDiaries = self.diary_set.order_by("dueDt").filter(  # type: ignore
             dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=False
         )
+        logging.debug(f"Number of reminders is {dueDiaries.count()}")
         return dueDiaries
 
     def diaryDueNew(self):
@@ -188,7 +191,6 @@ class Colony(models.Model):
             dueDt__lt=timezone.now(), completed=False, notifyDt__isnull=True
         )
         return dueDiaries
-
 
 class Inspection(models.Model):
     """
