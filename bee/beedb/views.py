@@ -556,7 +556,7 @@ def inspectAdd(request, col_ref):
     if col.apiary.beek != request.user:
         return render(request, "beedb/not_authorised.html")
     if request.method == "POST":
-        #logging.debug("Processing inspection")
+        # logging.debug("Processing inspection")
         nf = forms.InspectionForm(request.POST, inColony=col)
         df = DiaryModelForm(request.POST)
         tf = TreatInInspectForm(request.POST)
@@ -577,12 +577,12 @@ def inspectAdd(request, col_ref):
                 lTreatment = False
             if tf.cleaned_data["treatmentType"] is None:
                 lTreatment = False
-            #logging.debug(f"TreatmentType = {tf.cleaned_data['treatmentType']}")
+            # logging.debug(f"TreatmentType = {tf.cleaned_data['treatmentType']}")
 
         # logging.debug(f"lDiary = {lDiary} and lTreatment = {lTreatment}")
 
         if nf.is_valid() and optForm.is_valid() and lDiary and lTreatment:
-            #logging.debug(f"Inspection valid, cleaned data = {nf.cleaned_data}")
+            # logging.debug(f"Inspection valid, cleaned data = {nf.cleaned_data}")
             ins = nf.save(commit=False)
             ins.colony = col
             ins.size = col.size
