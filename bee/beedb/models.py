@@ -192,6 +192,7 @@ class Colony(models.Model):
         )
         return dueDiaries
 
+
 class Inspection(models.Model):
     """
     Model for colony inspections
