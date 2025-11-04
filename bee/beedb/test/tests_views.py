@@ -134,7 +134,7 @@ class ViewTests(TestCase):
             reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
             form_data,
         )
-        print(response.status_code)
+        
         self.assertEqual(response.status_code, 302)
         # Should go to colony view
         self.assertTemplateUsed("beedb/colDetail.html")
@@ -152,7 +152,7 @@ class ViewTests(TestCase):
             reverse("beedb:inspectAdd", args=[self.col1.id]),  # type: ignore
             form_data,
         )
-        print(response.status_code)
+        
         self.assertEqual(response.status_code, 200)
 
     def test_ApChooseReport(self):
