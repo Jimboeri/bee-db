@@ -133,8 +133,6 @@ def sendMessage(msg):
     cUsr = lUser[0]
     cDomain = lUser[1]
 
-    logging.debug(f"User - {cUsr}, password - {settings.EMAIL_HOST_PASSWORD}")
-
     # print(f"Beek name is {beek.user.username}")
     apobj = apprise.Apprise()
     # url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
