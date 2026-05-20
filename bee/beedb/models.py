@@ -413,9 +413,7 @@ class Diary(models.Model):
     colony = models.ForeignKey(Colony, on_delete=models.SET_NULL, null=True, blank=True)
     createdDt = models.DateTimeField(null=True, blank=True, default=timezone.now)
     startDt = models.DateTimeField(null=True, blank=True)
-    dueDt = models.DateTimeField(
-        "Date to complete by", default=_diary_default_due_dt
-    )
+    dueDt = models.DateTimeField("Date to complete by", default=_diary_default_due_dt)
     notifyDt = models.DateTimeField(null=True, blank=True)
     subject = models.CharField(max_length=100, null=True, blank=True)
     details = models.TextField(blank=True, null=True)

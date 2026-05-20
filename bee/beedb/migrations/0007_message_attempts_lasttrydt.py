@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0006_alter_diary_duedt_alter_inspection_broodframes'),
+        ("beedb", "0006_alter_diary_duedt_alter_inspection_broodframes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='message',
-            name='attempts',
+            model_name="message",
+            name="attempts",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='message',
-            name='lastTryDt',
+            model_name="message",
+            name="lastTryDt",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

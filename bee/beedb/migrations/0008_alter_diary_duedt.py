@@ -5,15 +5,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('beedb', '0007_message_attempts_lasttrydt'),
+        ("beedb", "0007_message_attempts_lasttrydt"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='diary',
-            name='dueDt',
-            field=models.DateTimeField(default=beedb.models._diary_default_due_dt, verbose_name='Date to complete by'),
+            model_name="diary",
+            name="dueDt",
+            field=models.DateTimeField(
+                default=beedb.models._diary_default_due_dt,
+                verbose_name="Date to complete by",
+            ),
         ),
     ]
