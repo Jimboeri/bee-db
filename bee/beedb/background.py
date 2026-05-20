@@ -7,12 +7,15 @@ import json
 import datetime
 import time
 from django.utils import timezone  # type: ignore
+from django.db.models import Q  # type: ignore
 from django import template  # type: ignore
 import logging
+import apprise  # type: ignore
+
+MESSAGE_MAX_ATTEMPTS = 5
+MESSAGE_RETRY_BACKOFF_SECONDS = 60
 
 # from email.mime.text import MIMEText
-
-import apprise  # type: ignore
 
 # need this to access django models and templates
 sys.path.append("/code/bee")
@@ -133,8 +136,6 @@ def sendMessage(msg):
     cUsr = lUser[0]
     cDomain = lUser[1]
 
-    logging.debug(f"User - {cUsr}, password - {settings.EMAIL_HOST_PASSWORD}")
-
     # print(f"Beek name is {beek.user.username}")
     apobj = apprise.Apprise()
     # url = f"mailtos://{cUsr}:{smtp_password}@{cDomain}/{msg.beek.email}/?smtp={smtp_host}&from={smtp_from}&name={smtp_from_name}&user={smtp_user}"
@@ -146,7 +147,17 @@ def sendMessage(msg):
         body=msg.html,
         title=msg.subject,
     ):
-        logging.warning(f"WARNING - Email not sent URL is {url}")
+        msg.attempts += 1
+        msg.lastTryDt = timezone.now()
+        msg.save()
+        if msg.attempts >= MESSAGE_MAX_ATTEMPTS:
+            logging.error(
+                f"Message {msg.id} to {msg.beek.email} failed after {msg.attempts} attempts; giving up"
+            )
+        else:
+            logging.warning(
+                f"Message {msg.id} to {msg.beek.email} send failed (attempt {msg.attempts}/{MESSAGE_MAX_ATTEMPTS})"
+            )
     else:
         msg.processed = True
         msg.processedDt = timezone.now()
@@ -460,7 +471,12 @@ def sys_background():
                 procHourlyDiary()
                 logging.info("---------------------------------")
 
-        msgProc = Message.objects.filter(processed=False)
+        retry_cutoff = timezone.now() - datetime.timedelta(
+            seconds=MESSAGE_RETRY_BACKOFF_SECONDS
+        )
+        msgProc = Message.objects.filter(
+            processed=False, attempts__lt=MESSAGE_MAX_ATTEMPTS
+        ).filter(Q(lastTryDt__isnull=True) | Q(lastTryDt__lt=retry_cutoff))
         if len(msgProc) > 0:
             for msg in msgProc:
                 sendMessage(msg)

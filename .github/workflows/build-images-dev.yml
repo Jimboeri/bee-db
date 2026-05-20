@@ -48,6 +48,7 @@ jobs:
         POSTGRES_USER: test_user
         POSTGRES_PASSWORD: test_password
         POSTGRES_PORT: 5432
+        DJANGO_SECRET_KEY: ci-test-secret-key-not-used-in-production
 
       run: |
         cd bee
