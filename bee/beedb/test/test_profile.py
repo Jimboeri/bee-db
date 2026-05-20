@@ -78,9 +78,7 @@ class ProfileCharacterisationTests(TestCase):
         self.assertTrue(models.Profile.objects.filter(user=u).exists())
         u.delete()
         self.assertFalse(
-            models.Profile.objects.filter(
-                user__username="prof_char_doomed"
-            ).exists()
+            models.Profile.objects.filter(user__username="prof_char_doomed").exists()
         )
 
     def test_deleting_lastApiary_sets_profile_lastApiary_to_null(self):
@@ -117,9 +115,7 @@ class ProfileCharacterisationTests(TestCase):
         self.assertIs(f.remote_field.on_delete, djmodels.SET_NULL)
 
     def test_phoneNumber_max_length(self):
-        self.assertEqual(
-            models.Profile._meta.get_field("phoneNumber").max_length, 50
-        )
+        self.assertEqual(models.Profile._meta.get_field("phoneNumber").max_length, 50)
 
     def test_bkRegistration_max_length(self):
         self.assertEqual(

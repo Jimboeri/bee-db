@@ -58,9 +58,7 @@ class ApiaryCharacterisationTests(TestCase):
             "location",
             "hazards",
         ):
-            self.assertIsNone(
-                getattr(ap, field), f"{field} should default to None"
-            )
+            self.assertIsNone(getattr(ap, field), f"{field} should default to None")
 
     # ----- cascade behaviour ------------------------------------------
 

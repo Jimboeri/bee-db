@@ -23,9 +23,7 @@ class ColonyCharacterisationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user("col_char_user")
-        cls.apiary = models.Apiary.objects.create(
-            apiaryID="ColCharAp", beek=cls.user
-        )
+        cls.apiary = models.Apiary.objects.create(apiaryID="ColCharAp", beek=cls.user)
 
     # ----- helpers -----------------------------------------------------
 
@@ -172,14 +170,10 @@ class ColonyCharacterisationTests(TestCase):
     # ----- field metadata ----------------------------------------------
 
     def test_colonyID_max_length(self):
-        self.assertEqual(
-            models.Colony._meta.get_field("colonyID").max_length, 50
-        )
+        self.assertEqual(models.Colony._meta.get_field("colonyID").max_length, 50)
 
     def test_status_max_length(self):
-        self.assertEqual(
-            models.Colony._meta.get_field("status").max_length, 1
-        )
+        self.assertEqual(models.Colony._meta.get_field("status").max_length, 1)
 
     def test_apiary_on_delete_is_cascade(self):
         f = models.Colony._meta.get_field("apiary")
