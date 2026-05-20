@@ -10,13 +10,12 @@ from django.utils import timezone  # type: ignore
 from django.db.models import Q  # type: ignore
 from django import template  # type: ignore
 import logging
+import apprise  # type: ignore
 
 MESSAGE_MAX_ATTEMPTS = 5
 MESSAGE_RETRY_BACKOFF_SECONDS = 60
 
 # from email.mime.text import MIMEText
-
-import apprise  # type: ignore
 
 # need this to access django models and templates
 sys.path.append("/code/bee")
