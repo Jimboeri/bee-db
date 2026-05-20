@@ -81,17 +81,17 @@ class ColonyCharacterisationTests(TestCase):
         c = models.Colony.objects.create(apiary=self.apiary, colonyID="A")
         after = timezone.now()
         c.refresh_from_db()
-        self.assertTrue(before <= c.status_dt <= after)
-        self.assertTrue(before <= c.lastAction <= after)
+        self.assertTrue(before <= c.status_dt <= after) # type: ignore
+        self.assertTrue(before <= c.lastAction <= after) # type: ignore
 
     # ----- cascade behaviour -------------------------------------------
 
     def test_deleting_apiary_cascades_to_colony(self):
         ap = models.Apiary.objects.create(apiaryID="DoomedAp", beek=self.user)
         c = models.Colony.objects.create(apiary=ap, colonyID="ColInDoom")
-        self.assertTrue(models.Colony.objects.filter(id=c.id).exists())
+        self.assertTrue(models.Colony.objects.filter(id=c.id).exists()) # type: ignore
         ap.delete()
-        self.assertFalse(models.Colony.objects.filter(id=c.id).exists())
+        self.assertFalse(models.Colony.objects.filter(id=c.id).exists()) # type: ignore
 
     # ----- statusDisplay() ---------------------------------------------
 
@@ -127,7 +127,7 @@ class ColonyCharacterisationTests(TestCase):
         models.Inspection.objects.create(
             colony=c, dt=timezone.now() - datetime.timedelta(days=3)
         )
-        self.assertEqual(c.lastInspection().id, newest.id)
+        self.assertEqual(c.lastInspection().id, newest.id) # type: ignore
 
     # ----- diaryDueNew() (overdue, uncompleted, not yet notified) ------
 
@@ -138,7 +138,7 @@ class ColonyCharacterisationTests(TestCase):
         self._make_diary(c, due_offset_days=-1, completed=True)
         self._make_diary(c, due_offset_days=+5)
         ids = set(c.diaryDueNew().values_list("id", flat=True))
-        self.assertEqual(ids, {target.id})
+        self.assertEqual(ids, {target.id}) # type: ignore
 
     def test_diaryDueNew_orders_by_dueDt_ascending(self):
         c = models.Colony.objects.create(apiary=self.apiary, colonyID="A")
@@ -146,7 +146,7 @@ class ColonyCharacterisationTests(TestCase):
         d5 = self._make_diary(c, due_offset_days=-5)
         d10 = self._make_diary(c, due_offset_days=-10)
         ids = list(c.diaryDueNew().values_list("id", flat=True))
-        self.assertEqual(ids, [d10.id, d5.id, d2.id])
+        self.assertEqual(ids, [d10.id, d5.id, d2.id]) # type: ignore
 
     # ----- diaryDue() (overdue, uncompleted, already notified) ---------
 
@@ -157,7 +157,7 @@ class ColonyCharacterisationTests(TestCase):
         self._make_diary(c, due_offset_days=-1, notified=True, completed=True)
         self._make_diary(c, due_offset_days=+5, notified=True)
         ids = set(c.diaryDue().values_list("id", flat=True))
-        self.assertEqual(ids, {target.id})
+        self.assertEqual(ids, {target.id}) # type: ignore
 
     def test_diaryDue_orders_by_dueDt_ascending(self):
         c = models.Colony.objects.create(apiary=self.apiary, colonyID="A")
@@ -165,7 +165,7 @@ class ColonyCharacterisationTests(TestCase):
         d5 = self._make_diary(c, due_offset_days=-5, notified=True)
         d10 = self._make_diary(c, due_offset_days=-10, notified=True)
         ids = list(c.diaryDue().values_list("id", flat=True))
-        self.assertEqual(ids, [d10.id, d5.id, d2.id])
+        self.assertEqual(ids, [d10.id, d5.id, d2.id]) # type: ignore
 
     # ----- field metadata ----------------------------------------------
 
@@ -177,12 +177,12 @@ class ColonyCharacterisationTests(TestCase):
 
     def test_apiary_on_delete_is_cascade(self):
         f = models.Colony._meta.get_field("apiary")
-        self.assertIs(f.remote_field.on_delete, djmodels.CASCADE)
+        self.assertIs(f.remote_field.on_delete, djmodels.CASCADE) # type: ignore
 
     def test_status_choices_match(self):
         f = models.Colony._meta.get_field("status")
         self.assertEqual(
-            list(f.choices),
+            list(f.choices), # type: ignore
             [
                 ("C", "Current"),
                 ("D", "Dead"),
@@ -195,7 +195,7 @@ class ColonyCharacterisationTests(TestCase):
     def test_size_choices_match(self):
         f = models.Colony._meta.get_field("size")
         self.assertEqual(
-            list(f.choices),
+            list(f.choices), # type: ignore
             [
                 (1, "Micro - 3 - mini frames"),
                 (2, "Little - queen castle or nuc"),
@@ -209,4 +209,4 @@ class ColonyCharacterisationTests(TestCase):
 
     def test_apiary_has_colony_set_reverse_manager(self):
         c = models.Colony.objects.create(apiary=self.apiary, colonyID="Rev")
-        self.assertIn(c, list(self.apiary.colony_set.all()))
+        self.assertIn(c, list(self.apiary.colony_set.all())) # type: ignore
