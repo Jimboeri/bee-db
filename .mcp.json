@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "nextcloud-deck": {
+      "type": "http",
+      "url": "http://nextcloud.west.net.nz:8000/mcp"
+    }
+  }
+}
