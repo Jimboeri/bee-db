@@ -22,9 +22,7 @@ class DiaryCharacterisationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user("diary_char_user")
-        cls.apiary = models.Apiary.objects.create(
-            apiaryID="DiaryCharAp", beek=cls.user
-        )
+        cls.apiary = models.Apiary.objects.create(apiaryID="DiaryCharAp", beek=cls.user)
         cls.colony = models.Colony.objects.create(
             apiary=cls.apiary, colonyID="DiaryCharCol"
         )

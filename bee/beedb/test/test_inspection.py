@@ -25,9 +25,7 @@ class InspectionCharacterisationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user("insp_char_user")
-        cls.apiary = models.Apiary.objects.create(
-            apiaryID="InspCharAp", beek=cls.user
-        )
+        cls.apiary = models.Apiary.objects.create(apiaryID="InspCharAp", beek=cls.user)
         cls.colony = models.Colony.objects.create(
             apiary=cls.apiary, colonyID="InspCharCol"
         )
@@ -190,15 +188,11 @@ class InspectionCharacterisationTests(TestCase):
 
     def test_numChoiceDisplay_returns_text_for_matching_sizechoice(self):
         # fixture3.json: size=1, type="Number", value=2 → "Good bee numbers"
-        insp = models.Inspection.objects.create(
-            colony=self.colony, size=1, numbers=2
-        )
+        insp = models.Inspection.objects.create(colony=self.colony, size=1, numbers=2)
         self.assertEqual(insp.numChoiceDisplay(), "Good bee numbers")
 
     def test_numChoiceDisplay_returns_space_when_no_match(self):
-        insp = models.Inspection.objects.create(
-            colony=self.colony, size=99, numbers=99
-        )
+        insp = models.Inspection.objects.create(colony=self.colony, size=99, numbers=99)
         self.assertEqual(insp.numChoiceDisplay(), " ")
 
     # ----- weightChoiceDisplay() (SizeChoice lookup) -----------------------
@@ -206,15 +200,11 @@ class InspectionCharacterisationTests(TestCase):
     def test_weightChoiceDisplay_returns_text_for_matching_sizechoice(self):
         # fixture3.json: size=1, type="Weight", value=2 → look up the actual text
         sc = models.SizeChoice.objects.get(size=1, type="Weight", value=2)
-        insp = models.Inspection.objects.create(
-            colony=self.colony, size=1, weight=2
-        )
+        insp = models.Inspection.objects.create(colony=self.colony, size=1, weight=2)
         self.assertEqual(insp.weightChoiceDisplay(), sc.text)
 
     def test_weightChoiceDisplay_returns_space_when_no_match(self):
-        insp = models.Inspection.objects.create(
-            colony=self.colony, size=99, weight=99
-        )
+        insp = models.Inspection.objects.create(colony=self.colony, size=99, weight=99)
         self.assertEqual(insp.weightChoiceDisplay(), " ")
 
     # ----- healthScore() ---------------------------------------------------
@@ -233,9 +223,7 @@ class InspectionCharacterisationTests(TestCase):
         # eggs=1: nPoss+=5, nScore+=5
         # varroa=1: nPoss+=10, nScore+=9
         # total: nPoss=15, nScore=14 → 93.333...
-        insp = models.Inspection.objects.create(
-            colony=self.colony, eggs=1, varroa=1
-        )
+        insp = models.Inspection.objects.create(colony=self.colony, eggs=1, varroa=1)
         self.assertAlmostEqual(insp.healthScore(), 14 / 15 * 100)
 
     def test_healthScore_worst_values(self):
@@ -248,7 +236,12 @@ class InspectionCharacterisationTests(TestCase):
         # total: nPoss=31, nScore=2 → 2/31*100
         insp = models.Inspection.objects.create(
             colony=self.colony,
-            numbers=5, eggs=5, varroa=5, weight=5, disease=5, temper=5,
+            numbers=5,
+            eggs=5,
+            varroa=5,
+            weight=5,
+            disease=5,
+            temper=5,
         )
         self.assertAlmostEqual(insp.healthScore(), 2 / 31 * 100)
 
@@ -260,21 +253,25 @@ class InspectionCharacterisationTests(TestCase):
 
     def test_eggs_choices_match(self):
         from beedb.models import EGG_CHOICES
+
         f = models.Inspection._meta.get_field("eggs")
         self.assertEqual(list(f.choices), list(EGG_CHOICES))  # type: ignore
 
     def test_varroa_choices_match(self):
         from beedb.models import VARROA_CHOICES
+
         f = models.Inspection._meta.get_field("varroa")
         self.assertEqual(list(f.choices), list(VARROA_CHOICES))  # type: ignore
 
     def test_disease_choices_match(self):
         from beedb.models import DISEASE_CHOICES
+
         f = models.Inspection._meta.get_field("disease")
         self.assertEqual(list(f.choices), list(DISEASE_CHOICES))  # type: ignore
 
     def test_temper_choices_match(self):
         from beedb.models import TEMPER_CHOICES
+
         f = models.Inspection._meta.get_field("temper")
         self.assertEqual(list(f.choices), list(TEMPER_CHOICES))  # type: ignore
 
