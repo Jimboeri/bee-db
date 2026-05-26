@@ -38,6 +38,21 @@ psql -U postgres
 
 The `background` container's `entrypoint.sh` auto-runs `migrate --noinput` on startup before launching `background.py`.
 
+## Managing work
+Use Nextcloud Deck as the source of truth.
+
+When starting work:
+
+- Select the top suitable card from Faults if one exists
+- If not select the top suitable card from Ready.
+- Move it to Doing.
+- Add a brief implementation note to the card.
+
+When implementation is complete:
+
+- Update the card with files changed, tests run, and any follow-up concerns.
+
+
 ## Architecture
 
 ### Two-process layout
