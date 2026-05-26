@@ -31,4 +31,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get -y install libpq-dev gcc cma
     && rm -rf /var/lib/apt/lists/*
 RUN pip install -r requirements.txt
 COPY . /code/
+COPY web-entrypoint.sh /usr/local/bin/web-entrypoint.sh
+RUN chmod +x /usr/local/bin/web-entrypoint.sh
 WORKDIR /code/bee/
+ENTRYPOINT ["/usr/local/bin/web-entrypoint.sh"]
