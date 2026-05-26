@@ -9,8 +9,6 @@ Note: Audit.__str__ accesses self.colony.colonyID directly (no null guard),
 so __str__ is only tested when colony is set.
 """
 
-import datetime
-
 from django.contrib.auth.models import User  # type: ignore
 from django.db import models as djmodels  # type: ignore
 from django.test import TestCase  # type: ignore
@@ -25,9 +23,7 @@ class AuditCharacterisationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user("audit_char_user")
-        cls.apiary = models.Apiary.objects.create(
-            apiaryID="AuditCharAp", beek=cls.user
-        )
+        cls.apiary = models.Apiary.objects.create(apiaryID="AuditCharAp", beek=cls.user)
         cls.colony = models.Colony.objects.create(
             apiary=cls.apiary, colonyID="AuditCharCol"
         )

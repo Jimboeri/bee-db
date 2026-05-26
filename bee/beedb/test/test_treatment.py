@@ -169,11 +169,13 @@ class TreatmentCharacterisationTests(TestCase):
 
     def test_preVarroa_choices_match(self):
         from beedb.models import VARROA_CHOICES
+
         f = models.Treatment._meta.get_field("preVarroa")
         self.assertEqual(list(f.choices), list(VARROA_CHOICES))  # type: ignore
 
     def test_postVarroa_choices_match(self):
         from beedb.models import VARROA_CHOICES
+
         f = models.Treatment._meta.get_field("postVarroa")
         self.assertEqual(list(f.choices), list(VARROA_CHOICES))  # type: ignore
 

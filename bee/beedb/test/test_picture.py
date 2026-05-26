@@ -69,21 +69,24 @@ class PictureCharacterisationTests(TestCase):
     def test_default_ordering_is_uploadDt_descending(self):
         now = timezone.now()
         old = self._make_picture(
-            title="old", img=_fake_image(),
+            title="old",
+            img=_fake_image(),
             uploadDt=now - datetime.timedelta(days=10),
         )
         mid = self._make_picture(
-            title="mid", img=_fake_image(),
+            title="mid",
+            img=_fake_image(),
             uploadDt=now - datetime.timedelta(days=5),
         )
         new = self._make_picture(
-            title="new", img=_fake_image(),
+            title="new",
+            img=_fake_image(),
             uploadDt=now,
         )
         ids = list(
-            models.Picture.objects.filter(
-                title__in=["old", "mid", "new"]
-            ).values_list("id", flat=True)
+            models.Picture.objects.filter(title__in=["old", "mid", "new"]).values_list(
+                "id", flat=True
+            )
         )
         self.assertEqual(ids, [new.id, mid.id, old.id])
 
@@ -133,9 +136,7 @@ class PictureCharacterisationTests(TestCase):
         self.assertIsNone(p.apiary)
 
     def test_deleting_colony_sets_picture_colony_to_null(self):
-        col = models.Colony.objects.create(
-            apiary=self.apiary, colonyID="DoomedPicCol"
-        )
+        col = models.Colony.objects.create(apiary=self.apiary, colonyID="DoomedPicCol")
         p = self._make_picture(colony=col)
         col.delete()
         p.refresh_from_db()
@@ -192,9 +193,7 @@ class UserDirectoryCharacterisationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user("ud_char_user")
-        cls.apiary = models.Apiary.objects.create(
-            apiaryID="UDCharAp", beek=cls.user
-        )
+        cls.apiary = models.Apiary.objects.create(apiaryID="UDCharAp", beek=cls.user)
         cls.colony = models.Colony.objects.create(
             apiary=cls.apiary, colonyID="UDCharCol"
         )
@@ -236,9 +235,7 @@ class UserDirectoryCharacterisationTests(TestCase):
 
     def test_apiary_path_when_no_inspection_or_colony(self):
         stub = self._stub(apiary=self.apiary)
-        expected = (
-            f"images/{self.apiary.beek.id}/{self.apiary.id}/photo.jpg"
-        )
+        expected = f"images/{self.apiary.beek.id}/{self.apiary.id}/photo.jpg"
         self.assertEqual(user_directory(stub, "photo.jpg"), expected)
 
     def test_beek_path_when_only_beek(self):

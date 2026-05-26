@@ -85,9 +85,7 @@ class FeedbackCharacterisationTests(TestCase):
         self.assertEqual(models.Feedback._meta.get_field("subject").max_length, 100)
 
     def test_feedbackType_max_length(self):
-        self.assertEqual(
-            models.Feedback._meta.get_field("feedbackType").max_length, 1
-        )
+        self.assertEqual(models.Feedback._meta.get_field("feedbackType").max_length, 1)
 
     def test_status_max_length(self):
         self.assertEqual(models.Feedback._meta.get_field("status").max_length, 1)
