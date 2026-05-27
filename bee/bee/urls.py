@@ -24,5 +24,4 @@ urlpatterns = [
     path("beedb/", include("beedb.urls")),
     # path('accounts/', include('django.contrib.auth.urls')),
 ]
-if settings.DEBUG:  # new
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
