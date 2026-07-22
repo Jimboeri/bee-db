@@ -1,0 +1,1 @@
+{"nodes": [{"id": "github_workflows_lint_lint", "label": "ruff lint + auto-commit job", "file_type": "code", "source_file": ".github/workflows/lint.yml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}
